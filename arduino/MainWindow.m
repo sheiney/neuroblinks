@@ -669,6 +669,17 @@ vidobj.FramesPerTrigger=metadata.cam.fps*(sum(metadata.cam.time)/1e3);
 % Now get camera ready for acquisition -- shouldn't start yet
 start(vidobj)
 
+% For triggering camera 2
+if isappdata(0,'cam2')
+    cam2=getappdata(0,'cam2');
+    vidobj2 = getappdata(0,'vidobj2');
+    if strcmp(cam2.triggermode,'Sync trials')
+        vidobj2.FramesPerTrigger = frames_per_trial;
+%         vidobj2.TriggerRepeat = 0;
+        startCamera2()  % TDT will wait for primary camera to be triggered before actually triggering the camera
+    end
+end
+
 metadata.ts(2)=etime(clock,datevec(metadata.ts(1)));
 
 
