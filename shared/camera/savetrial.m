@@ -46,7 +46,7 @@ end
 trials=getappdata(0,'trials');
 t0=clock;
 
-videoname=sprintf('%s\\%s_%03d',metadata.folder,metadata.TDTblockname,metadata.cam.trialnum);
+videoname=sprintf('%s\\%s_%03d',metadata.folder,metadata.basename,metadata.cam.trialnum);
 if trials.savematadata
     save(videoname,'metadata')
 elseif exist('encoder','var')

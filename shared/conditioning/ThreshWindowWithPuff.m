@@ -257,7 +257,7 @@ setappdata(0,'metadata',metadata);
 fprintf('calib_offset = %d.  calib_scale = %d.\n',calib_offset, calib_scale)
 fprintf('thresh = %d.\n', round(metadata.cam.thresh*256))
 
-videoname=sprintf('%s\\%s_calib',metadata.folder,metadata.TDTblockname);
+videoname=sprintf('%s\\%s_calib',metadata.folder,metadata.basename);
 save(videoname,'data','metadata')    
 
 fprintf('Data from calibration trial successfully written to disk.\n')

@@ -17,7 +17,7 @@ end
 
 if strcmp(cam2.triggermode,'Manual to disk')
     % We have to set up the video writer object here 
-    basename = sprintf('%s\\%s_cam2',metadata.folder,metadata.TDTblockname);
+    basename = sprintf('%s\\%s_cam2',metadata.folder,metadata.basename);
     videoname=sprintf('%s_%03d.mp4', basename, cam2.trialnum);
     diskLogger = VideoWriter(videoname,'MPEG-4');
     set(diskLogger,'FrameRate',20);

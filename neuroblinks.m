@@ -58,14 +58,8 @@ function neuroblinks(varargin)
     end
 
     try
+        % This is a holdover from when TDT was an option but I'm keeping the switch statement in case we want to add a different device type
         switch lower(device)
-            case 'tdt'
-                % TDT version
-                % Set up path for this session
-                [basedir,mfile,ext]=fileparts(mfilename('fullpath'));
-                oldpath=addpath(genpath(fullfile(basedir,'tdt')));
-                addpath(genpath(fullfile(basedir,'shared')));
-
             case 'arduino'
 
                 % % Arduino version
@@ -75,7 +69,7 @@ function neuroblinks(varargin)
                 addpath(genpath(fullfile(basedir,'shared')));
 
             otherwise
-                error(sprintf('Device %s not found', device))
+                error('Device %s not found', device)
 
         end
     catch

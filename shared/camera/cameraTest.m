@@ -90,6 +90,7 @@ setappdata(0,'src',src)
 function streamEyelid()
 % This function grabs the current frame from the preview, converts it to a trace, and sends it somewhere else for subsequent control, e.g. TDT hardware.
 % For illustration, I'm just sending it to STDOUT but you might want to comment out that line below.
+% Best practice is to use UpdatePreviewWindowFcn for the camera preview window instead of the while loop
 
 updaterate=0.015;   % ~67 Hz
 

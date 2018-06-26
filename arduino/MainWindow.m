@@ -59,7 +59,7 @@ guidata(hObject, handles);
 src=getappdata(0,'src');
 metadata=getappdata(0,'metadata');
 metadata.date=date;
-metadata.TDTblockname='TempBlk';
+metadata.basename='Temp';
 metadata.ts=[datenum(clock) 0]; % two element vector containing datenum at beginning of session and offset of current trial (in seconds) from beginning
 metadata.folder=pwd; % For now use current folder as base; will want to change this later
 
@@ -528,7 +528,7 @@ end
 ResetCamTrials()
 set(handles.text_SessionName,'String',session);
 metadata=getappdata(0,'metadata');
-metadata.TDTblockname=sprintf('%s_%s_%s', metadata.mouse, datestr(now,'yymmdd'),session);
+metadata.basename=sprintf('%s_%s_%s', metadata.mouse, datestr(now,'yymmdd'),session);
 setappdata(0,'metadata',metadata);
 
 
@@ -676,7 +676,7 @@ if isappdata(0,'cam2')
     if strcmp(cam2.triggermode,'Sync trials')
         vidobj2.FramesPerTrigger = frames_per_trial;
 %         vidobj2.TriggerRepeat = 0;
-        startCamera2()  % TDT will wait for primary camera to be triggered before actually triggering the camera
+        startCamera2()  % will wait for primary camera to be triggered before actually triggering the camera
     end
 end
 

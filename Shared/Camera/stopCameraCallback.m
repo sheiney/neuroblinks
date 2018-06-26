@@ -12,7 +12,7 @@ else
     src.TriggerSource = 'Freerun';
 end
 
-basename = sprintf('%s\\%s_cam2',metadata.folder,metadata.TDTblockname);
+basename = sprintf('%s\\%s_cam2',metadata.folder,metadata.basename);
 
 if ~strcmp(cam2.triggermode,'Manual to disk')
     vid = getdata(vidobj2,vidobj2.FramesAvailable);

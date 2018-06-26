@@ -9,7 +9,7 @@ set(vidobj, 'LoggingMode', 'disk')
 
 % Create a VideoWriter object with the profile set to MPEG-4
 ctime = etime(clock,datevec(metadata.ts(1)));
-videoname=sprintf('%s\\%s_%05d.mp4',metadata.folder,metadata.TDTblockname,round(ctime));
+videoname=sprintf('%s\\%s_%05d.mp4',metadata.folder,metadata.basename,round(ctime));
 logfile = VideoWriter(videoname, 'MPEG-4');
 
 % Configure the video input object to use the VideoWriter object.
