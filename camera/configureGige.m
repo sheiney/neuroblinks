@@ -1,15 +1,8 @@
-function InitCam(ch,recdur)
+configureGige(vidobj, config)
 
-% First delete any existing image acquisition objects
-imaqreset
-
-disp('Creating video object ...')
-% vidobj = videoinput('gentl', ch, 'Mono8');
-vidobj = videoinput('gige', ch, 'Mono8');
-
-metadata=getappdata(0,'metadata');
 src = getselectedsource(vidobj);
-src.ExposureTimeAbs = metadata.cam.init_ExposureTime;
+
+src.ExposureTimeAbs = config.cam.initExposureTime;
 src.AllGainRaw=12;				% Tweak this based on IR light illumination (lower values preferred due to less noise)
 % src.StreamBytesPerSecond=124e6; % Set based on AVT's suggestion
 src.StreamBytesPerSecond=80e6; % Set based on AVT's suggestion
@@ -36,12 +29,3 @@ src.FrameStartTriggerActivation = 'LevelHigh';
 % back to 'Freerun' in 'endOfTrial' function
 % src.FrameStartTriggerSource = 'Line1';
 src.FrameStartTriggerSource = 'Freerun';
-
-% src.TriggerMode='On';
-% src.TriggerSelector='FrameStart';
-% src.TriggerSelector='AcquisitionStart';
-% src.TriggerSource='Freerun';
-
-%% Save objects to root app data
-setappdata(0,'vidobj',vidobj)
-setappdata(0,'src',src)

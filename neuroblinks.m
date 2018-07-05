@@ -7,6 +7,18 @@ function neuroblinks(varargin)
 
     % Set up defaults in case user doesn't specify all options
     rig = DEFAULTRIG;
+    device = DEFAULTDEVICE;
+
+    % Input parsing
+    if nargin > 0
+        for i=1:nargin
+            if any(strcmpi(varargin{i},ALLOWEDDEVICES))
+                device = varargin{i};
+            elseif ismember(varargin{i},1:length(ALLOWEDCAMS))
+                rig = varargin{i}; 
+            end
+        end
+    end
 
     % fprintf('Device: %s, Rig: %d\n', device, rig);
     % return
@@ -14,7 +26,7 @@ function neuroblinks(varargin)
     oldpath=addpath(genpath(fullfile(basedir,'main')));
 
     config.rig = rig;
+    config.device = device;
     config.oldpath = oldpath;   % save so we can restore later if desired
-    setappdata(0, 'config', config)
 
-    launch(rig)
+    launch(config)
