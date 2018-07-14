@@ -3,8 +3,12 @@
 DEFAULTDEVICE='arduino';
 DEFAULTRIG=1;
 
-% NOTE: In the future this should be dynamically set based on pre and post time
-metadata.cam.recdurA=1000;
+config.CAMADAPTOR = 'gentl';
 
 % --- camera settings ----
-config.cam.initExposureTime=4900;
+% Need to rework these configuration settings for consistency in naming/numbering different cameras
+config.cam(1).initExposureTime=4950;  % Exposure times for the two cameras (e.g., eyelid, pupil)
+config.cam(2).initExposureTime=49950;  % Exposure times for the two cameras (e.g., eyelid, pupil)
+config.cam(1).FrameRate = 200;   % Frame rates for the two cameras (e.g., eyelid, pupil)
+config.cam(2).FrameRate = 20;   % Frame rates for the two cameras (e.g., eyelid, pupil)
+

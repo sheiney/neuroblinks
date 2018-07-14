@@ -10,6 +10,7 @@ function neuroblinks(varargin)
     device = DEFAULTDEVICE;
 
     % Input parsing
+    % Values passed override defaults set in neuroblinks_config
     if nargin > 0
         for i=1:nargin
             if any(strcmpi(varargin{i},ALLOWEDDEVICES))

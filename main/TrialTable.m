@@ -61,10 +61,10 @@ guidata(hObject, handles);
 % UIWAIT makes TrialTable wait for user response (see UIRESUME)
 % uiwait(handles.TrialTableGUI);
 
-ghandles=getappdata(0,'ghandles');
+gui=getappdata(0,'gui');
 
 % Holding down CTRL while clicking button prevents re-initialization
-modifier=get(ghandles.maingui,'CurrentModifier');
+modifier=get(gui.maingui,'CurrentModifier');
 % disp(modifier)
 
 paramtable=getappdata(0,'paramtable');

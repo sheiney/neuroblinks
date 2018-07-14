@@ -1,9 +1,17 @@
 % User data path
-config.userdatapath = 'd:\shane\data\behavior';
+config.userdatapath = 'd:\data\behavior\ebc';
+
+% Per user default parameter table (can be overwritten by per mouse config)
+config.paramtable.data=...
+    [9,  200,1,200, 20,3,0,0,0,1,10;...
+     1,  200,1,200, 0, 3,0,0,0,1,0;...
+     ];
+
+config.paramtable.randomize=1;
+
+config.trialtable=makeTrialTable(config.paramtable.data,config.paramtable.randomize);
 
 % GUI layout
 % -- specify the location of bottomleft corner of MainWindow & AnalysisWindow  --
-ghandles.pos_mainwin=[5,50];     ghandles.size_mainwin=[840 600]; 
-ghandles.pos_anawin= [570 45];    ghandles.size_anawin=[1030 840]; 
-ghandles.pos_oneanawin=[5 45];    ghandles.size_oneanawin=[560 380];   
-ghandles.pos_lfpwin= [570 45];    ghandles.size_lfpwin=[600 380];
+config.pos_mainwindow=[5,50];     config.size_mainwindow=[840 600]; 
+config.pos_analysiswindow=[5 45];    config.size_analysiswindow=[560 380];   

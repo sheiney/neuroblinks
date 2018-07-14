@@ -26,17 +26,17 @@ fprintf('Data from last trial saved to memory for review.\n')
 % metadata.stim.type='None';
 
 % --- setting threshold ---
-ghandles=getappdata(0,'ghandles');
-ghandles.threshgui2=ThreshWindowWithPuff;
-setappdata(0,'ghandles',ghandles);
+gui=getappdata(0,'gui');
+gui.threshgui2=ThreshWindowWithPuff;
+setappdata(0,'gui',gui);
 % 
 % % Need to allow some time for GUI to draw before we call the lines below
 % pause(2)
 
 % Have to do the following 2 lines because we can't call drawhist and
 % drawbinary directly from the ThreshWindow opening function since the
-% ghandles struct doesn't exist yet. 
-% threshguihandles=guidata(ghandles.threshgui2);
+% gui struct doesn't exist yet. 
+% threshguihandles=guidata(gui.threshgui2);
 % ThreshWindowWithPuff('drawbinary',threshguihandles);
 
 

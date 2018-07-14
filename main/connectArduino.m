@@ -1,4 +1,4 @@
-function arduino_obj = connectArduino(config)
+function arduino = connectArduino(config)
 
     %% -- start serial communication to arduino ---
     disp('Finding Arduino...')
@@ -10,7 +10,7 @@ function arduino_obj = connectArduino(config)
 
     arduino=serial(com_ports{rig},'BaudRate',115200);
     arduino.InputBufferSize = 512*8;
-    % arduino.DataTerminalReady='off';	% to prevent resetting Arduino on connect
+    arduino.DataTerminalReady='off';	% to prevent resetting Arduino on connect
     fopen(arduino);
 
 end

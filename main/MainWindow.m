@@ -52,55 +52,8 @@ function MainWindow_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for MainWindow
 handles.output = hObject;
 % Update handles structure
-guidata(hObject, handles);
 
-% UIWAIT makes MainWindow wait for user response (see UIRESUME)
-% uiwait(handles.CamFig);
-src=getappdata(0,'src');
-metadata=getappdata(0,'metadata');
-metadata.date=date;
-metadata.basename='Temp';
-metadata.ts=[datenum(clock) 0]; % two element vector containing datenum at beginning of session and offset of current trial (in seconds) from beginning
-metadata.folder=pwd; % For now use current folder as base; will want to change this later
-
-metadata.cam.fps=src.AcquisitionFrameRateAbs; %in frames per second
-metadata.cam.thresh=0.125;
-metadata.cam.trialnum=1;
-metadata.eye.trialnum1=1;  %  for conditioning
-metadata.eye.trialnum2=1;
-
-typestring=get(handles.popupmenu_stimtype,'String');
-metadata.stim.type=typestring{get(handles.popupmenu_stimtype,'Value')};
-
-% Set ITI using base time plus optional random range
-% We have to initialize here because "stream" function uses metadata.stim.c.ITI
-base_ITI = str2double(get(handles.edit_ITI,'String'));
-rand_ITI = str2double(get(handles.edit_ITI_rand,'String'));
-metadata.stim.c.ITI = base_ITI + rand(1,1) * rand_ITI;
-
-metadata.cam.time(1)=str2double(get(handles.edit_pretime,'String'));
-metadata.cam.time(3)=metadata.cam.recdurA-metadata.cam.time(1);
-metadata.cam.cal=0;
-metadata.cam.calib_offset=0;
-metadata.cam.calib_scale=1;
-
-trials.stimnum=0;
-trials.savematadata=0;
-
-setappdata(0,'metadata',metadata);
-setappdata(0,'trials',trials);
-
-% Open parameter dialog
-h=ParamsWindow;
-waitfor(h);
-
-% pushbutton_StartStopPreview_Callback(handles.pushbutton_StartStopPreview, [], handles)
-
-% --- init table ----
-if isappdata(0,'paramtable')
-    paramtable=getappdata(0,'paramtable');
-    set(handles.uitable_params,'Data',paramtable.data);
-end
+initializeGUI(hObject, handles)
 
 % --- Executes on button press in pushbutton_StartStopPreview.
 function pushbutton_StartStopPreview_Callback(hObject, eventdata, handles)
@@ -178,7 +131,7 @@ closepreview(vidobj);
 
 function pushbutton_quit_Callback(hObject, eventdata, handles)
 vidobj=getappdata(0,'vidobj');
-ghandles=getappdata(0,'ghandles');
+gui=getappdata(0,'gui');
 metadata=getappdata(0,'metadata');
 arduino=getappdata(0,'arduino');
 
@@ -466,12 +419,12 @@ ParamsWindow
 
 
 function pushbutton_oneana_Callback(hObject, eventdata, handles)
-ghandles=getappdata(0,'ghandles');
-ghandles.onetrialanagui=OneTrialAnaWindow;
-setappdata(0,'ghandles',ghandles);
+gui=getappdata(0,'gui');
+gui.onetrialanagui=OneTrialAnaWindow;
+setappdata(0,'gui',gui);
 
-set(ghandles.onetrialanagui,'units','pixels')
-set(ghandles.onetrialanagui,'position',[ghandles.pos_oneanawin ghandles.size_oneanawin])
+set(gui.onetrialanagui,'units','pixels')
+set(gui.onetrialanagui,'position',[gui.pos_oneanawin gui.size_oneanawin])
 
 
 function uipanel_TDTMode_SelectionChangeFcn(hObject, eventdata, handles)
@@ -539,9 +492,9 @@ paramtable.randomize=get(handles.checkbox_random,'Value');
 % if length(paramtable.tonefreq)<2, paramtable.tonefreq(2)=0; end
 setappdata(0,'paramtable',paramtable);
 
-ghandles=getappdata(0,'ghandles');
+gui=getappdata(0,'gui');
 trialtablegui=TrialTable;
-% movegui(trialtablegui,[ghandles.pos_mainwin(1)+ghandles.size_mainwin(1)+20 ghandles.pos_mainwin(2)])
+% movegui(trialtablegui,[gui.pos_mainwin(1)+gui.size_mainwin(1)+20 gui.pos_mainwin(2)])
 
 
 
@@ -712,8 +665,8 @@ setappdata(0,'metadata',metadata);
 
 function newFrameCallback(obj,event,himage)
 
-ghandles=getappdata(0,'ghandles'); 
-handles=guidata(ghandles.maingui);
+gui=getappdata(0,'gui'); 
+handles=guidata(gui.maingui);
 % vidobj=getappdata(0,'vidobj');
 src=getappdata(0,'src');
 metadata=getappdata(0,'metadata');  
@@ -741,8 +694,8 @@ plt_range=-2100;
 persistent eyeTrace
 
 if isempty(eyeTrace)
-    set(0,'currentfigure',ghandles.maingui)
-%     set(ghandles.maingui,'CurrentAxes',handles.axes_eye)
+    set(0,'currentfigure',gui.maingui)
+%     set(gui.maingui,'CurrentAxes',handles.axes_eye)
 %     cla
     eyeTrace=plot(handles.axes_eye,[plt_range 0],[1 1]*0,'k-'); hold on
     set(handles.axes_eye,'color',[240 240 240]/255,'YAxisLocation','right');
@@ -797,8 +750,8 @@ function newFrameCallback2(obj,event,himage)
     persistent last_pupil_diameter
     persistent last_pupil_center
     
-    ghandles=getappdata(0,'ghandles'); 
-    handles=guidata(ghandles.maingui);
+    gui=getappdata(0,'gui'); 
+    handles=guidata(gui.maingui);
     % vidobj=getappdata(0,'vidobj');
     src=getappdata(0,'src');
     metadata=getappdata(0,'metadata');  

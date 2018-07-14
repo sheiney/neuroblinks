@@ -4,20 +4,16 @@ function launch(config)
 rig_config;
 user_config;
 
-%% Initialize Camera
-% initCam(cam, metadata.cam.recdur); % src and vidobj are now saved as root app data so no global vars
-
-
-
-
 %% Open GUI
 clear MainWindow;    % Need to do this to clear persisent variables defined within MainWindow and subfunctions
-ghandles.maingui=MainWindow;
-set(ghandles.maingui,'units','pixels')
-set(ghandles.maingui,'position',[ghandles.pos_mainwin ghandles.size_mainwin])
+gui.maingui=MainWindow;
+set(gui.maingui,'units','pixels')
+set(gui.maingui,'position',[config.pos_mainwindow config.size_mainwindow])
 
-% Save handles to root app data
-setappdata(0,'ghandles',ghandles)
+% Open parameter dialog
+h=ParamsWindow;
+waitfor(h);
 
-
-
+% Save structs to root app data
+setappdata(0,'gui',gui)
+setappdata(0,'config',config)

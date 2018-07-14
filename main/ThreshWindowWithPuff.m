@@ -196,7 +196,7 @@ delete(handles.figure1);
 function drawbinary(handles)
 
 % Load objects from root app data
-ghandles=getappdata(0,'ghandles');  % Load global handles
+gui=getappdata(0,'gui');  % Load global handles
 metadata=getappdata(0,'metadata');
 data=getappdata(0,'calb_data');
 
@@ -205,7 +205,7 @@ data=getappdata(0,'calb_data');
 ind_t=find(t<0.2);
 [y_max, ind_max1]=max(trace(ind_t));  [y_min, ind_min1]=min(trace(ind_t));
 ind_max=ind_t(ind_max1);  ind_min=ind_t(ind_min1);  
-set(0,'CurrentFigure',ghandles.threshgui2)
+set(0,'CurrentFigure',gui.threshgui2)
 
 % --- for axex_binary: eye opened ---
 wholeframe=data(:,:,1,ind_min(1));
@@ -215,7 +215,7 @@ roi=wholeframe.*uint8(metadata.cam.mask);
 binframe=im2bw(roi(handles.y1:handles.y2,handles.x1:handles.x2),metadata.cam.thresh);
 handles.binimage=imshow(binframe,'Parent',handles.axes_binary);
 
-set(ghandles.threshgui2,'CurrentAxes',handles.axes_hist)
+set(gui.threshgui2,'CurrentAxes',handles.axes_hist)
 imhist(roi(metadata.cam.mask))
 
 % --- for axex_binary: eye closeed ---
@@ -226,11 +226,11 @@ roi=wholeframe.*uint8(metadata.cam.mask);
 binframe=im2bw(roi(handles.y1:handles.y2,handles.x1:handles.x2),metadata.cam.thresh);
 handles.binimage2=imshow(binframe,'Parent',handles.axes_binary2);
 
-set(ghandles.threshgui2,'CurrentAxes',handles.axes_hist2)
+set(gui.threshgui2,'CurrentAxes',handles.axes_hist2)
 imhist(roi(metadata.cam.mask))
 
 % --- for axex_trace: eyelid trace ---
-set(ghandles.threshgui2,'CurrentAxes',handles.axes_trace)
+set(gui.threshgui2,'CurrentAxes',handles.axes_trace)
 plot(t,trace)
 set(gca,'xlim',[t(1) t(end)])
 
