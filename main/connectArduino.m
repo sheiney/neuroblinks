@@ -2,13 +2,13 @@ function arduino = connectArduino(config)
 
     %% -- start serial communication to arduino ---
     disp('Finding Arduino...')
-    com_ports = findArduinos(ARDUINO_IDS);
+    com_ports = findArduinos(config.MICROCONTROLLER_IDS);
 
-    if isempty(com_ports{config.rig}),
+    if isempty(com_ports{config.rig})
         error('No Arduino found for requested rig (%d)', config.rig);
     end
 
-    arduino=serial(com_ports{rig},'BaudRate',115200);
+    arduino=serial(com_ports{config.rig},'BaudRate',115200);
     arduino.InputBufferSize = 512*8;
     arduino.DataTerminalReady='off';	% to prevent resetting Arduino on connect
     fopen(arduino);
@@ -24,8 +24,7 @@ function com_ports = findArduinos(ids)
     names={infostruct.Name};  % roll struct field into cell array for easy searching
     device_ids={infostruct.DeviceID};  % roll struct field into cell array for easy searching
     
-    match = strfind(names,'Arduino');   % All devices with "Arduino" in the name field
-    idx = find(~cellfun(@isempty,match));
+    idx = find(contains(names,'Atmel'));   % All devices with "Atmel" in the name field (contains was introduced in Matlab recently)
     
     if isempty(idx)
         return
