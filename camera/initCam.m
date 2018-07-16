@@ -1,4 +1,4 @@
-function initCam(config)
+function camera = initCam(config)
 
 % First delete any existing image acquisition objects
 imaqreset
@@ -13,26 +13,26 @@ if isempty(founddeviceids)
 end
 
 %====== Getting camera ID  =====
-cam = 0;
-%     cam = 1;
+cam_num = 0;
+%     cam_num = 1;
 
 for i=1:length(founddeviceids)
     camera = videoinput(config.CAMADAPTOR, founddeviceids(i), 'Mono8');
     src = getselectedsource(camera);
-    if strcmp(src.DeviceID,ALLOWEDCAMS{rig})
-        cam = i;
+    if strcmp(src.DeviceID, config.CAMERA1_IDS{config.rig})
+        cam_num = i;
     end
     delete(camera)
 end
 
-if ~cam
-    error('The camera you specified (%d) could not be found',rig);
+if ~cam_num
+    error('The camera you specified (%d) could not be found', config.rig);
 end
 
 disp('Creating camera object...')
 
-camera = videoinput(config.CAMADAPTOR, channel, 'Mono8');
+camera = videoinput(config.CAMADAPTOR, cam_num, 'Mono8');
 
 configureBaslerAce(camera, config)
 
-setappdata(0,'camera',camera)
+% setappdata(0,'camera',camera)

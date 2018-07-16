@@ -215,51 +215,13 @@ guidata(hObject,handles)
 
 
 
-
-
-
-
-
-
-
-
-% camera=getappdata(0,'camera');  metadata=getappdata(0,'metadata');
-% if isfield(metadata.cam,'winpos')
-%     winpos=metadata.cam.winpos;
-% else
-%     winpos=[0 0 640 480];
-% end
-% h=imellipse(handles.cameraAx,winpos);
-% fcn = makeConstrainToRectFcn('imellipse',get(handles.cameraAx,'XLim'),get(handles.cameraAx,'YLim'));
-% setPositionConstraintFcn(h,fcn);
-% 
-% % metadata.cam.winpos=round(wait(h));
-% XY=round(wait(h));  % only use for imellipse
-% metadata.cam.winpos=getPosition(h);
-% metadata.cam.mask=createMask(h);
-% 
-% wholeframe=getsnapshot(camera);
-% binframe=im2bw(wholeframe,metadata.cam.thresh);
-% eyeframe=binframe.*metadata.cam.mask;
-% metadata.cam.pixelpeak=sum(sum(eyeframe));
-% 
-% hp=findobj(handles.cameraAx,'Tag','roipatch');
-% delete(hp)
-% 
-% delete(h);
-% handles.roipatch=patch(XY(:,1),XY(:,2),'g','FaceColor','none','EdgeColor','g','Tag','roipatch');
-% 
-% setappdata(0,'metadata',metadata);
-% guidata(hObject,handles)
-
-
 function pushbutton_CalbEye_Callback(hObject, eventdata, handles)
 metadata=getappdata(0,'metadata'); 
 metadata.cam.cal=1;
 setappdata(0,'metadata',metadata);
 
-refreshPermsA(handles);
-sendto_arduino();
+refreshParams(handles);
+updateParams();
 
 metadata=getappdata(0,'metadata'); 
 camera=getappdata(0,'camera');
@@ -324,32 +286,6 @@ setappdata(0,'metadata',metadata);
 
 
 
-
-
-% camera=getappdata(0,'camera');
-% src=getappdata(0,'src');
-% metadata=getappdata(0,'metadata');
-% 
-% if get(hObject,'Value')
-%     % Turn on high frame rate mode
-%     camera.ROIposition=metadata.cam.winpos;
-% %     metadata.cam.fps=500;
-%     src.ExposureTimeAbs = 1900;
-% %     src.AllGainRaw=round(12*4900/1900);
-% else
-%     % Turn off high frame rate mode
-%     camera.ROIposition=metadata.cam.fullsize;
-% %     metadata.cam.fps=200;
-%     src.ExposureTimeAbs = 4900;
-% %     src.AllGainRaw=12;
-% end
-% 
-% setappdata(0,'camera',camera);
-% setappdata(0,'src',src);
-% setappdata(0,'metadata',metadata);
-
-
-
 function checkbox_record_Callback(hObject, eventdata, handles)
 if get(hObject,'Value')
     set(handles.checkbox_record,'BackgroundColor',[0 1 0]); % green
@@ -373,7 +309,7 @@ end
 
 
 function pushbutton_stim_Callback(hObject, eventdata, handles)
-TriggerArduino(handles)
+startTrial(handles)
 
 function popupmenu_stimtype_Callback(hObject, eventdata, handles)
 % --- updating metadata ---
@@ -401,17 +337,6 @@ if get(hObject,'Value'),
 else
     stopStreaming(handles)
 end
-
-function stopStreaming(handles)
-
-set(handles.togglebutton_stream,'String','Start Streaming')
-setappdata(handles.pwin,'UpdatePreviewWindowFcn',[]);
-
-
-function startStreaming(handles)
-
-set(handles.togglebutton_stream,'String','Stop Streaming')
-setappdata(handles.pwin,'UpdatePreviewWindowFcn',@newFrameCallback);
 
 
 function pushbutton_params_Callback(hObject, eventdata, handles)
@@ -501,110 +426,11 @@ trialtablegui=TrialTable;
 
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%% user defined functions %%%%%%%%%%%%%%%%%
-
-function refreshPermsA(handles)
-metadata=getappdata(0,'metadata');
-trials=getappdata(0,'trials');
-
-trials.savematadata=get(handles.checkbox_save_metadata,'Value');
-val=get(handles.popupmenu_stimtype,'Value');
-str=get(handles.popupmenu_stimtype,'String');
-metadata.stim.type=str{val};
-if metadata.cam.cal, metadata.stim.type='Puff'; end % for Cal
-
-metadata.stim.c.csdur=0;
-metadata.stim.c.csnum=0;
-metadata.stim.c.isi=0;
-metadata.stim.c.usdur=0;
-metadata.stim.c.usnum=0;
-metadata.stim.c.cstone=[0 0];
-
-metadata.stim.l.delay=0;
-metadata.stim.l.dur=0;
-metadata.stim.l.amp=0;
-
-metadata.stim.p.puffdur=str2double(get(handles.edit_puffdur,'String'));
-
-switch lower(metadata.stim.type)
-    case 'none'
-        metadata.stim.totaltime=0;
-    case 'puff'
-        metadata.stim.totaltime=metadata.stim.p.puffdur;
-    case 'conditioning'
-        trialvars=readTrialTable(metadata.eye.trialnum1);
-        metadata.stim.c.csdur=trialvars(1);
-        metadata.stim.c.csnum=trialvars(2);
-        metadata.stim.c.isi=trialvars(3);
-        metadata.stim.c.usdur=trialvars(4);
-        metadata.stim.c.usnum=trialvars(5);
-        metadata.stim.c.cstone=str2num(get(handles.edit_tone,'String'))*1000;
-        if length(metadata.stim.c.cstone)<2, metadata.stim.c.cstone(2)=0; end
-        metadata.stim.totaltime=metadata.stim.c.isi+metadata.stim.c.usdur;
-        metadata.stim.l.delay = trialvars(6);
-        metadata.stim.l.dur = trialvars(7);
-        metadata.stim.l.amp = trialvars(8);
-    otherwise
-        metadata.stim.totaltime=0;
-        warning('Unknown stimulation mode set.');
-end
-
-% Set ITI using base time plus optional random range
-base_ITI = str2double(get(handles.edit_ITI,'String'));
-rand_ITI = str2double(get(handles.edit_ITI_rand,'String'));
-metadata.stim.c.ITI = base_ITI + rand(1,1) * rand_ITI;
-
-metadata.cam.time(1)=str2double(get(handles.edit_pretime,'String'));
-metadata.cam.time(2)=metadata.stim.totaltime;
-metadata.cam.time(3)=str2double(get(handles.edit_posttime,'String'))-metadata.stim.totaltime;
-
-metadata.now=now;
-
-setappdata(0,'metadata',metadata);
-setappdata(0,'trials',trials);
 
 
-function sendto_arduino()
-metadata=getappdata(0,'metadata');
-datatoarduino=zeros(1,10);
-
-datatoarduino(3)=metadata.cam.time(1);
-datatoarduino(9)=sum(metadata.cam.time(2:3));
-if strcmpi(metadata.stim.type, 'puff')
-    datatoarduino(6)=metadata.stim.p.puffdur;
-    datatoarduino(10)=3;    % This is the puff channel
-elseif  strcmpi(metadata.stim.type, 'conditioning')
-    datatoarduino(4)=metadata.stim.c.csnum;
-    datatoarduino(5)=metadata.stim.c.csdur;
-    datatoarduino(6)=metadata.stim.c.usdur;
-    datatoarduino(7)=metadata.stim.c.isi;
-    if ismember(metadata.stim.c.csnum,[5 6]),
-        datatoarduino(8)=metadata.stim.c.cstone(metadata.stim.c.csnum-4);
-    end
-    if ismember(metadata.stim.c.usnum,[5 6]),
-        datatoarduino(8)=metadata.stim.c.cstone(metadata.stim.c.usnum-4);
-    end
-    datatoarduino(10)=metadata.stim.c.usnum;
-    datatoarduino(11)=metadata.stim.l.delay;
-    datatoarduino(12)=metadata.stim.l.dur;
-    datatoarduino(13)=metadata.stim.l.amp;
-end
-
-% ---- send data to arduino ----
-arduino=getappdata(0,'arduino');
-for i=3:length(datatoarduino),
-    fwrite(arduino,i,'int8');                  % header
-    fwrite(arduino,datatoarduino(i),'int16');  % data
-    if mod(i,4)==0,
-        pause(0.010);
-    end
-end
-
-
-function TriggerArduino(handles)
-refreshPermsA(handles)
-sendto_arduino()
+function startTrial(handles)
+refreshParams(handles)
+updateParams()
 
 metadata=getappdata(0,'metadata');
 camera=getappdata(0,'camera');
@@ -644,7 +470,7 @@ fwrite(arduino,1,'int8');
 trials=getappdata(0,'trials');
 set(handles.text_status,'String',sprintf('Total trials: %d\n',metadata.cam.trialnum));
 if strcmpi(metadata.stim.type,'conditioning')
-    trialvars=readTrialTable(metadata.eye.trialnum1+1);
+    trialvars=readTrialTable(metadata.cam.trialnum+1);
     csdur=trialvars(1);
     csnum=trialvars(2);
     isi=trialvars(3);
@@ -658,7 +484,7 @@ if strcmpi(metadata.stim.type,'conditioning')
         str2=[' (' num2str(cstone(csnum-4)) ' KHz)'];
     end
         
-    str1=sprintf('Next:  No %d,  CS ch %d%s,  ISI %d,  US %d, US ch %d',metadata.eye.trialnum1+1, csnum, str2, isi, usdur, usnum);
+    str1=sprintf('Next:  No %d,  CS ch %d%s,  ISI %d,  US %d, US ch %d',metadata.cam.trialnum+1, csnum, str2, isi, usdur, usnum);
     set(handles.text_disp_cond,'String',str1)
 end
 setappdata(0,'metadata',metadata);
@@ -738,7 +564,7 @@ if get(handles.toggle_continuous,'Value') == 1
     if timeLeft <= 0,
         eyeok=checkeye(handles,eyedata);
         if eyeok
-            TriggerArduino(handles)
+            startTrial(handles)
             timeSinceLastTrial=clock;
         end
     end

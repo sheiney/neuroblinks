@@ -8,8 +8,6 @@ metadata.ts=[datenum(clock) 0]; % two element vector containing datenum at begin
 
 metadata.cam.thresh=0.125;
 metadata.cam.trialnum=1;
-metadata.eye.trialnum1=1;  %  for conditioning
-metadata.eye.trialnum2=1;
 
 metadata.cam(1).cal=0;
 metadata.cam(1).calib_offset=0;
@@ -18,9 +16,6 @@ metadata.cam(1).calib_scale=1;
 metadata.cam(2).cal=0;
 metadata.cam(2).calib_offset=0;
 metadata.cam(2).calib_scale=1;
-
-trials.stimnum=0;
-trials.savematadata=0;
 
 setappdata(0, 'metadata', metadata);
 setappdata(0,'trials',trials);
