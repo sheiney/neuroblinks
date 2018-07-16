@@ -1,4 +1,4 @@
-function vidobj = addCam(serialNum)
+function camera = addCam(serialNum)
 % Create camera object for camera with given serial number
 adaptor = 'gentl';
 
@@ -17,14 +17,14 @@ disp('Finding cameras...')
     match=0;
     
     for i=1:length(founddeviceids)
-        vidobj = videoinput(adaptor, founddeviceids(i), 'Mono8');
-        src = getselectedsource(vidobj);
+        camera = videoinput(adaptor, founddeviceids(i), 'Mono8');
+        src = getselectedsource(camera);
         if strcmp(src.DeviceID,serialNum)
             match=1;
             break
         end
         % If we get here the current camera didn't match
-        delete(vidobj)
+        delete(camera)
     end
 
     if ~match

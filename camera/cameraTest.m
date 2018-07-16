@@ -48,9 +48,9 @@ imaqreset
 
 % We use the GenTL driver (camera connected to computer over gigabit ethernet)
 disp('creating video object ...')
-vidobj = videoinput('gige', ch, 'Mono8');
+camera = videoinput('gige', ch, 'Mono8');
 disp('video settings ....')
-src = getselectedsource(vidobj);
+src = getselectedsource(camera);
 
 % Exposure time is constrained by frame rate
 src.ExposureTimeAbs = 4900;		% In microseconds
@@ -66,15 +66,15 @@ src.PacketSize = 9014;		% Use Jumbo packets (ethernet card must support them) --
 src.StreamBytesPerSecond=115e6; % Set based on AVT's suggestion
 src.AcquisitionFrameRateAbs=200;	% Our camera can sustain 200 FPS at full resolution (640x480) but can go up to 500 FPS if you reduce ROI or do vertical binning of frames
 
-vidobj.LoggingMode = 'memory'; 	% Can log straight to disk as well but older versions of Matlab are weird about compression because of licensing of codecs. 
-vidobj.FramesPerTrigger=200;		% We trigger for every frame acquired (value of 1) but this is definitely not necessary. You could, e.g. set this value to 200 if you want 1 second of video @ 200 FPS and then just trigger at the beginning
+camera.LoggingMode = 'memory'; 	% Can log straight to disk as well but older versions of Matlab are weird about compression because of licensing of codecs. 
+camera.FramesPerTrigger=200;		% We trigger for every frame acquired (value of 1) but this is definitely not necessary. You could, e.g. set this value to 200 if you want 1 second of video @ 200 FPS and then just trigger at the beginning
 
 % To trigger using a TTL pulse, which is what we do, you'll want to use the following line instead
-% triggerconfig(vidobj, 'hardware', 'DeviceSpecific', 'DeviceSpecific');
+% triggerconfig(camera, 'hardware', 'DeviceSpecific', 'DeviceSpecific');
 % src.FrameStartTriggerMode = 'On';
 % src.FrameStartTriggerActivation = 'LevelHigh';
 % I'm only using this line for demonstration purposes so that this program can run without external hardware
-triggerconfig(vidobj, 'manual');
+triggerconfig(camera, 'manual');
 
 % Normally, the following two values need to be toggled to switch between preview and acquisition mode, 
 % but they're both commented out for now because we're doing manual trigger
@@ -82,7 +82,7 @@ triggerconfig(vidobj, 'manual');
 % src.FrameStartTriggerSource = 'Freerun';
 
 %% Save objects to root app data - for ease of passing variables between functions in GUI
-setappdata(0,'vidobj',vidobj)
+setappdata(0,'camera',camera)
 setappdata(0,'src',src)
 
 
@@ -95,7 +95,7 @@ function streamEyelid()
 updaterate=0.015;   % ~67 Hz
 
 % Load objects from root app data
-vidobj=getappdata(0,'vidobj');
+camera=getappdata(0,'camera');
 metadata=getappdata(0,'metadata');	% Metadata is just a general purpose struct that holds our trial-by-trial parameters and is saved along with the video data
 
 if getappdata(0,'STREAM') == 0
@@ -108,7 +108,7 @@ end
 try
     while getappdata(0,'STREAM') == 1 		% STREAM is a flag that corresponds to a toggle button in our GUI.
         tic
-        wholeframe=getsnapshot(vidobj);		% This grabs the current frame from the camera
+        wholeframe=getsnapshot(camera);		% This grabs the current frame from the camera
         % We set a binary mask based on the ROI, which can be any arbibrary shape (elliptical seems to work well) and then only 
         % apply the eyelid position algorithm on the ROI region
         % Mask is a logical matrix with the same dimensions as the frame 
@@ -146,18 +146,18 @@ end
 
 function togglePreview()
 
-vidobj=getappdata(0,'vidobj');
+camera=getappdata(0,'camera');
 h_preview=getappdata(0,'h_preview');
 PREVIEWING=getappdata(0,'PREVIEWING');
 
 % Start/Stop Camera
 if ~PREVIEWING		% PREVIEWING is a flag that in our program corresponds to the state of a toggle button
 	% Camera is off. Change button string and start camera.	
-	preview(vidobj,h_preview);		% h_preview is an axes handle
+	preview(camera,h_preview);		% h_preview is an axes handle
 	setappdata(0,'PREVIEWING',1);
 else
 % Camera is on. Stop camera and change button string.
-	closepreview(vidobj);
+	closepreview(camera);
 	setappdata(0,'PREVIEWING',0);
 end
 
@@ -167,7 +167,7 @@ function setROI()
 % I usually include the mouse's entire face in the frame and then select a region of interest corresponding to the eyelid to process with our algorithm. 
 % You can put the camera closer and get less of the face but you'll probably still need a crop the image a little using an ROI. 
 
-vidobj=getappdata(0,'vidobj');
+camera=getappdata(0,'camera');
 metadata=getappdata(0,'metadata');
 ha=getappdata(0,'ha');
 hf=getappdata(0,'hf');
@@ -180,7 +180,7 @@ else
     winpos=[0 0 640 480];
 end
 
-% Place resizeable ellipse on vidobj
+% Place resizeable ellipse on camera
 h=imellipse(ha,winpos);
 % h=imrect(handles.cameraAx,winpos);	% can alternatively do a rectangle
 fcn = makeConstrainToRectFcn('imellipse',get(ha,'XLim'),get(ha,'YLim'));
@@ -208,7 +208,7 @@ function startTrial()
 
 % Load objects from root app data
 src=getappdata(0,'src');
-vidobj=getappdata(0,'vidobj');
+camera=getappdata(0,'camera');
 metadata=getappdata(0,'metadata');
 hf=getappdata(0,'hf');
 
@@ -216,20 +216,20 @@ hf=getappdata(0,'hf');
 % Set up camera to record
 % When we capture a single frame per trigger we need the following two lines of code
 % frames_per_trial=ceil(metadata.cam.fps.*(sum(metadata.cam.time))./1000);	% metadata.cam.time is a 3 element vector of [pretime ISI posttime]
-% vidobj.TriggerRepeat = frames_per_trial-1;
+% camera.TriggerRepeat = frames_per_trial-1;
 % Right now I'm just using this because I've already set the camera to acquire 200 frames per trigger, i.e. 1 second of data @ 200 FPS
-vidobj.TriggerRepeat = 0;
+camera.TriggerRepeat = 0;
 
 % This function is called after all of the pre-specified frames have been acquired for a trial. If you don't want to save the data for a particular trial just remove the StopFcn. 
-vidobj.StopFcn=@savetrial;	
+camera.StopFcn=@savetrial;	
 
 % Remove any data from buffer before triggering
 set(hf,'Name','Acquiring frames')
-flushdata(vidobj)
-start(vidobj)	% Normally this would put the camera in a ready and waiting state to receive TTL pulses for triggering acquisition, but the line
+flushdata(camera)
+start(camera)	% Normally this would put the camera in a ready and waiting state to receive TTL pulses for triggering acquisition, but the line
 				% just below is bypassing this and immediately triggering the camera when we start it.
-% vidobj.StartFcn = @trigger;
-trigger(vidobj)
+% camera.StartFcn = @trigger;
+trigger(camera)
 
 
 function processKey(obj,event)
@@ -255,11 +255,11 @@ function savetrial(obj,event)
 % The data and metadata for each trial are saved into an individual MAT file, one file per trial so you'll need a way to increment file names
 
 % Load objects from root app data
-vidobj=getappdata(0,'vidobj');
+camera=getappdata(0,'camera');
 metadata=getappdata(0,'metadata');
 hf=getappdata(0,'hf');
 
-data=getdata(vidobj,200);
+data=getdata(camera,200);
 
 videoname=sprintf('Trial%03d.mat',metadata.cam.trialnum);
 
@@ -276,10 +276,10 @@ set(hf,'Name',getappdata(0,'defaultTitle'))
 
 function quitProgram()
 
-vidobj=getappdata(0,'vidobj');
+camera=getappdata(0,'camera');
 hf=getappdata(0,'hf');
 
-stop(vidobj)	% Make sure camera is stopped
+stop(camera)	% Make sure camera is stopped
 
-delete(vidobj)
+delete(camera)
 close(hf)

@@ -5,8 +5,8 @@ function startCamera(n)
 cam2 = getappdata(0,'cam2');
 metadata = getappdata(0,'metadata');
 
-vidobj2 = getappdata(0,'vidobj2');
-src = getselectedsource(vidobj2);
+camera2 = getappdata(0,'camera2');
+src = getselectedsource(camera2);
 
 % Changed from 'Line1' to 'FixedRate' on Oct 6, 2017 by Shane
 if isprop(src,'FrameStartTriggerSource')
@@ -21,15 +21,15 @@ if strcmp(cam2.triggermode,'Manual to disk')
     videoname=sprintf('%s_%03d.mp4', basename, cam2.trialnum);
     diskLogger = VideoWriter(videoname,'MPEG-4');
     set(diskLogger,'FrameRate',20);
-    vidobj2.DiskLogger = diskLogger;
+    camera2.DiskLogger = diskLogger;
 else
-    vidobj2.DiskLogger = [];
+    camera2.DiskLogger = [];
 end
 
-vidobj2.StopFcn = @stopCamera2Callback;
+camera2.StopFcn = @stopCamera2Callback;
 
-flushdata(vidobj2)
-start(vidobj2)
+flushdata(camera2)
+start(camera2)
 
 % Trigger Trial
 %---------------- NEED TO TRIGGER TRIAL HERE --------------------%

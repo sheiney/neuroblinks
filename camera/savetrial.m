@@ -1,13 +1,13 @@
 function savetrial()
 % Load objects from root app data
-vidobj=getappdata(0,'vidobj');
+camera=getappdata(0,'camera');
 
 % 4096 counts = 1 revolution = 15.24*pi cm for 6 inch diameter cylinder
 counts2cm = @(count) double(count) ./ 4096 .* 15.24 .* pi; 
 
 pause(1e-3)
-% data=getdata(vidobj,vidobj.TriggerRepeat+1);
-data=getdata(vidobj,vidobj.FramesPerTrigger*(vidobj.TriggerRepeat + 1));
+% data=getdata(camera,camera.TriggerRepeat+1);
+data=getdata(camera,camera.FramesPerTrigger*(camera.TriggerRepeat + 1));
 % videoname=sprintf('%s\\%s_%s_%03d',metadata.folder,metadata.mouse,datestr(now,'yy-mm-dd'),metadata.trialnum);
 pause(1e-3)
 

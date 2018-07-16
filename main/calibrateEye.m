@@ -2,11 +2,11 @@ function CalbEye(obj,event)
 %  callback function by video(timer) obj
 disp('Delivering puff and saving calibration data.')
 
-vidobj=getappdata(0,'vidobj');
+camera=getappdata(0,'camera');
 metadata=getappdata(0,'metadata');
 src=getappdata(0,'src');
 
-data=getdata(vidobj,vidobj.FramesPerTrigger*(vidobj.TriggerRepeat + 1));
+data=getdata(camera,camera.FramesPerTrigger*(camera.TriggerRepeat + 1));
 
 % Set camera to freerun mode so we can preview
 if isprop(src,'FrameStartTriggerSource')

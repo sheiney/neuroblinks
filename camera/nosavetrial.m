@@ -1,10 +1,10 @@
 function nosavetrial()
 % We set a callback function and trigger camera anyway so we can get instant replay
 
-vidobj=getappdata(0,'vidobj');
+camera=getappdata(0,'camera');
 pause(1e-3)
-data=getdata(vidobj,vidobj.FramesPerTrigger*(vidobj.TriggerRepeat + 1));
-% data=getdata(vidobj,vidobj.TriggerRepeat+1);
+data=getdata(camera,camera.FramesPerTrigger*(camera.TriggerRepeat + 1));
+% data=getdata(camera,camera.TriggerRepeat+1);
 
 online_bhvana(data);
 metadata=getappdata(0,'metadata');

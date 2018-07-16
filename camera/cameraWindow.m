@@ -95,15 +95,15 @@ function togglebutton_startStopPreview_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-vidobj2 = getappdata(0,'vidobj2');
+camera2 = getappdata(0,'camera2');
 
 if hObject.Value == 1
     set(hObject,'String','Stop Preview')
     pwin=image(zeros(480,640), 'Parent',handles.cameraAx2);
-    preview(vidobj2,pwin)
+    preview(camera2,pwin)
 else
     set(hObject,'String','Start Preview')
-    stoppreview(vidobj2)
+    stoppreview(camera2)
 end
 
 
@@ -138,9 +138,9 @@ if hObject.Value == 1
     set(handles.popupmenu_cameraRecordMode,'Value',1)
     set(handles.togglebutton_cameraManualAcquire, 'Enable', 'On')
     
-    vidobj2 = addCam(camera_id);
+    camera2 = addCam(camera_id);
    
-    src=getselectedsource(vidobj2);
+    src=getselectedsource(camera2);
     
     % Initialize camera
     src.ExposureTimeAbs = 4900;
@@ -151,21 +151,21 @@ if hObject.Value == 1
     src.TriggerActivation = 'LevelHigh';
     src.TriggerSource = 'Freerun';
     
-    vidobj2.TriggerRepeat = 0;
-    vidobj2.FramesPerTrigger = Inf;
+    camera2.TriggerRepeat = 0;
+    camera2.FramesPerTrigger = Inf;
     
-    triggerconfig(vidobj2, 'hardware');
+    triggerconfig(camera2, 'hardware');
     
     cam2.trialnum = 1;
     cam2.triggermode = 'Sync trials';
 
     setappdata(0,'cam2',cam2);
-    setappdata(0,'vidobj2',vidobj2);
+    setappdata(0,'camera2',camera2);
 else
     set(hObject,'String','Connect Cam')
-    if isappdata(0,'vidobj2')
-        vidobj2 = getappdata(0,'vidobj2');
-        delete(vidobj2);
+    if isappdata(0,'camera2')
+        camera2 = getappdata(0,'camera2');
+        delete(camera2);
     end
 end
 
@@ -181,7 +181,7 @@ function popupmenu_cameraRecordMode_Callback(hObject, eventdata, handles)
 
 mode = hObject.String{hObject.Value};
 
-vidobj2 = getappdata(0,'vidobj2');
+camera2 = getappdata(0,'camera2');
 cam2=getappdata(0,'cam2');
 cam2.triggermode = mode;
 setappdata(0,'cam2',cam2);  % So the rest of the program knows what mode we're in
@@ -191,17 +191,17 @@ setappdata(0,'cam2',cam2);  % So the rest of the program knows what mode we're i
 switch mode
     case {'Manual','Manual to disk'}
         set(handles.togglebutton_cameraManualAcquire, 'Enable', 'On')
-        vidobj2.FramesPerTrigger = Inf; % Have to reset this bc MainWindow alters it during sync trial mode
+        camera2.FramesPerTrigger = Inf; % Have to reset this bc MainWindow alters it during sync trial mode
     otherwise
         set(handles.togglebutton_cameraManualAcquire, 'Enable', 'Off')
 end
 
 if strcmp(mode,'Manual to disk')
     % Set up to record compressed file to disk
-    vidobj2.LoggingMode = 'disk';
+    camera2.LoggingMode = 'disk';
 else
     % Set up to record to memory
-    vidobj2.LoggingMode = 'memory';
+    camera2.LoggingMode = 'memory';
 end
 
 % --- Executes during object creation, after setting all properties.

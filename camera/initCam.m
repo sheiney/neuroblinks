@@ -17,21 +17,22 @@ cam = 0;
 %     cam = 1;
 
 for i=1:length(founddeviceids)
-    vidobj = videoinput(config.CAMADAPTOR, founddeviceids(i), 'Mono8');
-    src = getselectedsource(vidobj);
+    camera = videoinput(config.CAMADAPTOR, founddeviceids(i), 'Mono8');
+    src = getselectedsource(camera);
     if strcmp(src.DeviceID,ALLOWEDCAMS{rig})
         cam = i;
     end
-    delete(vidobj)
+    delete(camera)
 end
 
 if ~cam
     error('The camera you specified (%d) could not be found',rig);
 end
 
-disp('Creating video object...')
-vidobj = videoinput(config.CAMADAPTOR, channel, 'Mono8');
+disp('Creating camera object...')
 
-configureBaslerAce(vidobj, config)
+camera = videoinput(config.CAMADAPTOR, channel, 'Mono8');
 
-setappdata(0,'vidobj',vidobj)
+configureBaslerAce(camera, config)
+
+setappdata(0,'camera',camera)

@@ -1,6 +1,6 @@
-function stopCamera2Callback(vidobj2,event)
+function stopCamera2Callback(camera2,event)
 
-src = getselectedsource(vidobj2);
+src = getselectedsource(camera2);
 
 metadata = getappdata(0,'metadata');
 cam2 = getappdata(0,'cam2');
@@ -15,7 +15,7 @@ end
 basename = sprintf('%s\\%s_cam2',metadata.folder,metadata.basename);
 
 if ~strcmp(cam2.triggermode,'Manual to disk')
-    vid = getdata(vidobj2,vidobj2.FramesAvailable);
+    vid = getdata(camera2,camera2.FramesAvailable);
 
     videoname=sprintf('%s_%03d', basename, cam2.trialnum);
 
@@ -24,7 +24,7 @@ if ~strcmp(cam2.triggermode,'Manual to disk')
     setappdata(0,'lastvideo2',vid);
 else
     % Wait for logging to finish
-    while (vidobj2.FramesAcquired ~= vidobj2.DiskLoggerFrameCount) 
+    while (camera2.FramesAcquired ~= camera2.DiskLoggerFrameCount) 
         pause(.1)
     end
 end

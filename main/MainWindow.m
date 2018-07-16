@@ -58,24 +58,24 @@ initializeGUI(hObject, handles)
 % --- Executes on button press in pushbutton_StartStopPreview.
 function pushbutton_StartStopPreview_Callback(hObject, eventdata, handles)
 
-vidobj=getappdata(0,'vidobj');
+camera=getappdata(0,'camera');
 metadata=getappdata(0,'metadata');
 
 if ~isfield(metadata.cam,'fullsize')
     metadata.cam.fullsize = [0 0 640 480];
 end
-metadata.cam.vidobj_ROIposition=vidobj.ROIposition;
+metadata.cam.camera_ROIposition=camera.ROIposition;
 
 % Start/Stop Camera
 if strcmp(get(handles.pushbutton_StartStopPreview,'String'),'Start Preview')
     % Camera is off. Change button string and start camera.
     set(handles.pushbutton_StartStopPreview,'String','Stop Preview')
     % Send camera preview to GUI
-    imx=metadata.cam.vidobj_ROIposition(1)+[1:metadata.cam.vidobj_ROIposition(3)];
-    imy=metadata.cam.vidobj_ROIposition(2)+[1:metadata.cam.vidobj_ROIposition(4)];
-    handles.pwin=image(imx,imy,zeros(metadata.cam.vidobj_ROIposition([4 3])), 'Parent',handles.cameraAx);
+    imx=metadata.cam.camera_ROIposition(1)+[1:metadata.cam.camera_ROIposition(3)];
+    imy=metadata.cam.camera_ROIposition(2)+[1:metadata.cam.camera_ROIposition(4)];
+    handles.pwin=image(imx,imy,zeros(metadata.cam.camera_ROIposition([4 3])), 'Parent',handles.cameraAx);
     
-    preview(vidobj,handles.pwin);
+    preview(camera,handles.pwin);
     set(handles.cameraAx,'XLim', 0.5+metadata.cam.fullsize([1 3])),
     set(handles.cameraAx,'YLim', 0.5+metadata.cam.fullsize([2 4])),
     hp=findobj(handles.cameraAx,'Tag','roipatch');  delete(hp)
@@ -101,36 +101,36 @@ guidata(hObject,handles)
 
 function stopPreview(handles)
 % Pulled this out as a function so it can be called from elsewhere
-vidobj=getappdata(0,'vidobj');
+camera=getappdata(0,'camera');
 
 set(handles.pushbutton_StartStopPreview,'String','Start Preview')
-closepreview(vidobj);
+closepreview(camera);
 
 
 
-% vidobj=getappdata(0,'vidobj');
+% camera=getappdata(0,'camera');
 % metadata=getappdata(0,'metadata');
 % 
 % if isfield(metadata.cam,'fullsize')
-%     metadata.cam.fullsize = vidobj.ROIposition;
+%     metadata.cam.fullsize = camera.ROIposition;
 % end
 % 
 % if strcmp(get(handles.pushbutton_StartStopPreview,'String'),'Start Preview')
 %     % Camera is off. Change button string and start camera.
 %     set(handles.pushbutton_StartStopPreview,'String','Stop Preview')
 %     handles.pwin=image(zeros(480,640),'Parent',handles.cameraAx);
-%     preview(vidobj,handles.pwin);
+%     preview(camera,handles.pwin);
 % else
 %     % Camera is on. Stop camera and change button string.
 %     set(handles.pushbutton_StartStopPreview,'String','Start Preview')
-%     closepreview(vidobj);
+%     closepreview(camera);
 % end
 % setappdata(0,'metadata',metadata);
 % guidata(hObject,handles)
 
 
 function pushbutton_quit_Callback(hObject, eventdata, handles)
-vidobj=getappdata(0,'vidobj');
+camera=getappdata(0,'camera');
 gui=getappdata(0,'gui');
 metadata=getappdata(0,'metadata');
 arduino=getappdata(0,'arduino');
@@ -145,9 +145,9 @@ set(handles.togglebutton_stream,'Value',0);
 try
     fclose(arduino);
     delete(arduino);
-    delete(vidobj);
+    delete(camera);
     rmappdata(0,'src');
-    rmappdata(0,'vidobj');
+    rmappdata(0,'camera');
 catch err
     warning(err.identifier,'Problem cleaning up objects. You may need to do it manually.')
 end
@@ -174,16 +174,16 @@ end
 
 function pushbutton_setROI_Callback(hObject, eventdata, handles)
 
-vidobj=getappdata(0,'vidobj');   metadata=getappdata(0,'metadata');
+camera=getappdata(0,'camera');   metadata=getappdata(0,'metadata');
 
 if isfield(metadata.cam,'winpos')
     winpos=metadata.cam.winpos;
-    winpos(1:2)=winpos(1:2)+metadata.cam.vidobj_ROIposition(1:2);
+    winpos(1:2)=winpos(1:2)+metadata.cam.camera_ROIposition(1:2);
 else
     winpos=[0 0 640 480];
 end
 
-% Place rectangle on vidobj
+% Place rectangle on camera
 % h=imrect(handles.cameraAx,winpos);
 h=imellipse(handles.cameraAx,winpos);
 
@@ -194,10 +194,10 @@ setPositionConstraintFcn(h,fcn);
 % metadata.cam.winpos=round(wait(h));
 XY=round(wait(h));  % only use for imellipse
 metadata.cam.winpos=round(getPosition(h));
-metadata.cam.winpos(1:2)=metadata.cam.winpos(1:2)-metadata.cam.vidobj_ROIposition(1:2);
+metadata.cam.winpos(1:2)=metadata.cam.winpos(1:2)-metadata.cam.camera_ROIposition(1:2);
 metadata.cam.mask=createMask(h);
 
-wholeframe=getsnapshot(vidobj);
+wholeframe=getsnapshot(camera);
 binframe=im2bw(wholeframe,metadata.cam.thresh);
 eyeframe=binframe.*metadata.cam.mask;
 metadata.cam.pixelpeak=sum(sum(eyeframe));
@@ -223,7 +223,7 @@ guidata(hObject,handles)
 
 
 
-% vidobj=getappdata(0,'vidobj');  metadata=getappdata(0,'metadata');
+% camera=getappdata(0,'camera');  metadata=getappdata(0,'metadata');
 % if isfield(metadata.cam,'winpos')
 %     winpos=metadata.cam.winpos;
 % else
@@ -238,7 +238,7 @@ guidata(hObject,handles)
 % metadata.cam.winpos=getPosition(h);
 % metadata.cam.mask=createMask(h);
 % 
-% wholeframe=getsnapshot(vidobj);
+% wholeframe=getsnapshot(camera);
 % binframe=im2bw(wholeframe,metadata.cam.thresh);
 % eyeframe=binframe.*metadata.cam.mask;
 % metadata.cam.pixelpeak=sum(sum(eyeframe));
@@ -262,15 +262,15 @@ refreshPermsA(handles);
 sendto_arduino();
 
 metadata=getappdata(0,'metadata'); 
-vidobj=getappdata(0,'vidobj');
-vidobj.TriggerRepeat = 0;
-vidobj.StopFcn=@CalbEye;   % this will be executed after timer stop 
-flushdata(vidobj);         % Remove any data from buffer before triggering
+camera=getappdata(0,'camera');
+camera.TriggerRepeat = 0;
+camera.StopFcn=@CalbEye;   % this will be executed after timer stop 
+flushdata(camera);         % Remove any data from buffer before triggering
 
 % Set camera to hardware trigger mode
 src.FrameStartTriggerSource = 'Line1';
 
-start(vidobj)
+start(camera)
 
 metadata.cam.cal=0;
 metadata.ts(2)=etime(clock,datevec(metadata.ts(1)));
@@ -284,41 +284,41 @@ setappdata(0,'metadata',metadata);
 % --- Executes on button press in togglebutton_tgframerate.
 function togglebutton_tgframerate_Callback(hObject, eventdata, handles)
 
-vidobj=getappdata(0,'vidobj');
+camera=getappdata(0,'camera');
 src=getappdata(0,'src');
 metadata=getappdata(0,'metadata');
 
 if get(hObject,'Value')
     % Turn on high frame rate mode
-    metadata.cam.vidobj_ROIposition=max(metadata.cam.winpos+[-10 0 20 0],[0 0 0 0]);
-    vidobj.ROIposition=metadata.cam.vidobj_ROIposition;
+    metadata.cam.camera_ROIposition=max(metadata.cam.winpos+[-10 0 20 0],[0 0 0 0]);
+    camera.ROIposition=metadata.cam.camera_ROIposition;
 %     metadata.cam.fps=500;
     src.ExposureTimeAbs = 1900;
 %     src.AllGainRaw=metadata.cam.init_AllGainRaw+round(20*log10(metadata.cam.init_ExposureTime/src.ExposureTimeAbs));
     % --- size fit for roi and mask ----
-    vidroi_x=metadata.cam.vidobj_ROIposition(1)+[1:metadata.cam.vidobj_ROIposition(3)];
-    vidroi_y=metadata.cam.vidobj_ROIposition(2)+[1:metadata.cam.vidobj_ROIposition(4)];
+    vidroi_x=metadata.cam.camera_ROIposition(1)+[1:metadata.cam.camera_ROIposition(3)];
+    vidroi_y=metadata.cam.camera_ROIposition(2)+[1:metadata.cam.camera_ROIposition(4)];
     metadata.cam.mask = metadata.cam.mask(vidroi_y, vidroi_x);
-    metadata.cam.winpos(1:2)=metadata.cam.winpos(1:2)-metadata.cam.vidobj_ROIposition(1:2);
+    metadata.cam.winpos(1:2)=metadata.cam.winpos(1:2)-metadata.cam.camera_ROIposition(1:2);
 else
     % Turn off high frame rate mode
-    vidobj.ROIposition=metadata.cam.fullsize;
+    camera.ROIposition=metadata.cam.fullsize;
 %     metadata.cam.fps=200;
     src.ExposureTimeAbs = metadata.cam.init_ExposureTime;
 %     src.AllGainRaw=metadata.cam.init_AllGainRaw;
     % --- size fit for roi and mask ----
     mask0=metadata.cam.mask; s_mask0=size(mask0);
     metadata.cam.mask = false(metadata.cam.fullsize([4 3]));
-    metadata.cam.mask(metadata.cam.vidobj_ROIposition(2)+[1:s_mask0(1)], metadata.cam.vidobj_ROIposition(1)+[1:s_mask0(2)])=mask0;
-    metadata.cam.winpos(1:2)=metadata.cam.winpos(1:2)+metadata.cam.vidobj_ROIposition(1:2);
-    metadata.cam.vidobj_ROIposition=metadata.cam.fullsize;
+    metadata.cam.mask(metadata.cam.camera_ROIposition(2)+[1:s_mask0(1)], metadata.cam.camera_ROIposition(1)+[1:s_mask0(2)])=mask0;
+    metadata.cam.winpos(1:2)=metadata.cam.winpos(1:2)+metadata.cam.camera_ROIposition(1:2);
+    metadata.cam.camera_ROIposition=metadata.cam.fullsize;
 end
 
 pushbutton_StartStopPreview_Callback(handles.pushbutton_StartStopPreview, [], handles)
 pause(0.02)
 pushbutton_StartStopPreview_Callback(handles.pushbutton_StartStopPreview, [], handles)
 
-setappdata(0,'vidobj',vidobj);
+setappdata(0,'camera',camera);
 setappdata(0,'src',src);
 setappdata(0,'metadata',metadata);
 
@@ -326,25 +326,25 @@ setappdata(0,'metadata',metadata);
 
 
 
-% vidobj=getappdata(0,'vidobj');
+% camera=getappdata(0,'camera');
 % src=getappdata(0,'src');
 % metadata=getappdata(0,'metadata');
 % 
 % if get(hObject,'Value')
 %     % Turn on high frame rate mode
-%     vidobj.ROIposition=metadata.cam.winpos;
+%     camera.ROIposition=metadata.cam.winpos;
 % %     metadata.cam.fps=500;
 %     src.ExposureTimeAbs = 1900;
 % %     src.AllGainRaw=round(12*4900/1900);
 % else
 %     % Turn off high frame rate mode
-%     vidobj.ROIposition=metadata.cam.fullsize;
+%     camera.ROIposition=metadata.cam.fullsize;
 % %     metadata.cam.fps=200;
 %     src.ExposureTimeAbs = 4900;
 % %     src.AllGainRaw=12;
 % end
 % 
-% setappdata(0,'vidobj',vidobj);
+% setappdata(0,'camera',camera);
 % setappdata(0,'src',src);
 % setappdata(0,'metadata',metadata);
 
@@ -607,28 +607,28 @@ refreshPermsA(handles)
 sendto_arduino()
 
 metadata=getappdata(0,'metadata');
-vidobj=getappdata(0,'vidobj');
+camera=getappdata(0,'camera');
 src=getappdata(0,'src');
-vidobj.TriggerRepeat = 0;
+camera.TriggerRepeat = 0;
 
-vidobj.StopFcn=@endOfTrial;
+camera.StopFcn=@endOfTrial;
 
-flushdata(vidobj); % Remove any data from buffer before triggering
+flushdata(camera); % Remove any data from buffer before triggering
 
 % Set camera to hardware trigger mode
 src.FrameStartTriggerSource = 'Line1';
-vidobj.FramesPerTrigger=metadata.cam.fps*(sum(metadata.cam.time)/1e3);
+camera.FramesPerTrigger=metadata.cam.fps*(sum(metadata.cam.time)/1e3);
 
 % Now get camera ready for acquisition -- shouldn't start yet
-start(vidobj)
+start(camera)
 
 % For triggering camera 2
 if isappdata(0,'cam2')
     cam2=getappdata(0,'cam2');
-    vidobj2 = getappdata(0,'vidobj2');
+    camera2 = getappdata(0,'camera2');
     if strcmp(cam2.triggermode,'Sync trials')
-        vidobj2.FramesPerTrigger = frames_per_trial;
-%         vidobj2.TriggerRepeat = 0;
+        camera2.FramesPerTrigger = frames_per_trial;
+%         camera2.TriggerRepeat = 0;
         startCamera2()  % will wait for primary camera to be triggered before actually triggering the camera
     end
 end
@@ -667,7 +667,7 @@ function newFrameCallback(obj,event,himage)
 
 gui=getappdata(0,'gui'); 
 handles=guidata(gui.maingui);
-% vidobj=getappdata(0,'vidobj');
+% camera=getappdata(0,'camera');
 src=getappdata(0,'src');
 metadata=getappdata(0,'metadata');  
 
@@ -752,7 +752,7 @@ function newFrameCallback2(obj,event,himage)
     
     gui=getappdata(0,'gui'); 
     handles=guidata(gui.maingui);
-    % vidobj=getappdata(0,'vidobj');
+    % camera=getappdata(0,'camera');
     src=getappdata(0,'src');
     metadata=getappdata(0,'metadata');  
     
@@ -1069,11 +1069,11 @@ function pushbutton_abort_Callback(hObject, eventdata, handles)
 % If camera gets hung up for any reason, this button can be pressed to
 % reset it.
 
-vidobj = getappdata(0,'vidobj');
+camera = getappdata(0,'camera');
 src = getappdata(0,'src');
 
-stop(vidobj);
-flushdata(vidobj);
+stop(camera);
+flushdata(camera);
 
 src.FrameStartTriggerSource = 'Freerun';
 

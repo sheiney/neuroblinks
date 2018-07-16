@@ -3,7 +3,7 @@ function endOfTrial(obj,event)
 % function depending on whether or not data should be saved
 
 gui=getappdata(0,'gui'); 
-vidobj = getappdata(0,'vidobj');
+camera = getappdata(0,'camera');
 src = getappdata(0,'src');
 
 handles = guidata(gui.maingui);

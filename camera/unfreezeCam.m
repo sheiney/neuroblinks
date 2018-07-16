@@ -1,5 +1,5 @@
 function unfreezeCam()
 
-vidobj = getappdata(0,'vidobj');
-stop(vidobj)
+camera = getappdata(0,'camera');
+stop(camera)
 
