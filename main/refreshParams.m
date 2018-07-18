@@ -6,7 +6,7 @@ trials.savematadata = get(handles.checkbox_save_metadata, 'Value');
 val = get(handles.popupmenu_stimtype, 'Value');
 str = get(handles.popupmenu_stimtype, 'String');
 metadata.stim.type = str{val};
-if metadata.cam.cal, metadata.stim.type = 'Puff'; end % for Cal
+if metadata.cam(1).cal, metadata.stim.type = 'Puff'; end % for Cal
 
 metadata.stim.c.csdur = 0;
 metadata.stim.c.csnum = 0;
@@ -27,7 +27,7 @@ switch lower(metadata.stim.type)
     case 'puff'
         metadata.stim.totaltime = metadata.stim.p.puffdur;
     case 'conditioning'
-        trialvars = readTrialTable(metadata.cam.trialnum);
+        trialvars = readTrialTable(metadata.cam(1).trialnum);
         metadata.stim.c.csdur = trialvars(1);
         metadata.stim.c.csnum = trialvars(2);
         metadata.stim.c.isi = trialvars(3);
@@ -49,9 +49,8 @@ base_ITI = str2double(get(handles.edit_ITI, 'String'));
 rand_ITI = str2double(get(handles.edit_ITI_rand, 'String'));
 metadata.stim.c.ITI = base_ITI + rand(1, 1) * rand_ITI;
 
-metadata.cam.time(1) = str2double(get(handles.edit_pretime, 'String'));
-metadata.cam.time(2) = metadata.stim.totaltime;
-metadata.cam.time(3) = str2double(get(handles.edit_posttime, 'String')) - metadata.stim.totaltime;
+metadata.cam(1).time(1) = str2double(get(handles.edit_pretime, 'String'));
+metadata.cam(1).time(2) = str2double(get(handles.edit_posttime, 'String'));
 
 metadata.now = now;
 

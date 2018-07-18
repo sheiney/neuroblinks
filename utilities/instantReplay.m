@@ -17,16 +17,16 @@ switch lower(metadata.stim.type)
         % do nothing for now
 %         stim=zeros(m,n,3,t,'uint8');
     case 'puff'
-        stfrm{1}=round(metadata.cam.time(1)./1000.*metadata.cam.fps);
-        enfrm{1}=round(metadata.stim.totaltime./1000.*metadata.cam.fps);
+        stfrm{1}=round(metadata.cam(1).time(1)./1000.*metadata.cam(1).fps);
+        enfrm{1}=round(metadata.stim.totaltime./1000.*metadata.cam(1).fps);
 %         stim=zeros(m,n,3,t,'uint8');
 %         stim=zeros(m,n,3,enfrm-stfrm,'uint8');
 %         stim(400:449,450:499,2,stfrm:stfrm+enfrm)=255;
 %         stim(400:449,450:499,2,:)=255;
         cchan(1)=2;
     case 'electrical'       
-        stfrm{1}=round((metadata.cam.time(1)+metadata.stim.e.delay)./1000.*metadata.cam.fps);
-        enfrm{1}=round(metadata.stim.e.traindur./1000.*metadata.cam.fps);
+        stfrm{1}=round((metadata.cam(1).time(1)+metadata.stim.e.delay)./1000.*metadata.cam(1).fps);
+        enfrm{1}=round(metadata.stim.e.traindur./1000.*metadata.cam(1).fps);
         cchan(1)=1;
 %         stim=zeros(m,n,3,t,'uint8');
 %         stim=zeros(m,n,3,enfrm-stfrm,'uint8');
@@ -34,17 +34,17 @@ switch lower(metadata.stim.type)
 %         stim(400:449,500:549,1,:)=255;
 
     case {'conditioning','electrocondition'}
-        stfrm{1}=round(metadata.cam.time(1)./1000.*metadata.cam.fps); % for CS
-        % enfrm{1}=round(metadata.stim.c.csdur./1000.*metadata.cam.fps);
-        enfrm{1}=round((metadata.stim.c.isi+metadata.stim.c.usdur)./1000.*metadata.cam.fps);    % Had to change this bc was getting error if CS was longer than recorded trial time
+        stfrm{1}=round(metadata.cam(1).time(1)./1000.*metadata.cam(1).fps); % for CS
+        % enfrm{1}=round(metadata.stim.c.csdur./1000.*metadata.cam(1).fps);
+        enfrm{1}=round((metadata.stim.c.isi+metadata.stim.c.usdur)./1000.*metadata.cam(1).fps);    % Had to change this bc was getting error if CS was longer than recorded trial time
         cchan(1)=3;
-        stfrm{2}=round((metadata.cam.time(1)+metadata.stim.c.isi)./1000.*metadata.cam.fps);
-        enfrm{2}=round(metadata.stim.c.usdur/1000.*metadata.cam.fps); % for US
+        stfrm{2}=round((metadata.cam(1).time(1)+metadata.stim.c.isi)./1000.*metadata.cam(1).fps);
+        enfrm{2}=round(metadata.stim.c.usdur/1000.*metadata.cam(1).fps); % for US
         cchan(2)=2;
 
     case 'optical'      
-        stfrm{1}=round((metadata.cam.time(1)+metadata.stim.l.delay)./1000.*metadata.cam.fps);
-        enfrm{1}=round(metadata.stim.l.traindur./1000.*metadata.cam.fps);
+        stfrm{1}=round((metadata.cam(1).time(1)+metadata.stim.l.delay)./1000.*metadata.cam(1).fps);
+        enfrm{1}=round(metadata.stim.l.traindur./1000.*metadata.cam(1).fps);
         cchan(1)=3;
 %         stim=zeros(m,n,3,t,'uint8');
 %         stim=zeros(m,n,3,enfrm-stfrm,'uint8');
@@ -52,10 +52,10 @@ switch lower(metadata.stim.type)
 %         stim(400:449,550:599,3,:)=255;
     case 'optoelectric'     
         error('This version of instantReplay does not support multiple stim modalities for because of memory considerations.')
-        stfrme=round((metadata.cam.time(1)+metadata.stim.e.delay)./1000.*metadata.cam.fps);
-        enfrme=round(metadata.stim.e.traindur./1000.*metadata.cam.fps);      
-        stfrml=round((metadata.cam.time(1)+metadata.stim.l.delay)./1000.*metadata.cam.fps);
-        enfrml=round(metadata.stim.e.traindur./1000.*metadata.cam.fps);
+        stfrme=round((metadata.cam(1).time(1)+metadata.stim.e.delay)./1000.*metadata.cam(1).fps);
+        enfrme=round(metadata.stim.e.traindur./1000.*metadata.cam(1).fps);      
+        stfrml=round((metadata.cam(1).time(1)+metadata.stim.l.delay)./1000.*metadata.cam(1).fps);
+        enfrml=round(metadata.stim.e.traindur./1000.*metadata.cam(1).fps);
         stim=zeros(m,n,3,t,'uint8');
 %         stim=zeros(m,n,3,max(enfrme,enfrml)-min(stfrme,stfrml),'uint8');
         stim(400:449,500:549,1,stfrme:stfrme+enfrme)=255;

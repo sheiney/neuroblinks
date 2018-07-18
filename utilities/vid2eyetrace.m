@@ -7,10 +7,10 @@ function [y,t]=vid2eyetrace(data,metadata,varargin)
 % to be returned normalized by full eyelid closure, supply CALIB struct with fields of
 % SCALE and OFFSET as fifth argument.
 
-sr=metadata.cam.fps;
+sr=metadata.cam(1).fps;
 sint=1./sr;
-thresh=metadata.cam.thresh;
-st=-metadata.cam.time(1)/1e3;
+thresh=metadata.cam(1).thresh;
+st=-metadata.cam(1).time(1)/1e3;
 
 if nargin > 2 && ~isempty(varargin{1})
     thresh=varargin{1};
@@ -35,7 +35,7 @@ y=zeros(size(t));
 
 if w==1,  % ------- faster algorism --------
     binimage = (data>=thresh*256);
-    binimage = (binimage & repmat(metadata.cam.mask,[1 1 c d]));
+    binimage = (binimage & repmat(metadata.cam(1).mask,[1 1 c d]));
     tr=shiftdim(sum(sum(binimage,2),1),2); 
     y=(tr-calib.offset)./calib.scale;
     
@@ -43,7 +43,7 @@ else
     for i=1:d
         wholeframe=data(:,:,1,i);
         binimage=im2bw(medfilt2(wholeframe,[w w]),thresh);
-        eyeimage=binimage.*metadata.cam.mask;
+        eyeimage=binimage.*metadata.cam(1).mask;
         tr=sum(sum(eyeimage)); 
         % tr=sqrt(sum(sum(eyeimage))); % Use SQRT b/c area is proportional to square of eyelid diameter.
         y(i)=(tr-calib.offset)./calib.scale;

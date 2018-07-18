@@ -6,10 +6,10 @@ function varargout = ThreshWindowWithPuff(varargin)
 %      H = THRESHWINDOWWITHPUFF returns the handle to a new THRESHWINDOWWITHPUFF or the handle to
 %      the existing singleton*.
 %
-%      THRESHWINDOWWITHPUFF('CALLBACK',hObject,eventData,handles,...) calls the local
+%      THRESHWINDOWWITHPUFF('CALLBACK', hObject, eventData, handles, ...) calls the local
 %      function named CALLBACK in THRESHWINDOWWITHPUFF.M with the given input arguments.
 %
-%      THRESHWINDOWWITHPUFF('Property','Value',...) creates a new THRESHWINDOWWITHPUFF or raises the
+%      THRESHWINDOWWITHPUFF('Property', 'Value', ...) creates a new THRESHWINDOWWITHPUFF or raises the
 %      existing singleton*.  Starting from the left, property value pairs are
 %      applied to the GUI before ThreshWindowWithPuff_OpeningFcn gets called.  An
 %      unrecognized property name or invalid value makes property application
@@ -52,18 +52,18 @@ function ThreshWindowWithPuff_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to ThreshWindowWithPuff (see VARARGIN)
 
-metadata=getappdata(0,'metadata');
+metadata = getappdata(0, 'metadata');
 
 % Choose default command line output for ThreshWindowWithPuff
 handles.output = hObject;
 
-handles.x1=floor(metadata.cam.winpos(1))+1;
-handles.x2=floor(metadata.cam.winpos(1)+metadata.cam.winpos(3));
-handles.y1=floor(metadata.cam.winpos(2))+1;
-handles.y2=floor(metadata.cam.winpos(2)+metadata.cam.winpos(4));
+handles.x1 = floor(metadata.cam(1).winpos(1)) + 1;
+handles.x2 = floor(metadata.cam(1).winpos(1) + metadata.cam(1).winpos(3));
+handles.y1 = floor(metadata.cam(1).winpos(2)) + 1;
+handles.y2 = floor(metadata.cam(1).winpos(2) + metadata.cam(1).winpos(4));
 
-set(handles.edit_eyelidThresh,'String',num2str(round(metadata.cam.thresh*256)));
-set(handles.slider_eyelidThresh,'Value',round(metadata.cam.thresh*256));
+set(handles.edit_eyelidThresh, 'String', num2str(round(metadata.cam(1).thresh * 256)));
+set(handles.slider_eyelidThresh, 'Value', round(metadata.cam(1).thresh * 256));
 
 % Update handles structure
 guidata(hObject, handles);
@@ -91,25 +91,25 @@ function slider_eyelidThresh_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'Value') returns position of slider
-%        get(hObject,'Min') and get(hObject,'Max') to determine range of slider
+% Hints: get(hObject, 'Value') returns position of slider
+%        get(hObject, 'Min') and get(hObject, 'Max') to determine range of slider
 
-metadata=getappdata(0,'metadata');
+metadata = getappdata(0, 'metadata');
 
 % Alternatively can use "thresh = graythresh(image)" to get threshold with
 % Otsu's method
-thres_slider=round(get(hObject,'Value'))/256;
-if thres_slider>0 && thres_slider<1,
-    metadata.cam.thresh=round(get(hObject,'Value'))/256;
-    set(handles.edit_eyelidThresh,'String',num2str(round(get(hObject,'Value'))))
+threshold_slider = round(get(hObject, 'Value')) / 256;
+if threshold_slider > 0 && threshold_slider < 1
+    metadata.cam(1).thresh = round(get(hObject, 'Value')) / 256;
+    set(handles.edit_eyelidThresh, 'String', num2str(round(get(hObject, 'Value'))))
 else
-    disp('Wrong number was retruned by slider...')
-    set(handles.slider_eyelidThresh,'Value',round(metadata.cam.thresh*256));
+    disp('Wrong number was returned by slider...')
+    set(handles.slider_eyelidThresh, 'Value', round(metadata.cam(1).thresh * 256));
 end
 % Have to stop auto refresh timer before drawing or else we get an error
 % when the timer has a callback
 % stop(handles.timer)
-setappdata(0,'metadata',metadata);
+setappdata(0, 'metadata', metadata);
 drawbinary(handles)
 
 
@@ -120,8 +120,8 @@ function slider_eyelidThresh_CreateFcn(hObject, eventdata, handles)
 % handles    empty - handles not created until after all CreateFcns called
 
 % Hint: slider controls usually have a light gray background.
-if isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor',[.9 .9 .9]);
+if isequal(get(hObject, 'BackgroundColor'), get(0, 'defaultUicontrolBackgroundColor'))
+    set(hObject, 'BackgroundColor', [.9 .9 .9]);
 end
 
 
@@ -131,17 +131,17 @@ function edit_eyelidThresh_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit_eyelidThresh as text
-%        str2double(get(hObject,'String')) returns contents of edit_eyelidThresh as a double
+% Hints: get(hObject, 'String') returns contents of edit_eyelidThresh as text
+%        str2double(get(hObject, 'String')) returns contents of edit_eyelidThresh as a double
 
-metadata=getappdata(0,'metadata');
+metadata = getappdata(0, 'metadata');
 
 % Alternatively can use "thresh = graythresh(image)" to get threshold with
 % Otsu's method
-metadata.cam.thresh=str2double(get(handles.edit_eyelidThresh,'String'))/256;
-set(handles.slider_eyelidThresh,'Value',round(metadata.cam.thresh*256));
+metadata.cam(1).thresh = str2double(get(handles.edit_eyelidThresh, 'String'))/256;
+set(handles.slider_eyelidThresh, 'Value', round(metadata.cam(1).thresh * 256));
 
-setappdata(0,'metadata',metadata);
+setappdata(0, 'metadata', metadata);
 
 drawbinary(handles)
 
@@ -154,8 +154,8 @@ function edit_eyelidThresh_CreateFcn(hObject, eventdata, handles)
 
 % Hint: edit controls usually have a white background on Windows.
 %       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
+if ispc && isequal(get(hObject, 'BackgroundColor'), get(0, 'defaultUicontrolBackgroundColor'))
+    set(hObject, 'BackgroundColor', 'white');
 end
 
 
@@ -167,7 +167,7 @@ function figure1_CloseRequestFcn(hObject, eventdata, handles)
 
 % Hint: delete(hObject) closes the figure
 delete(hObject);
-% calc_calb;      % Don't do calibration if user closes window without pressing enter
+% calculateEyelidCalibration;      % Don't do calibration if user closes window without pressing enter
 
 % --- Executes on button press in pushbutton_ok.
 function pushbutton_ok_Callback(hObject, eventdata, handles)
@@ -176,7 +176,7 @@ function pushbutton_ok_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 delete(handles.figure1);
-calc_calb;
+calculateEyelidCalibration;
 
 
 % --- Executes on button press in pushbutton_only_thresh.
@@ -185,83 +185,51 @@ function pushbutton_only_thresh_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-metadata=getappdata(0,'metadata');
-fprintf('thresh = %d.\n', round(metadata.cam.thresh*256))
+metadata = getappdata(0, 'metadata');
+fprintf('thresh = %d.\n', round(metadata.cam(1).thresh * 256))
 delete(handles.figure1);
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%% user difined functions %%%%%%%%%%
+%%%%%%%%% user defined functions %%%%%%%%%%
 
 function drawbinary(handles)
 
 % Load objects from root app data
-gui=getappdata(0,'gui');  % Load global handles
-metadata=getappdata(0,'metadata');
-data=getappdata(0,'calb_data');
+gui = getappdata(0, 'gui');  % Load global handles
+metadata = getappdata(0, 'calibration_metadata');
+vid = getappdata(0, 'calibration_vid');
 
 % --- eyelid trace --
-[trace,t]=vid2eyetrace(data,metadata,metadata.cam.thresh);
-ind_t=find(t<0.2);
-[y_max, ind_max1]=max(trace(ind_t));  [y_min, ind_min1]=min(trace(ind_t));
-ind_max=ind_t(ind_max1);  ind_min=ind_t(ind_min1);  
-set(0,'CurrentFigure',gui.threshgui2)
+[trace, t] = vid2eyetrace(vid, metadata, metadata.cam(1).thresh);
+ind_t = find(t < 0.2);
+[y_max, ind_max1] = max(trace(ind_t));  [y_min, ind_min1] = min(trace(ind_t));
+ind_max = ind_t(ind_max1);  ind_min = ind_t(ind_min1);  
+set(0, 'CurrentFigure', gui.eyelidThreshold)
 
 % --- for axex_binary: eye opened ---
-wholeframe=data(:,:,1,ind_min(1));
-% roi=wholeframe(handles.y1:handles.y2,handles.x1:handles.x2);
+wholeframe = vid(:, :, 1, ind_min(1));
+% roi = wholeframe(handles.y1:handles.y2, handles.x1:handles.x2);
 % Had to revise this to work with elliptical ROI
-roi=wholeframe.*uint8(metadata.cam.mask);
-binframe=im2bw(roi(handles.y1:handles.y2,handles.x1:handles.x2),metadata.cam.thresh);
-handles.binimage=imshow(binframe,'Parent',handles.axes_binary);
+roi = wholeframe .* uint8(metadata.cam(1).mask);
+binframe = im2bw(roi(handles.y1:handles.y2, handles.x1:handles.x2), metadata.cam(1).thresh);
+handles.binimage = imshow(binframe, 'Parent', handles.axes_binary);
 
-set(gui.threshgui2,'CurrentAxes',handles.axes_hist)
-imhist(roi(metadata.cam.mask))
+set(gui.eyelidThreshold, 'CurrentAxes', handles.axes_hist)
+imhist(roi(metadata.cam(1).mask))
 
 % --- for axex_binary: eye closeed ---
-wholeframe=data(:,:,1,ind_max(1));
-% roi=wholeframe(handles.y1:handles.y2,handles.x1:handles.x2);
+wholeframe = vid(:, :, 1, ind_max(1));
+% roi = wholeframe(handles.y1:handles.y2, handles.x1:handles.x2);
 % Had to revise this to work with elliptical ROI
-roi=wholeframe.*uint8(metadata.cam.mask);
-binframe=im2bw(roi(handles.y1:handles.y2,handles.x1:handles.x2),metadata.cam.thresh);
-handles.binimage2=imshow(binframe,'Parent',handles.axes_binary2);
+roi = wholeframe .* uint8(metadata.cam(1).mask);
+binframe = im2bw(roi(handles.y1:handles.y2, handles.x1:handles.x2), metadata.cam(1).thresh);
+handles.binimage2 = imshow(binframe, 'Parent', handles.axes_binary2);
 
-set(gui.threshgui2,'CurrentAxes',handles.axes_hist2)
-imhist(roi(metadata.cam.mask))
+set(gui.eyelidThreshold, 'CurrentAxes', handles.axes_hist2)
+imhist(roi(metadata.cam(1).mask))
 
 % --- for axex_trace: eyelid trace ---
-set(gui.threshgui2,'CurrentAxes',handles.axes_trace)
-plot(t,trace)
-set(gca,'xlim',[t(1) t(end)])
-
-
-
-function calc_calb()
-% -- load data again --
-metadata=getappdata(0,'metadata');
-data=getappdata(0,'calb_data');
-
-% --- eyelid trace --
-[trace,t]=vid2eyetrace(data,metadata,metadata.cam.thresh);
-
-% --- cal ---
-ind_t=(t<0.2);
-calib_offset=min(trace(ind_t));
-maxclosure=max(trace(ind_t));
-calib_scale=maxclosure-calib_offset;
-
-% -- save cal data to root metadata ---
-metadata.cam.calib_offset=calib_offset;  metadata.cam.calib_scale=calib_scale;
-setappdata(0,'metadata',metadata);
-
-fprintf('calib_offset = %d.  calib_scale = %d.\n',calib_offset, calib_scale)
-fprintf('thresh = %d.\n', round(metadata.cam.thresh*256))
-
-videoname=sprintf('%s\\%s_calib',metadata.folder,metadata.basename);
-save(videoname,'data','metadata')    
-
-fprintf('Data from calibration trial successfully written to disk.\n')
-
-
-
-
+set(gui.eyelidThreshold, 'CurrentAxes', handles.axes_trace)
+plot(t, trace)
+set(gca, 'xlim', [t(1) t(end)])

@@ -22,7 +22,7 @@ function varargout = MainWindow(varargin)
 
 % Edit the above text to modify the response to help MainWindow
 
-% Last Modified by GUIDE v2.5 18-Jun-2016 19:34:11
+% Last Modified by GUIDE v2.5 17-Jul-2018 15:12:49
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -58,75 +58,7 @@ initializeGUI(hObject, handles)
 % --- Executes on button press in pushbutton_StartStopPreview.
 function pushbutton_StartStopPreview_Callback(hObject, eventdata, handles)
 
-camera=getappdata(0,'camera');
-metadata=getappdata(0,'metadata');
-
-if ~isfield(metadata.cam,'fullsize')
-    metadata.cam.fullsize = [0 0 640 480];
-end
-metadata.cam.camera_ROIposition=camera.ROIposition;
-
-% Start/Stop Camera
-if strcmp(get(handles.pushbutton_StartStopPreview,'String'),'Start Preview')
-    % Camera is off. Change button string and start camera.
-    set(handles.pushbutton_StartStopPreview,'String','Stop Preview')
-    % Send camera preview to GUI
-    imx=metadata.cam.camera_ROIposition(1)+[1:metadata.cam.camera_ROIposition(3)];
-    imy=metadata.cam.camera_ROIposition(2)+[1:metadata.cam.camera_ROIposition(4)];
-    handles.pwin=image(imx,imy,zeros(metadata.cam.camera_ROIposition([4 3])), 'Parent',handles.cameraAx);
-    
-    preview(camera,handles.pwin);
-    set(handles.cameraAx,'XLim', 0.5+metadata.cam.fullsize([1 3])),
-    set(handles.cameraAx,'YLim', 0.5+metadata.cam.fullsize([2 4])),
-    hp=findobj(handles.cameraAx,'Tag','roipatch');  delete(hp)
-    if isfield(handles,'XY')
-        handles.roipatch=patch(handles.XY(:,1),handles.XY(:,2),'g','FaceColor','none','EdgeColor','g','Tag','roipatch');
-    end
-    
-    ht=findobj(handles.cameraAx,'Tag','trialtimecounter');
-    delete(ht)
-    
-    axes(handles.cameraAx)
-    handles.trialtimecounter = text(630,470,' ','Color','w','HorizontalAlignment','Right',...
-        'VerticalAlignment', 'Bottom', 'Visible', 'Off', 'Tag', 'trialtimecounter',...
-        'FontSize',18);
-else
-    % Camera is on. Stop camera and change button string.
-    stopPreview(handles);
-end
-
-setappdata(0,'metadata',metadata);
-guidata(hObject,handles)
-
-
-function stopPreview(handles)
-% Pulled this out as a function so it can be called from elsewhere
-camera=getappdata(0,'camera');
-
-set(handles.pushbutton_StartStopPreview,'String','Start Preview')
-closepreview(camera);
-
-
-
-% camera=getappdata(0,'camera');
-% metadata=getappdata(0,'metadata');
-% 
-% if isfield(metadata.cam,'fullsize')
-%     metadata.cam.fullsize = camera.ROIposition;
-% end
-% 
-% if strcmp(get(handles.pushbutton_StartStopPreview,'String'),'Start Preview')
-%     % Camera is off. Change button string and start camera.
-%     set(handles.pushbutton_StartStopPreview,'String','Stop Preview')
-%     handles.pwin=image(zeros(480,640),'Parent',handles.cameraAx);
-%     preview(camera,handles.pwin);
-% else
-%     % Camera is on. Stop camera and change button string.
-%     set(handles.pushbutton_StartStopPreview,'String','Start Preview')
-%     closepreview(camera);
-% end
-% setappdata(0,'metadata',metadata);
-% guidata(hObject,handles)
+togglePreview(handles);
 
 
 function pushbutton_quit_Callback(hObject, eventdata, handles)
@@ -176,9 +108,9 @@ function pushbutton_setROI_Callback(hObject, eventdata, handles)
 
 camera=getappdata(0,'camera');   metadata=getappdata(0,'metadata');
 
-if isfield(metadata.cam,'winpos')
-    winpos=metadata.cam.winpos;
-    winpos(1:2)=winpos(1:2)+metadata.cam.camera_ROIposition(1:2);
+if isfield(metadata.cam(1),'winpos')
+    winpos=metadata.cam(1).winpos;
+    winpos(1:2)=winpos(1:2)+metadata.cam(1).camera_ROIposition(1:2);
 else
     winpos=[0 0 640 480];
 end
@@ -191,16 +123,16 @@ h=imellipse(handles.cameraAx,winpos);
 fcn = makeConstrainToRectFcn('imellipse',get(handles.cameraAx,'XLim'),get(handles.cameraAx,'YLim'));
 setPositionConstraintFcn(h,fcn);
 
-% metadata.cam.winpos=round(wait(h));
+% metadata.cam(1).winpos=round(wait(h));
 XY=round(wait(h));  % only use for imellipse
-metadata.cam.winpos=round(getPosition(h));
-metadata.cam.winpos(1:2)=metadata.cam.winpos(1:2)-metadata.cam.camera_ROIposition(1:2);
-metadata.cam.mask=createMask(h);
+metadata.cam(1).winpos=round(getPosition(h));
+metadata.cam(1).winpos(1:2)=metadata.cam(1).winpos(1:2)-metadata.cam(1).camera_ROIposition(1:2);
+metadata.cam(1).mask=createMask(h);
 
 wholeframe=getsnapshot(camera);
-binframe=im2bw(wholeframe,metadata.cam.thresh);
-eyeframe=binframe.*metadata.cam.mask;
-metadata.cam.pixelpeak=sum(sum(eyeframe));
+binframe=im2bw(wholeframe,metadata.cam(1).thresh);
+eyeframe=binframe.*metadata.cam(1).mask;
+metadata.cam(1).pixelpeak=sum(sum(eyeframe));
 
 hp=findobj(handles.cameraAx,'Tag','roipatch');
 delete(hp)
@@ -215,18 +147,15 @@ guidata(hObject,handles)
 
 
 
-function pushbutton_CalbEye_Callback(hObject, eventdata, handles)
+function pushbutton_calibrateEye_Callback(hObject, eventdata, handles)
 metadata=getappdata(0,'metadata'); 
-metadata.cam.cal=1;
-setappdata(0,'metadata',metadata);
 
 refreshParams(handles);
 updateParams();
 
-metadata=getappdata(0,'metadata'); 
 camera=getappdata(0,'camera');
 camera.TriggerRepeat = 0;
-camera.StopFcn=@CalbEye;   % this will be executed after timer stop 
+camera.StopFcn=@CalibrateEye;   % this will be executed after timer stop 
 flushdata(camera);         % Remove any data from buffer before triggering
 
 % Set camera to hardware trigger mode
@@ -234,7 +163,7 @@ src.FrameStartTriggerSource = 'Line1';
 
 start(camera)
 
-metadata.cam.cal=0;
+metadata.cam(1).cal=0;
 metadata.ts(2)=etime(clock,datevec(metadata.ts(1)));
 % --- trigger via arduino --
 arduino=getappdata(0,'arduino');
@@ -252,28 +181,28 @@ metadata=getappdata(0,'metadata');
 
 if get(hObject,'Value')
     % Turn on high frame rate mode
-    metadata.cam.camera_ROIposition=max(metadata.cam.winpos+[-10 0 20 0],[0 0 0 0]);
-    camera.ROIposition=metadata.cam.camera_ROIposition;
-%     metadata.cam.fps=500;
+    metadata.cam(1).camera_ROIposition=max(metadata.cam(1).winpos+[-10 0 20 0],[0 0 0 0]);
+    camera.ROIposition=metadata.cam(1).camera_ROIposition;
+%     metadata.cam(1).fps=500;
     src.ExposureTimeAbs = 1900;
-%     src.AllGainRaw=metadata.cam.init_AllGainRaw+round(20*log10(metadata.cam.init_ExposureTime/src.ExposureTimeAbs));
+%     src.AllGainRaw=metadata.cam(1).init_AllGainRaw+round(20*log10(metadata.cam(1).init_ExposureTime/src.ExposureTimeAbs));
     % --- size fit for roi and mask ----
-    vidroi_x=metadata.cam.camera_ROIposition(1)+[1:metadata.cam.camera_ROIposition(3)];
-    vidroi_y=metadata.cam.camera_ROIposition(2)+[1:metadata.cam.camera_ROIposition(4)];
-    metadata.cam.mask = metadata.cam.mask(vidroi_y, vidroi_x);
-    metadata.cam.winpos(1:2)=metadata.cam.winpos(1:2)-metadata.cam.camera_ROIposition(1:2);
+    vidroi_x=metadata.cam(1).camera_ROIposition(1)+[1:metadata.cam(1).camera_ROIposition(3)];
+    vidroi_y=metadata.cam(1).camera_ROIposition(2)+[1:metadata.cam(1).camera_ROIposition(4)];
+    metadata.cam(1).mask = metadata.cam(1).mask(vidroi_y, vidroi_x);
+    metadata.cam(1).winpos(1:2)=metadata.cam(1).winpos(1:2)-metadata.cam(1).camera_ROIposition(1:2);
 else
     % Turn off high frame rate mode
-    camera.ROIposition=metadata.cam.fullsize;
-%     metadata.cam.fps=200;
-    src.ExposureTimeAbs = metadata.cam.init_ExposureTime;
-%     src.AllGainRaw=metadata.cam.init_AllGainRaw;
+    camera.ROIposition=metadata.cam(1).fullsize;
+%     metadata.cam(1).fps=200;
+    src.ExposureTimeAbs = metadata.cam(1).init_ExposureTime;
+%     src.AllGainRaw=metadata.cam(1).init_AllGainRaw;
     % --- size fit for roi and mask ----
-    mask0=metadata.cam.mask; s_mask0=size(mask0);
-    metadata.cam.mask = false(metadata.cam.fullsize([4 3]));
-    metadata.cam.mask(metadata.cam.camera_ROIposition(2)+[1:s_mask0(1)], metadata.cam.camera_ROIposition(1)+[1:s_mask0(2)])=mask0;
-    metadata.cam.winpos(1:2)=metadata.cam.winpos(1:2)+metadata.cam.camera_ROIposition(1:2);
-    metadata.cam.camera_ROIposition=metadata.cam.fullsize;
+    mask0=metadata.cam(1).mask; s_mask0=size(mask0);
+    metadata.cam(1).mask = false(metadata.cam(1).fullsize([4 3]));
+    metadata.cam(1).mask(metadata.cam(1).camera_ROIposition(2)+[1:s_mask0(1)], metadata.cam(1).camera_ROIposition(1)+[1:s_mask0(2)])=mask0;
+    metadata.cam(1).winpos(1:2)=metadata.cam(1).winpos(1:2)+metadata.cam(1).camera_ROIposition(1:2);
+    metadata.cam(1).camera_ROIposition=metadata.cam(1).fullsize;
 end
 
 pushbutton_StartStopPreview_Callback(handles.pushbutton_StartStopPreview, [], handles)
@@ -308,7 +237,7 @@ else
 end
 
 
-function pushbutton_stim_Callback(hObject, eventdata, handles)
+function pushbutton_singleTrial_Callback(hObject, eventdata, handles)
 startTrial(handles)
 
 function popupmenu_stimtype_Callback(hObject, eventdata, handles)
@@ -343,7 +272,7 @@ function pushbutton_params_Callback(hObject, eventdata, handles)
 ParamsWindow
 
 
-function pushbutton_oneana_Callback(hObject, eventdata, handles)
+function pushbutton_eyelidTraceViewer_Callback(hObject, eventdata, handles)
 gui=getappdata(0,'gui');
 gui.onetrialanagui=OneTrialAnaWindow;
 setappdata(0,'gui',gui);
@@ -352,7 +281,7 @@ set(gui.onetrialanagui,'units','pixels')
 set(gui.onetrialanagui,'position',[gui.pos_oneanawin gui.size_oneanawin])
 
 
-function uipanel_TDTMode_SelectionChangeFcn(hObject, eventdata, handles)
+function uipanel_SessionMode_SelectionChangeFcn(hObject, eventdata, handles)
 
 metadata=getappdata(0,'metadata');
 
@@ -396,11 +325,11 @@ end
 if ok
     set(eventdata.NewValue,'Value',1);
     set(eventdata.OldValue,'Value',0);
-    set(handles.uipanel_TDTMode,'SelectedObject',eventdata.NewValue);
+    set(handles.uipanel_SessionMode,'SelectedObject',eventdata.NewValue);
 else
     set(eventdata.NewValue,'Value',0);
     set(eventdata.OldValue,'Value',1);
-    set(handles.uipanel_TDTMode,'SelectedObject',eventdata.OldValue);
+    set(handles.uipanel_SessionMode,'SelectedObject',eventdata.OldValue);
     return
 end
 ResetCamTrials()
@@ -420,237 +349,6 @@ setappdata(0,'paramtable',paramtable);
 gui=getappdata(0,'gui');
 trialtablegui=TrialTable;
 % movegui(trialtablegui,[gui.pos_mainwin(1)+gui.size_mainwin(1)+20 gui.pos_mainwin(2)])
-
-
-
-
-
-
-
-
-function startTrial(handles)
-refreshParams(handles)
-updateParams()
-
-metadata=getappdata(0,'metadata');
-camera=getappdata(0,'camera');
-src=getappdata(0,'src');
-camera.TriggerRepeat = 0;
-
-camera.StopFcn=@endOfTrial;
-
-flushdata(camera); % Remove any data from buffer before triggering
-
-% Set camera to hardware trigger mode
-src.FrameStartTriggerSource = 'Line1';
-camera.FramesPerTrigger=metadata.cam.fps*(sum(metadata.cam.time)/1e3);
-
-% Now get camera ready for acquisition -- shouldn't start yet
-start(camera)
-
-% For triggering camera 2
-if isappdata(0,'cam2')
-    cam2=getappdata(0,'cam2');
-    camera2 = getappdata(0,'camera2');
-    if strcmp(cam2.triggermode,'Sync trials')
-        camera2.FramesPerTrigger = frames_per_trial;
-%         camera2.TriggerRepeat = 0;
-        startCamera2()  % will wait for primary camera to be triggered before actually triggering the camera
-    end
-end
-
-metadata.ts(2)=etime(clock,datevec(metadata.ts(1)));
-
-
-% --- trigger via arduino --
-arduino=getappdata(0,'arduino');
-fwrite(arduino,1,'int8');
-
-% ---- write status bar ----
-trials=getappdata(0,'trials');
-set(handles.text_status,'String',sprintf('Total trials: %d\n',metadata.cam.trialnum));
-if strcmpi(metadata.stim.type,'conditioning')
-    trialvars=readTrialTable(metadata.cam.trialnum+1);
-    csdur=trialvars(1);
-    csnum=trialvars(2);
-    isi=trialvars(3);
-    usdur=trialvars(4);
-    usnum=trialvars(5);
-    cstone=str2num(get(handles.edit_tone,'String'));
-    if length(cstone)<2, cstone(2)=0; end
-    
-    str2=[];
-    if ismember(csnum,[5 6]), 
-        str2=[' (' num2str(cstone(csnum-4)) ' KHz)'];
-    end
-        
-    str1=sprintf('Next:  No %d,  CS ch %d%s,  ISI %d,  US %d, US ch %d',metadata.cam.trialnum+1, csnum, str2, isi, usdur, usnum);
-    set(handles.text_disp_cond,'String',str1)
-end
-setappdata(0,'metadata',metadata);
-
-function newFrameCallback(obj,event,himage)
-
-gui=getappdata(0,'gui'); 
-handles=guidata(gui.maingui);
-% camera=getappdata(0,'camera');
-src=getappdata(0,'src');
-metadata=getappdata(0,'metadata');  
-
-persistent timeOfStreamStart
-
-if isempty(timeOfStreamStart)
-    timeOfStreamStart=clock;
-end
-
-persistent timeSinceLastTrial
-
-if isempty(timeSinceLastTrial)
-    timeSinceLastTrial=clock;
-end
-
-persistent eyedata
-
-if isempty(eyedata)
-    eyedata=NaN*ones(500,2);  
-end
-
-plt_range=-2100;
-
-persistent eyeTrace
-
-if isempty(eyeTrace)
-    set(0,'currentfigure',gui.maingui)
-%     set(gui.maingui,'CurrentAxes',handles.axes_eye)
-%     cla
-    eyeTrace=plot(handles.axes_eye,[plt_range 0],[1 1]*0,'k-'); hold on
-    set(handles.axes_eye,'color',[240 240 240]/255,'YAxisLocation','right');
-    set(handles.axes_eye,'xlim',[plt_range 0],'ylim',[-0.1 1.1])
-    set(handles.axes_eye,'xtick',[-3000:500:0],'box','off')
-    set(handles.axes_eye,'ytick',[0:0.5:1],'yticklabel',{'0' '' '1'})
-end
-
-
-% --- eye trace ---
-wholeframe = event.Data;
-roi=wholeframe.*uint8(metadata.cam.mask);
-eyelidpos=sum(roi(:)>=256*metadata.cam.thresh);
-
-% --- eye trace buffer ---
-eyedata(1:end-1,:)=eyedata(2:end,:);
-timeSinceStreamStartMS=round(1000*etime(clock,timeOfStreamStart));
-eyedata(end,1)=timeSinceStreamStartMS;
-eyedata(end,2)=(eyelidpos-metadata.cam.calib_offset)/metadata.cam.calib_scale; % eyelid pos
-
-set(eyeTrace,'XData',eyedata(:,1)-timeSinceStreamStartMS,'YData',eyedata(:,2))
-set(himage,'CData',event.Data)
-        
-        
-% --- Check if new trial should be triggered ----
-
-if get(handles.toggle_continuous,'Value') == 1
-        
-    stopTrial = str2double(get(handles.edit_StopAfterTrial,'String'));
-    if stopTrial > 0 && metadata.cam.trialnum > stopTrial
-        set(handles.toggle_continuous,'Value',0);
-        set(handles.toggle_continuous,'String','Start Continuous');
-    end
-        
-    elapsedTimeSinceLastTrial=etime(clock,timeSinceLastTrial);
-    timeLeft = metadata.stim.c.ITI - elapsedTimeSinceLastTrial;
-    
-    set(handles.trialtimecounter,'String',num2str(round(timeLeft)))
-    
-    if timeLeft <= 0,
-        eyeok=checkeye(handles,eyedata);
-        if eyeok
-            startTrial(handles)
-            timeSinceLastTrial=clock;
-        end
-    end
-end
-
-% Callback for camera2
-function newFrameCallback2(obj,event,himage)
-
-    persistent last_pupil_diameter
-    persistent last_pupil_center
-    
-    gui=getappdata(0,'gui'); 
-    handles=guidata(gui.maingui);
-    % camera=getappdata(0,'camera');
-    src=getappdata(0,'src');
-    metadata=getappdata(0,'metadata');  
-    
-    
-    % --- eye trace ---
-    wholeframe = event.Data;
-    roi=wholeframe.*uint8(metadata.cam.mask);
-    eyelidpos=sum(roi(:)>=256*metadata.cam.thresh);
-    
-    % Pupil
-    pupil_thresh = str2double(handles.edit_pupil_thresh.String);
-    % Value of zero means don't stream it; otherwise, extract pupil diameter
-    if pupil_thresh > 0
-        % Extract pupil diameter
-        % Use eyelid ellipse ROI to guess pupil center
-        pos = metadata.cam.winpos;
-        ellipse_center = [pos(1)+pos(3)./2, pos(2) + pos(4)./2];
-        % Need to add ability to fine tune parameters to this function
-        roi_x = round(pos(3) ./ 2);
-        roi_y = round(pos(4) ./ 2);
-    %     max_radius = round(min(roi_x.*2,roi_y.*2));
-    %     max_radius = round(min(roi_x,roi_y));
-        max_radius = 35;
-        [area,center] = getPupilArea(wholeframe,ellipse_center,[roi_x,roi_y],[max(1,round(max_radius./3)),max_radius],pupil_thresh);
-        r = sqrt(area ./ pi);
-        pupil_diameter = 2 .* r;
-    
-        % Add circle to frame ('CData')
-        if ~isnan(r)
-            % Just reuse last value if it changed too fast (due to blink or whiskers getting in ROI)
-            % if abs(pupil_diameter-last_pupil_diameter) > 5
-            %     pupil_diameter = last_pupil_diameter;
-            %     center = last_pupil_center;
-            %     r = last_pupil_diameter./2;
-            % end
-    
-            circle_color = 'blue';
-            last_pupil_diameter = pupil_diameter;
-            last_pupil_center = center;
-        else
-            center = last_pupil_center;
-            r = last_pupil_diameter./2;
-            pupil_diameter = last_pupil_diameter;
-            circle_color = 'red';
-        end
-        
-        circle_params = [center, r];
-            
-        F = insertShape(event.Data,'Circle',circle_params, 'Color', circle_color, 'LineWidth', 2);
-    
-        % Save pupil diameter to disk
-        % NOT IMPLEMENTED YET
-
-    else
-        F = event.Data;
-    end
-
-
-function eyeok=checkeye(handles,eyedata)
-eyethrok = (eyedata(end,2)<str2double(get(handles.edit_eyethr,'String')));
-eyedata(:,1)=eyedata(:,1)-eyedata(end,1);  
-recenteye=eyedata(eyedata(:,1)>-1000*str2double(get(handles.edit_stabletime,'String')), 2);
-eyestableok = ((max(recenteye)-min(recenteye))<str2double(get(handles.edit_stableeye,'String')));
-eyeok = eyethrok && eyestableok;
-
-
-%%%%%%%%%% end of user functions %%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-
 
 
 
@@ -681,7 +379,6 @@ function edit_tone_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
-
 
 
 
@@ -832,18 +529,18 @@ end
 
 
 
-function edit_eyethr_Callback(hObject, eventdata, handles)
-% hObject    handle to edit_eyethr (see GCBO)
+function edit_eyelidthresh_Callback(hObject, eventdata, handles)
+% hObject    handle to edit_eyelidthresh (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% Hints: get(hObject,'String') returns contents of edit_eyethr as text
-%        str2double(get(hObject,'String')) returns contents of edit_eyethr as a double
+% Hints: get(hObject,'String') returns contents of edit_eyelidthresh as text
+%        str2double(get(hObject,'String')) returns contents of edit_eyelidthresh as a double
 
 
 % --- Executes during object creation, after setting all properties.
-function edit_eyethr_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit_eyethr (see GCBO)
+function edit_eyelidthresh_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit_eyelidthresh (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    empty - handles not created until after all CreateFcns called
 
@@ -895,13 +592,7 @@ function pushbutton_abort_Callback(hObject, eventdata, handles)
 % If camera gets hung up for any reason, this button can be pressed to
 % reset it.
 
-camera = getappdata(0,'camera');
-src = getappdata(0,'src');
-
-stop(camera);
-flushdata(camera);
-
-src.FrameStartTriggerSource = 'Freerun';
+abortCameraAcquisition;
 
 
 
@@ -957,12 +648,27 @@ function pushbutton_loadParams_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-paramtable = getappdata(0,'paramtable');
+loadParamTable(handles);
 
-[paramfile,paramfilepath,filteridx] = uigetfile('*.csv');
 
-if paramfile & filteridx == 1 % The filterindex thing is a hack to make sure it's a csv file
-    paramtable.data=csvread(fullfile(paramfilepath,paramfile));
-    set(handles.uitable_params,'Data',paramtable.data);
-    setappdata(0,'paramtable',paramtable);
+
+function edit26_Callback(hObject, eventdata, handles)
+% hObject    handle to edit26 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit26 as text
+%        str2double(get(hObject,'String')) returns contents of edit26 as a double
+
+
+% --- Executes during object creation, after setting all properties.
+function edit26_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit26 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
 end

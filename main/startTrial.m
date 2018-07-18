@@ -13,7 +13,7 @@ flushdata(camera); % Remove any data from buffer before triggering
 
 % Set camera to hardware trigger mode
 src.FrameStartTriggerSource = 'Line1';
-camera.FramesPerTrigger = metadata.cam.fps * (sum(metadata.cam.time) / 1e3);
+camera.FramesPerTrigger = metadata.cam(1).fps * (sum(metadata.cam(1).time) / 1e3);
 
 % Now get camera ready for acquisition -- shouldn't start yet
 start(camera)
@@ -37,10 +37,9 @@ arduino = getappdata(0, 'arduino');
 fwrite(arduino, 1, 'int8');
 
 % ---- write status bar ----
-trials = getappdata(0, 'trials');
-set(handles.text_status, 'String', sprintf('Total trials: %d\n', metadata.cam.trialnum));
+set(handles.text_status, 'String', sprintf('Total trials: %d\n', metadata.cam(1).trialnum));
 if strcmpi(metadata.stim.type, 'conditioning')
-    trialvars = readTrialTable(metadata.cam.trialnum + 1);
+    trialvars = readTrialTable(metadata.cam(1).trialnum + 1);
     csdur = trialvars(1);
     csnum = trialvars(2);
     isi = trialvars(3);
@@ -54,7 +53,7 @@ if strcmpi(metadata.stim.type, 'conditioning')
         str2 = [' (' num2str(cstone(csnum - 4)) ' KHz)'];
     end
         
-    str1 = sprintf('Next:  No %d,  CS ch %d%s,  ISI %d,  US %d, US ch %d', metadata.cam.trialnum + 1, csnum, str2, isi, usdur, usnum);
+    str1 = sprintf('Next:  No %d,  CS ch %d%s,  ISI %d,  US %d, US ch %d', metadata.cam(1).trialnum + 1, csnum, str2, isi, usdur, usnum);
     set(handles.text_disp_cond, 'String', str1)
 end
 setappdata(0, 'metadata', metadata);

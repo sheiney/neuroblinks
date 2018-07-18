@@ -7,8 +7,8 @@ if isfield(trials,'eye'), if length(trials.eye)>metadata.eye.trialnum2+1, trials
 if metadata.eye.trialnum2==1, trials.eye=[]; end
 
 % ------ eyelid trace, which will be saved to 'trials' ---- 
-[trace,time]=vid2eyetrace(data,metadata,metadata.cam.thresh);
-trace=(trace-metadata.cam.calib_offset)/metadata.cam.calib_scale;
+[trace,time]=vid2eyetrace(data,metadata,metadata.cam(1).thresh);
+trace=(trace-metadata.cam(1).calib_offset)/metadata.cam(1).calib_scale;
 
 trials.eye(metadata.eye.trialnum2).time=time*1e3;
 trials.eye(metadata.eye.trialnum2).trace=trace;

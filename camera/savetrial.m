@@ -40,7 +40,7 @@ if isappdata(0, 'arduino')
 
 end
 
-videoname = sprintf('%s\\%s_%03d', metadata.folder, metadata.basename, metadata.cam.trialnum);
+videoname = sprintf('%s\\%s_%03d', metadata.folder, metadata.basename, metadata.cam(1).trialnum);
 if trials.savematadata
     save(videoname, 'metadata')
 elseif exist('encoder', 'var')
@@ -49,10 +49,10 @@ else
     save(videoname, 'vid', 'vid_ts', 'metadata', '-v6')
 end
 
-fprintf('Video data from trial %03d successfully written to disk.\n', metadata.cam.trialnum)
+fprintf('Video data from trial %03d successfully written to disk.\n', metadata.cam(1).trialnum)
 
 
 % --- trial counter updated and saved in memory ---
-metadata.cam.trialnum = metadata.cam.trialnum + 1;
+metadata.cam(1).trialnum = metadata.cam(1).trialnum + 1;
 
 setappdata(0, 'metadata', metadata);

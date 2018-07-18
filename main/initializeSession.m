@@ -6,8 +6,11 @@ metadata=getappdata(0,'metadata');
  
 metadata.ts=[datenum(clock) 0]; % two element vector containing datenum at beginning of session and offset of current trial (in seconds) from beginning
 
-metadata.cam.thresh=0.125;
-metadata.cam.trialnum=1;
+metadata.cam(1).thresh=0.125;
+metadata.cam(1).trialnum=1;
+
+metadata.cam(2).thresh=0.125;
+metadata.cam(2).trialnum=1;
 
 metadata.cam(1).cal=0;
 metadata.cam(1).calib_offset=0;

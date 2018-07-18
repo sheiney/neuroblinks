@@ -4,8 +4,8 @@ metadata = getappdata(0, 'metadata');
 % Need to refactor this part to make it easier to maintain
 datatoarduino = zeros(1, 13);
 
-datatoarduino(3) = metadata.cam.time(1);
-datatoarduino(9) = sum(metadata.cam.time(2:3));
+datatoarduino(3) = metadata.cam(1).time(1);
+datatoarduino(9) = metadata.cam(1).time(2);
 if strcmpi(metadata.stim.type, 'puff')
     datatoarduino(6) = metadata.stim.p.puffdur;
     datatoarduino(10) = 3;    % This is the puff channel

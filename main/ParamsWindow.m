@@ -114,7 +114,8 @@ function edit_trialNum_Callback(hObject, eventdata, handles)
 %        str2double(get(hObject,'String')) returns contents of edit_trialNum as a double
 
 metadata=getappdata(0,'metadata');
-metadata.cam.trialnum=str2double(get(hObject,'String'));
+metadata.cam(1).trialnum=str2double(get(hObject,'String'));
+metadata.cam(2).trialnum=str2double(get(hObject,'String'));
 
 setappdata(0,'metadata',metadata);
 
