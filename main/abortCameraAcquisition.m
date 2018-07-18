@@ -1,9 +1,12 @@
 function abortCameraAcquisition()
 
-camera = getappdata(0,'camera');
-src = getappdata(0,'src');
+cameras = getappdata(0,'cameras');
 
-stop(camera);
-flushdata(camera);
+for i=1:length(cameras)
+    src = getselectedsource(cameras{i});
 
-src.FrameStartTriggerSource = 'Freerun';
+    stop(cameras{i});
+    flushdata(cameras{i});
+
+    src.FrameStartTriggerSource = 'Freerun';
+end

@@ -1,7 +1,7 @@
 function startTrial(handles)
 
 refreshParams(handles)
-updateParams()
+uploadParams()
 metadata = getappdata(0, 'metadata');
 camera = getappdata(0, 'camera');
 src = getappdata(0, 'src');

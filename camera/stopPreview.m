@@ -1,6 +1,9 @@
 function stopPreview(handles)
 % Pulled this out as a function so it can be called from elsewhere
-camera=getappdata(0,'camera');
+cameras=getappdata(0, 'cameras');
 
 set(handles.pushbutton_StartStopPreview,'String','Start Preview')
-closepreview(camera);
+
+for i=1:length(cameras)
+    closepreview(cameras{i});
+end

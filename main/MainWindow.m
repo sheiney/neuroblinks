@@ -151,7 +151,7 @@ function pushbutton_calibrateEye_Callback(hObject, eventdata, handles)
 metadata=getappdata(0,'metadata'); 
 
 refreshParams(handles);
-updateParams();
+uploadParams();
 
 camera=getappdata(0,'camera');
 camera.TriggerRepeat = 0;
@@ -274,30 +274,35 @@ ParamsWindow
 
 function pushbutton_eyelidTraceViewer_Callback(hObject, eventdata, handles)
 gui=getappdata(0,'gui');
-gui.onetrialanagui=OneTrialAnaWindow;
+config=getappdata(0,'config');
+gui.one_trial_analysis_gui = OneTrialAnalysisWindow;
 setappdata(0,'gui',gui);
 
-set(gui.onetrialanagui,'units','pixels')
-set(gui.onetrialanagui,'position',[gui.pos_oneanawin gui.size_oneanawin])
+set(gui.one_trial_analysis_gui, 'units', 'pixels')
+set(gui.one_trial_analysis_gui, 'position', [config.pos_analysiswindow, config.size_analysiswindow])
 
 
 function uipanel_SessionMode_SelectionChangeFcn(hObject, eventdata, handles)
 
-metadata=getappdata(0,'metadata');
+metadata=getappdata(0, 'metadata');
 
-switch get(eventdata.NewValue,'Tag') % Get Tag of selected object.
+switch get(eventdata.NewValue, 'Tag') % Get Tag of selected object.
     case 'togglebutton_NewSession'
-        dlgans = inputdlg({'Enter session name'},'Create');
+        dlgans = inputdlg({'Enter session name'}, 'Create');
         if isempty(dlgans) 
             ok=0;
         elseif isempty(dlgans{1})
             ok=0;
         else
             ok=1;  session=dlgans{1};
-            set(handles.checkbox_save_metadata,'Value',0);
+            set(handles.checkbox_save_metadata, 'Value', 0);
         end
+
+        startSession;
+
     case 'togglebutton_StopSession'
-        button=questdlg('Are you sure you want to stop this session?','Stop session?','Yes and compress videos','Yes and DON''T compress videos','No','Yes and compress videos');
+        button=questdlg('Are you sure you want to stop this session?', 'Stop session?', ...
+        'Yes and compress videos', 'Yes and DON''T compress videos', 'No', 'Yes and compress videos');
         
         switch button
             
@@ -419,15 +424,6 @@ end
 % % hObject    handle to pushbutton7 (see GCBO)
 % % eventdata  reserved - to be defined in a future version of MATLAB
 % % handles    structure with handles and user data (see GUIDATA)
-
-
-
-% --- Executes on button press in checkbox_save_metadata.
-function checkbox_save_metadata_Callback(hObject, eventdata, handles)
-% hObject    handle to checkbox_save_metadata (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-% Hint: get(hObject,'Value') returns toggle state of checkbox_save_metadata
 
 
 function edit_ITI_Callback(hObject, eventdata, handles)

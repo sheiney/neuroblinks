@@ -1,5 +1,8 @@
 function unfreezeCam()
 
-camera = getappdata(0,'camera');
-stop(camera)
+cameras = getappdata(0,'cameras');
+
+for i=1:length(cameras)
+    stop(cameras{1})
+end
 

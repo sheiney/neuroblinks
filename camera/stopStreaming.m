@@ -1,4 +1,6 @@
-function startStreaming(handles)
+function stopStreaming(handles)
 
-set(handles.togglebutton_stream,'String','Stop Streaming')
-setappdata(handles.pwin,'UpdatePreviewWindowFcn',@newFrameCallback);
+% Get rid of start/stop streaming and just run newFrameCallback all the time?
+
+set(handles.togglebutton_stream,'String','Start Streaming')
+setappdata(handles.pwin,'UpdatePreviewWindowFcn',[]);

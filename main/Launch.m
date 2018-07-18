@@ -6,14 +6,14 @@ user_config;
 
 %% Open GUI
 clear MainWindow;    % Need to do this to clear persisent variables defined within MainWindow and subfunctions
-gui.maingui=MainWindow;
-set(gui.maingui,'units','pixels')
-set(gui.maingui,'position',[config.pos_mainwindow config.size_mainwindow])
+gui.maingui = MainWindow;
+set(gui.maingui, 'units', 'pixels')
+set(gui.maingui, 'position', [config.pos_mainwindow, config.size_mainwindow])
 
 % Open parameter dialog
-h=ParamsWindow;
+h = ParamsWindow;
 waitfor(h);
 
 % Save structs to root app data
-setappdata(0,'gui',gui)
-setappdata(0,'config',config)
+setappdata(0, 'gui', gui)
+setappdata(0, 'config', config)

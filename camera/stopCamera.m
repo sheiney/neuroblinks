@@ -1,7 +1,7 @@
 function stopCamera(n)
 
     % NEED TO GENERALIZE TO "N" CAMERAS
-camera2 = getappdata(0,'camera2');
+cameras = getappdata(0,'cameras');
 
 % Stop video object, callback will then execute
-stop(camera2)
+stop(cameras{n})

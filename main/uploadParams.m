@@ -1,4 +1,4 @@
-function updateParams()
+function uploadParams()
 metadata = getappdata(0, 'metadata');
 
 % Need to refactor this part to make it easier to maintain

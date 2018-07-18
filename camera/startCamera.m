@@ -1,38 +1,33 @@
 function startCamera(n)
 
-    % NEED TO GENERALIZE TO "N" CAMERAS
-
-cam2 = getappdata(0,'cam2');
+cameras = getappdata(0,'cameras');
 metadata = getappdata(0,'metadata');
 
-camera2 = getappdata(0,'camera2');
-src = getselectedsource(camera2);
+src = getselectedsource(cameras{n});
 
-% Changed from 'Line1' to 'FixedRate' on Oct 6, 2017 by Shane
+% Need to set different property here depending on camera capabilities
 if isprop(src,'FrameStartTriggerSource')
     src.FrameStartTriggerSource = 'Line1';  % Switch from free run to TTL mode
 else
     src.TriggerSource = 'Line1';
 end
 
-if strcmp(cam2.triggermode,'Manual to disk')
-    % We have to set up the video writer object here 
-    basename = sprintf('%s\\%s_cam2',metadata.folder,metadata.basename);
-    videoname=sprintf('%s_%03d.mp4', basename, cam2.trialnum);
-    diskLogger = VideoWriter(videoname,'MPEG-4');
-    set(diskLogger,'FrameRate',20);
-    camera2.DiskLogger = diskLogger;
-else
-    camera2.DiskLogger = [];
-end
+% if strcmp(cameras{n}.triggermode,'Manual to disk')
+%     % We have to set up the video writer object here 
+%     basename = sprintf('%s\\%s_camera%02d', metadata.folder, metadata.basename, n);
+%     videoname=sprintf('%s_%03d.mp4', basename, metadata.cam(n).trialnum);
+%     diskLogger = VideoWriter(videoname,'MPEG-4');
+%     set(diskLogger,'FrameRate',20);
+%     cameras{n}.DiskLogger = diskLogger;
+% else
+%     cameras{n}.DiskLogger = [];
+% end
 
-camera2.StopFcn = @stopCamera2Callback;
+cameras{n}.StopFcn = {@stopCameraCallback, n};
 
-flushdata(camera2)
-start(camera2)
+flushdata(cameras{n})
+start(cameras{n})
 
 % Trigger Trial
 %---------------- NEED TO TRIGGER TRIAL HERE --------------------%
 
-cam2.time = etime(clock,datevec(metadata.ts(1)));
-setappdata(0,'cam2',cam2);

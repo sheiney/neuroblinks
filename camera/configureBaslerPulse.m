@@ -1,4 +1,4 @@
-function configureBaslerAce(camera, config)
+function configureBaslerPulse(camera, config)
 
 src = getselectedsource(camera);
 
