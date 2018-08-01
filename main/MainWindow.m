@@ -22,7 +22,7 @@ function varargout = MainWindow(varargin)
 
 % Edit the above text to modify the response to help MainWindow
 
-% Last Modified by GUIDE v2.5 17-Jul-2018 15:12:49
+% Last Modified by GUIDE v2.5 01-Aug-2018 11:59:59
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -116,11 +116,11 @@ else
 end
 
 % Place rectangle on camera
-% h=imrect(handles.cameraAx,winpos);
-h=imellipse(handles.cameraAx,winpos);
+% h=imrect(handles.cameraAx1,winpos);
+h=imellipse(handles.cameraAx1,winpos);
 
-% fcn = makeConstrainToRectFcn('imrect',get(handles.cameraAx,'XLim'),get(handles.cameraAx,'YLim'));
-fcn = makeConstrainToRectFcn('imellipse',get(handles.cameraAx,'XLim'),get(handles.cameraAx,'YLim'));
+% fcn = makeConstrainToRectFcn('imrect',get(handles.cameraAx1,'XLim'),get(handles.cameraAx1,'YLim'));
+fcn = makeConstrainToRectFcn('imellipse',get(handles.cameraAx1,'XLim'),get(handles.cameraAx1,'YLim'));
 setPositionConstraintFcn(h,fcn);
 
 % metadata.cam(1).winpos=round(wait(h));
@@ -134,7 +134,7 @@ binframe=im2bw(wholeframe,metadata.cam(1).thresh);
 eyeframe=binframe.*metadata.cam(1).mask;
 metadata.cam(1).pixelpeak=sum(sum(eyeframe));
 
-hp=findobj(handles.cameraAx,'Tag','roipatch');
+hp=findobj(handles.cameraAx1,'Tag','roipatch');
 delete(hp)
 % handles.roipatch=patch([xmin,xmin+width,xmin+width,xmin],[ymin,ymin,ymin+height,ymin+height],'g','FaceColor','none','EdgeColor','g','Tag','roipatch');
 % XY=getVertices(h);

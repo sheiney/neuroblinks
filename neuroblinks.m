@@ -28,7 +28,7 @@ function neuroblinks(varargin)
     % fprintf('Device: %s, Rig: %d\n', device, rig);
     % return
     [basedir,mfile,ext]=fileparts(mfilename('fullpath'));
-    oldpath=addpath(genpath(fullfile(basedir,'main')));
+    oldpath=addpath(genpath(fullfile(basedir)));
 
     config.rig = rig;
     config.device = device;

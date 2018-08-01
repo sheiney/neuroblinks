@@ -15,26 +15,28 @@ if strcmp(get(handles.pushbutton_StartStopPreview, 'String'), 'Start Preview')
     % Send camera preview to GUI
     for i = 1:length(cameras)
 
+        camAxStr = sprintf('cameraAx%d', i);
+
         imx = metadata.cam(i).camera_ROIposition(1) + [1:metadata.cam(i).camera_ROIposition(3)];
         imy = metadata.cam(i).camera_ROIposition(2) + [1:metadata.cam(i).camera_ROIposition(4)];
-        handles.pwin{i} = image(imx, imy, zeros(metadata.cam(i).camera_ROIposition([4 3])), 'Parent', handles.cameraAx{i});
+        handles.pwin{i} = image(imx, imy, zeros(metadata.cam(i).camera_ROIposition([4 3])), 'Parent', handles.(camAxStr));
         
         preview(cameras{i}, handles.pwin{i});
-        set(handles.cameraAx{i}, 'XLim', 0.5 + metadata.cam(i).fullsize([1 3]))
-        set(handles.cameraAx{i}, 'YLim', 0.5 + metadata.cam(i).fullsize([2 4]))
-        hp = findobj(handles.cameraAx{i},'Tag','roipatch');  delete(hp)
+        set(handles.(camAxStr), 'XLim', 0.5 + metadata.cam(i).fullsize([1 3]))
+        set(handles.(camAxStr), 'YLim', 0.5 + metadata.cam(i).fullsize([2 4]))
+        hp = findobj(handles.(camAxStr),'Tag','roipatch');  delete(hp)
 
-        if isfield(handles,'XY')
-            handles.roipatch{i} = patch(handles.XY(:, 1), handles.XY(:, 2), 'g', 'FaceColor', 'none', 'EdgeColor', 'g', 'Tag', 'roipatch');
-        end
+        % if isfield(handles,'XY')
+        %     handles.roipatch{i} = patch(handles.XY(:, 1), handles.XY(:, 2), 'g', 'FaceColor', 'none', 'EdgeColor', 'g', 'Tag', 'roipatch');
+        % end
         
     end
 
-    ht = findobj(handles.cameraAx{1}, 'Tag', 'trialtimecounter');
+    ht = findobj(handles.cameraAx1, 'Tag', 'trialtimecounter');
     delete(ht)
     
     % Put countdown on first preview window
-    axes(handles.cameraAx{1})
+    axes(handles.cameraAx1)
     handles.trialtimecounter = text(630,470, ' ', 'Color', 'w', 'HorizontalAlignment', 'Right',...
         'VerticalAlignment', 'Bottom', 'Visible', 'Off', 'Tag', 'trialtimecounter',...
         'FontSize', 18);
