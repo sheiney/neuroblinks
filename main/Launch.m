@@ -1,9 +1,5 @@
 function launch(config)
 
-% Load local configuration for these rigs
-rig_config;
-user_config;
-
 %% Open GUI
 clear MainWindow;    % Need to do this to clear persisent variables defined within MainWindow and subfunctions
 gui.maingui = MainWindow;

@@ -132,7 +132,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 metadata=getappdata(0,'metadata');
-set(hObject,'String',num2str(metadata.cam.trialnum));
+set(hObject,'String',num2str(metadata.cam(1).trialnum));
 
 % --- Executes on button press in pushbutton_ok.
 function pushbutton_ok_Callback(hObject, eventdata, handles)

@@ -13,5 +13,8 @@ config.trialtable=makeTrialTable(config.paramtable.data,config.paramtable.random
 
 % GUI layout
 % -- specify the location of bottomleft corner of MainWindow & AnalysisWindow  --
-config.pos_mainwindow=[5,50];     config.size_mainwindow=[840 600]; 
-config.pos_analysiswindow=[5 45];    config.size_analysiswindow=[560 380];   
+config.pos_mainwindow=[5,50];     
+config.size_mainwindow=[840 600]; 
+
+config.pos_analysiswindow=[5 45];    
+config.size_analysiswindow=[560 380];   

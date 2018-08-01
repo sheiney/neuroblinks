@@ -32,3 +32,4 @@ if isfield(config, 'paramtable')
 end
 
 setappdata(0, 'metadata', metadata);
+setappdata(0, 'config', config);

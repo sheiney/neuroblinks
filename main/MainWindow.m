@@ -65,7 +65,7 @@ function pushbutton_quit_Callback(hObject, eventdata, handles)
 camera=getappdata(0,'camera');
 gui=getappdata(0,'gui');
 metadata=getappdata(0,'metadata');
-arduino=getappdata(0,'arduino');
+microController=getappdata(0,'microController');
 
 button=questdlg('Are you sure you want to quit?','Quit?');
 if ~strcmpi(button,'Yes')
@@ -75,8 +75,8 @@ end
 set(handles.togglebutton_stream,'Value',0);
 
 try
-    fclose(arduino);
-    delete(arduino);
+    fclose(microController);
+    delete(microController);
     delete(camera);
     rmappdata(0,'src');
     rmappdata(0,'camera');
@@ -165,9 +165,9 @@ start(camera)
 
 metadata.cam(1).cal=0;
 metadata.ts(2)=etime(clock,datevec(metadata.ts(1)));
-% --- trigger via arduino --
-arduino=getappdata(0,'arduino');
-fwrite(arduino,1,'int8');
+% --- trigger via microController --
+microController=getappdata(0,'microController');
+fwrite(microController,1,'int8');
 
 setappdata(0,'metadata',metadata);
 
@@ -294,7 +294,8 @@ switch get(eventdata.NewValue, 'Tag') % Get Tag of selected object.
         elseif isempty(dlgans{1})
             ok=0;
         else
-            ok=1;  session=dlgans{1};
+            ok=1;  
+            session=dlgans{1};
             set(handles.checkbox_save_metadata, 'Value', 0);
         end
 
@@ -307,14 +308,16 @@ switch get(eventdata.NewValue, 'Tag') % Get Tag of selected object.
         switch button
             
             case 'Yes and compress videos'
-                session='s00';     ok=1;
+                session='s00';     
+                ok=1;
                 stopStreaming(handles);
                 stopPreview(handles);
                 
                 makeCompressedVideos(metadata.folder,1);
                 
             case 'Yes and DON''T compress videos'
-                session='s00';     ok=1;
+                session='s00';     
+                ok=1;
                 stopStreaming(handles);
                 stopPreview(handles);
                 
@@ -337,7 +340,7 @@ else
     set(handles.uipanel_SessionMode,'SelectedObject',eventdata.OldValue);
     return
 end
-ResetCamTrials()
+
 set(handles.text_SessionName,'String',session);
 metadata=getappdata(0,'metadata');
 metadata.basename=sprintf('%s_%s_%s', metadata.mouse, datestr(now,'yymmdd'),session);

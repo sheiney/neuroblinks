@@ -5,6 +5,10 @@ function neuroblinks(varargin)
     % Should be somewhere in path but not "neuroblinks" directory or subdirectory
     neuroblinks_config
 
+    % Load local configuration for these rigs
+    rig_config;
+    user_config;
+
     % Set up defaults in case user doesn't specify all options
     rig = DEFAULTRIG;
     device = DEFAULTDEVICE;
@@ -13,9 +17,9 @@ function neuroblinks(varargin)
     % Values passed override defaults set in neuroblinks_config
     if nargin > 0
         for i=1:nargin
-            if any(strcmpi(varargin{i},ALLOWEDDEVICES))
+            if any(strcmpi(varargin{i},config.ALLOWEDDEVICES))
                 device = varargin{i};
-            elseif ismember(varargin{i},1:length(ALLOWEDCAMS))
+            elseif ismember(varargin{i},1:length(config.CAMERA1_IDS))
                 rig = varargin{i}; 
             end
         end
