@@ -3,31 +3,8 @@ function startTrial(handles)
 refreshParams(handles)
 uploadParams()
 metadata = getappdata(0, 'metadata');
-camera = getappdata(0, 'camera');
-src = getappdata(0, 'src');
-camera.TriggerRepeat = 0;
+cameras = getappdata(0, 'cameras');
 
-camera.StopFcn = @endOfTrial;
-
-flushdata(camera); % Remove any data from buffer before triggering
-
-% Set camera to hardware trigger mode
-src.FrameStartTriggerSource = 'Line1';
-camera.FramesPerTrigger = metadata.cam(1).fps * (sum(metadata.cam(1).time) / 1e3);
-
-% Now get camera ready for acquisition -- shouldn't start yet
-start(camera)
-
-% For triggering camera 2
-if isappdata(0, 'cam2')
-    cam2 = getappdata(0, 'cam2');
-    camera2 = getappdata(0, 'camera2');
-    if strcmp(cam2.triggermode, 'Sync trials')
-        camera2.FramesPerTrigger = frames_per_trial;
-%         camera2.TriggerRepeat = 0;
-        startCamera2()  % will wait for primary camera to be triggered before actually triggering the camera
-    end
-end
 
 metadata.ts(2) = etime(clock, datevec(metadata.ts(1)));
 

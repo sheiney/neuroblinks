@@ -2,15 +2,22 @@ function startCamera(n)
 
 cameras = getappdata(0,'cameras');
 metadata = getappdata(0,'metadata');
+config = getappdata(0, 'config')
 
 src = getselectedsource(cameras{n});
 
 % Need to set different property here depending on camera capabilities
-if isprop(src,'FrameStartTriggerSource')
-    src.FrameStartTriggerSource = 'Line1';  % Switch from free run to TTL mode
+if isprop(src, 'FrameStartTriggerSource')
+    src.FrameStartTriggerSource = config.camera{n}.triggermode;
+elseif isprop(src, 'TriggerSource')
+    src.TriggerSource = config.camera{n}.triggermode;
 else
-    src.TriggerSource = 'Line1';
+    % Do nothing. Camera doesn't have this property?
+    warning('Camera %d does not have Trigger Source property', n)
 end
+
+cameras{n}.TriggerRepeat = 0;
+cameras{n}.FramesPerTrigger = metadata.cam(n).fps * (sum(metadata.cam(n).time) / 1e3);
 
 % if strcmp(cameras{n}.triggermode,'Manual to disk')
 %     % We have to set up the video writer object here 
@@ -23,7 +30,10 @@ end
 %     cameras{n}.DiskLogger = [];
 % end
 
-cameras{n}.StopFcn = {@stopCameraCallback, n};
+% cameras{n}.StopFcn = {@stopCameraCallback, n};
+if n == 1   % Use Camera 1 as master timer of acquisition
+    cameras{n}.StopFcn = @endOfTrial;
+end
 
 flushdata(cameras{n})
 start(cameras{n})

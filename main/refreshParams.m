@@ -1,13 +1,15 @@
 function refreshParams(handles)
 metadata = getappdata(0, 'metadata');
-trials = getappdata(0, 'trials');
 
-trials.savematadata = get(handles.checkbox_save_metadata, 'Value');
 val = get(handles.popupmenu_stimtype, 'Value');
 str = get(handles.popupmenu_stimtype, 'String');
 metadata.stim.type = str{val};
-if metadata.cam(1).cal, metadata.stim.type = 'Puff'; end % for Cal
 
+if metadata.cam(1).cal 
+    metadata.stim.type = 'Puff'; % for Calibration trial
+end 
+
+% First reset everything, then we'll read from trial table
 metadata.stim.c.csdur = 0;
 metadata.stim.c.csnum = 0;
 metadata.stim.c.isi = 0;
@@ -21,6 +23,7 @@ metadata.stim.l.amp = 0;
 
 metadata.stim.p.puffdur = str2double(get(handles.edit_puffdur, 'String'));
 
+% TODO: Refactor trialvars to use enumeration "type" rather than numbers
 switch lower(metadata.stim.type)
     case 'none'
         metadata.stim.totaltime = 0;
@@ -55,4 +58,3 @@ metadata.cam(1).time(2) = str2double(get(handles.edit_posttime, 'String'));
 metadata.now = now;
 
 setappdata(0, 'metadata', metadata);
-setappdata(0, 'trials', trials);

@@ -182,7 +182,6 @@ end
 
 % Place resizeable ellipse on camera
 h=imellipse(ha,winpos);
-% h=imrect(handles.cameraAx,winpos);	% can alternatively do a rectangle
 fcn = makeConstrainToRectFcn('imellipse',get(ha,'XLim'),get(ha,'YLim'));
 setPositionConstraintFcn(h,fcn);
 

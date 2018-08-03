@@ -3,7 +3,7 @@ function endOfTrial(obj, event)
 % function depending on whether or not data should be saved
 
 gui = getappdata(0, 'gui'); 
-src = getappdata(0, 'src');
+cameras = getappdata(0, 'cameras');
 
 handles = guidata(gui.maingui);
 
@@ -13,9 +13,15 @@ else
     nosavetrial();  
 end
 
-% Set camera to freerun mode so we can preview
-if isprop(src, 'FrameStartTriggerSource')
-    src.FrameStartTriggerSource = 'Freerun';
-else
-    src.TriggerSource = 'Freerun';
+for i=1:length(cameras)
+    src = getselectedsource(cameras{i});
+    % Set camera to freerun mode so we can preview
+    if isprop(src, 'FrameStartTriggerSource')
+        src.FrameStartTriggerSource = 'Freerun';
+    elseif isprop(src, 'TriggerSource')
+        src.TriggerSource = 'Freerun';
+    else
+        % Do nothing. Camera doesn't have this property?
+        warning('Camera %d does not have Trigger Source property', i)
+    end
 end

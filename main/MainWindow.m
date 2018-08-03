@@ -116,11 +116,11 @@ else
 end
 
 % Place rectangle on camera
-% h=imrect(handles.cameraAx1,winpos);
-h=imellipse(handles.cameraAx1,winpos);
+% h=imrect(handles.cameraAx(1),winpos);
+h=imellipse(handles.cameraAx(1),winpos);
 
-% fcn = makeConstrainToRectFcn('imrect',get(handles.cameraAx1,'XLim'),get(handles.cameraAx1,'YLim'));
-fcn = makeConstrainToRectFcn('imellipse',get(handles.cameraAx1,'XLim'),get(handles.cameraAx1,'YLim'));
+% fcn = makeConstrainToRectFcn('imrect',get(handles.cameraAx(1),'XLim'),get(handles.cameraAx(1),'YLim'));
+fcn = makeConstrainToRectFcn('imellipse',get(handles.cameraAx(1),'XLim'),get(handles.cameraAx(1),'YLim'));
 setPositionConstraintFcn(h,fcn);
 
 % metadata.cam(1).winpos=round(wait(h));
@@ -134,7 +134,7 @@ binframe=im2bw(wholeframe,metadata.cam(1).thresh);
 eyeframe=binframe.*metadata.cam(1).mask;
 metadata.cam(1).pixelpeak=sum(sum(eyeframe));
 
-hp=findobj(handles.cameraAx1,'Tag','roipatch');
+hp=findobj(handles.cameraAx(1),'Tag','roipatch');
 delete(hp)
 % handles.roipatch=patch([xmin,xmin+width,xmin+width,xmin],[ymin,ymin,ymin+height,ymin+height],'g','FaceColor','none','EdgeColor','g','Tag','roipatch');
 % XY=getVertices(h);

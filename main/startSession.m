@@ -6,11 +6,11 @@ config = getappdata(0, 'config');
 initializeSession(config);
 
 % Add cameras and connect
-cameras{1} = addCam(config.CAMERA1_IDS{config.rig}, config);
+cameras{1} = addCam(config.camera{1}.IDS{config.rig}, config);
 configureBaslerAce(cameras{1}, config);
  % Start preview in new window
 
-cameras{2} = addCam(config.CAMERA2_IDS{config.rig}, config);
+cameras{2} = addCam(config.camera{2}.IDS{config.rig}, config);
 configureBaslerPulse(cameras{2}, config);
  % Start preview in new window
 

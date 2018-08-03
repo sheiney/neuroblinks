@@ -19,7 +19,7 @@ function neuroblinks(varargin)
         for i=1:nargin
             if any(strcmpi(varargin{i},config.ALLOWEDDEVICES))
                 device = varargin{i};
-            elseif ismember(varargin{i},1:length(config.CAMERA1_IDS))
+            elseif ismember(varargin{i},1:length(config.camera{1}.IDS))
                 rig = varargin{i}; 
             end
         end

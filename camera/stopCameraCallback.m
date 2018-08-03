@@ -1,11 +1,19 @@
 function stopCameraCallback(camera, event, n)
 
 % NOTE: this function is currently overlapping with endOfTrial and saveTrial
+% Need to use this version with multiple triggered cameras
 
-src = getselectedsource(camera{n});
+gui = getappdata(0, 'gui'); 
+handles = guidata(gui.maingui);
+
+src = getselectedsource(camera);
 metadata = getappdata(0,'metadata');
 
-[vid, vid_ts] = getdata(cameras{n}, cameras{n}.FramesAvailable);
+if get(handles.checkbox_record, 'Value') == 1  
+    
+end
+
+[vid, vid_ts] = getdata(camera, camera.FramesAvailable);
 
 videoname=sprintf('%s\\%s_cam%02d_%03d', metadata.folder, metadata.basename, n, metadata.cam(n).trialnum);
 
