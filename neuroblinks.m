@@ -4,6 +4,14 @@ function neuroblinks(varargin)
     % Load local configuration for these rigs
     % Should be somewhere in path but not "neuroblinks" directory or subdirectory
     neuroblinks_config
+    
+    [basedir, mfile, ext] = fileparts(mfilename('fullpath'));
+    oldpath = addpath(genpath(fullfile(basedir)));
+
+    % Special case if we just want to set up path but not launch full program
+    if varargin{1} == 0
+        return
+    end
 
     % Load local configuration for these rigs
     rig_config;
@@ -16,19 +24,14 @@ function neuroblinks(varargin)
     % Input parsing
     % Values passed override defaults set in neuroblinks_config
     if nargin > 0
-        for i=1:nargin
-            if any(strcmpi(varargin{i},config.ALLOWEDDEVICES))
+        for i = 1:nargin
+            if any(strcmpi(varargin{i}, config.ALLOWEDDEVICES))
                 device = varargin{i};
-            elseif ismember(varargin{i},1:length(config.camera{1}.IDS))
+            elseif ismember(varargin{i}, 1:length(config.camera{1}.IDS))
                 rig = varargin{i}; 
             end
         end
     end
-
-    % fprintf('Device: %s, Rig: %d\n', device, rig);
-    % return
-    [basedir,mfile,ext]=fileparts(mfilename('fullpath'));
-    oldpath=addpath(genpath(fullfile(basedir)));
 
     config.rig = rig;
     config.device = device;

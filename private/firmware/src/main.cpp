@@ -43,6 +43,7 @@ const int stim2pinMapping[10] {
 // Task variables (time in ms, freq in hz) - can be updated from Matlab
 // All param_* variables must be 16-bit ints or else they will screw up Serial communication
 //    and get mangled
+// TODO: Turn "param" into an array and use specific parameters mapped as integers as indices
 int param_campretime = 200;
 int param_camposttime = 800;
 int param_csdur = 500;
@@ -142,11 +143,11 @@ void loop() {
   else {
       checkVars();
       if (Serial.available() > 0) {
-          if (Serial.peek() == 1) { // This is the header for triggering; difference from variable communication is that only one byte is sent telling to trigger
+          if (Serial.peek() == 255) { // This is the header for triggering; difference from variable communication is that only one byte is sent telling to trigger
               Serial.read();  // Clear the value from the buffer
               startTrial();
           }
-          else if (Serial.peek() ==2) {
+          else if (Serial.peek() == 254) {
             Serial.read();  // Clear the value from the buffer
             // We should eventually generalize this part for sending and receiving settings/data with Matlab
             sendEncoderData();

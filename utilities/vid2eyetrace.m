@@ -33,7 +33,8 @@ end
 t=st:sint:d*sint+st-sint;
 y=zeros(size(t));
 
-if w==1,  % ------- faster algorism --------
+if w==1  % ------- faster algorithm --------
+    
     binimage = (data>=thresh*256);
     binimage = (binimage & repmat(metadata.cam(1).mask,[1 1 c d]));
     tr=shiftdim(sum(sum(binimage,2),1),2); 

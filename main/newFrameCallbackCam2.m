@@ -6,8 +6,7 @@ function newFrameCallbackCam2(obj, event, himage)
     
     gui = getappdata(0, 'gui'); 
     handles = guidata(gui.maingui);
-    % camera = getappdata(0, 'camera');
-    src = getappdata(0, 'src');
+    % cameras = getappdata(0, 'cameras');
     metadata = getappdata(0, 'metadata');  
     
     

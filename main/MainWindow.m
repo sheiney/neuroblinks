@@ -299,7 +299,7 @@ switch get(eventdata.NewValue, 'Tag') % Get Tag of selected object.
             set(handles.checkbox_save_metadata, 'Value', 0);
         end
 
-        startSession;
+        ok = startSession;
 
     case 'togglebutton_StopSession'
         button=questdlg('Are you sure you want to stop this session?', 'Stop session?', ...

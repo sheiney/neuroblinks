@@ -1,9 +1,13 @@
-function startSession()
+function ok = startSession()
 
 config = getappdata(0, 'config');
 
 % Initialize session variables
-initializeSession(config);
+ok = initializeSession(config);
+
+if ~ok
+    return
+end
 
 % Add cameras and connect
 cameras{1} = addCam(config.camera{1}.IDS{config.rig}, config);

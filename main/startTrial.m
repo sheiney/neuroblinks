@@ -1,19 +1,19 @@
 function startTrial(handles)
 
+microControllerVariablesEnum;
+
 refreshParams(handles)
 uploadParams()
 metadata = getappdata(0, 'metadata');
-cameras = getappdata(0, 'cameras');
-
 
 metadata.ts(2) = etime(clock, datevec(metadata.ts(1)));
 
-
-% --- trigger via arduino --
-arduino = getappdata(0, 'arduino');
-fwrite(arduino, 1, 'int8');
+% --- trigger via microController --
+microController = getappdata(0, 'microController');
+fwrite(microController, uController.RUN, 'int8');
 
 % ---- write status bar ----
+% TODO: will need to rewrite this when trial vars start using enum
 set(handles.text_status, 'String', sprintf('Total trials: %d\n', metadata.cam(1).trialnum));
 if strcmpi(metadata.stim.type, 'conditioning')
     trialvars = readTrialTable(metadata.cam(1).trialnum + 1);
@@ -33,4 +33,5 @@ if strcmpi(metadata.stim.type, 'conditioning')
     str1 = sprintf('Next:  No %d,  CS ch %d%s,  ISI %d,  US %d, US ch %d', metadata.cam(1).trialnum + 1, csnum, str2, isi, usdur, usnum);
     set(handles.text_disp_cond, 'String', str1)
 end
+
 setappdata(0, 'metadata', metadata);

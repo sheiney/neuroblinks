@@ -4,6 +4,8 @@ function savetrial()
 % 4096 counts = 1 revolution = 15.24*pi cm for 6 inch diameter cylinder
 counts2cm = @(count) double(count) ./ 4096 .* 15.24 .* pi; 
 
+microControllerVariablesEnum;
+
 % Load objects from root app data
 cameras=getappdata(0, 'cameras');
 metadata = getappdata(0, 'metadata');
@@ -18,16 +20,16 @@ if isappdata(0, 'microController')
     fread(microController, microController.BytesAvailable); % Clear input buffer
   end
 
-  fwrite(microController, 2, 'uint8');  % Tell microController we're ready for it to send the data
+  fwrite(microController, uController.REQUESTDATA, 'uint8');  % Tell microController we're ready for it to send the data
 
   data_header = (fread(microController, 1, 'uint8'));
-  if data_header == 100
+  if data_header == uController.ENCODERCOUNTS
     encoder.counts = (fread(microController, 200, 'int32'));
     encoder.displacement = counts2cm(encoder.counts - encoder.counts(1));
   end
 
   time_header = (fread(microController, 1, 'uint8'));
-  if time_header == 101
+  if time_header == uController.ENCODERTIME
     encoder.time = (fread(microController, 200, 'uint32'));
     encoder.time = encoder.time - encoder.time(1);
   end
