@@ -80,7 +80,7 @@ bool RUNNING = false;
 Stimulus camera(0, param_campretime + param_camposttime, digitalOn, digitalOff, pin_camera);
 Stimulus CS(param_campretime, param_csdur, digitalOn, digitalOff, stim2pinMapping[param_csch]);
 Stimulus US(param_campretime + param_ISI, param_usdur, digitalOn, digitalOff, stim2pinMapping[param_usch]);
-StimulusRepeating laser(param_campretime + param_laserdelay, param_laserdur, laserOn, laserOff, 0, param_laserperiod, param_lasernumpulses);
+// StimulusRepeating laser(param_campretime + param_laserdelay, param_laserdur, laserOn, laserOff, 0, param_laserperiod, param_lasernumpulses);
 
 SensorRepeating enc(0, takeEncoderReading, param_encoderperiod, param_encodernumreadings);
 
@@ -109,11 +109,11 @@ void setup() {
 
   // set your ssPin to LOW too. when you have more external chips to control, you will have to be more careful about this step (ssPin LOW means the chip will respond to SPI commands)
   digitalWrite(pin_ss, LOW);
-  SPI.begin();
-  SPI.setBitOrder(MSBFIRST);  // if you are using the MCP4131
+//   SPI.begin();
+//   SPI.setBitOrder(MSBFIRST);  // if you are using the MCP4131
 
   Serial.begin(115200);
-  Wire.begin();
+//   Wire.begin();
 
   DACWrite(0);
 }
@@ -130,7 +130,7 @@ void loop() {
       // We explicitly check for zero durations to prevent stimuli from flashing on briefly when update() called and duration is zero
       if (param_csdur > 0) { CS.update(); }
       if (param_usdur > 0) { US.update(); }
-      if (param_laserdur > 0) { laser.update(); }
+    //   if (param_laserdur > 0) { laser.update(); }
 
       camera.update();
 
@@ -177,29 +177,33 @@ void checkVars() {
 
     // If you add a new case don't forget to put a break statement after it; c-style switches run through
     switch (header) {
-      case 3:
+      case 1:
         param_campretime = value;
         break;
-      case 4:
-        param_csch = value;
-        break;
-      case 5:
-        param_csdur = value;
-        break;
-      case 6:
-        param_usdur = value;
-        break;
-      case 7:
-        param_ISI = value;
-        break;
-      case 8:
-        param_tonefreq = value;
-        break;
-      case 9:
+      case 2:
         param_camposttime = value;
         break;
-      case 10:
+      case 3:
+        param_csch = value;
+        break;
+      case 4:
+        param_csdur = value;
+        break;
+      case 5:
+        param_csintensity = value;
+        // setDiPoValue(param_csintensity);
+        break;
+      case 6:
         param_usch = value;
+        break;
+      case 7:
+        param_usdur = value;
+        break;
+      case 9:
+        param_ISI = value;
+        break;
+      case 10:
+        param_tonefreq = value;
         break;
       case 11:
         param_laserdelay = value;
@@ -209,10 +213,6 @@ void checkVars() {
         break;
       case 13:
         param_laserpower = value;
-        break;
-      case 14:
-        param_csintensity = value;
-        setDiPoValue(param_csintensity);
         break;
       case 15:
         param_laserperiod = value;
@@ -238,10 +238,10 @@ void configureTrial() {
     US.setDuration(param_usdur);
     US.setFunctionArg(stim2pinMapping[param_usch]);
 
-    laser.setDelay(param_campretime + param_laserdelay);
-    laser.setDuration(param_laserdur);
-    laser.setPeriod(param_laserperiod);
-    laser.setNumRepeats(param_lasernumpulses);
+    // laser.setDelay(param_campretime + param_laserdelay);
+    // laser.setDuration(param_laserdur);
+    // laser.setPeriod(param_laserperiod);
+    // laser.setNumRepeats(param_lasernumpulses);
 
 }
 
@@ -263,7 +263,7 @@ void startTrial() {
     // duration of zero means it's not supposed to run on this trial so don't bother to start it
     if (param_csdur > 0) { CS.start(); }
     if (param_usdur > 0) { US.start(); }
-    if (param_laserdur > 0) { laser.start(); }
+    // if (param_laserdur > 0) { laser.start(); }
 
 }
 
@@ -275,7 +275,7 @@ void endOfTrial() {
     // These should already be stopped if we timed things well but we'll do it again just to be safe
     CS.stop();
     US.stop();
-    laser.stop();
+    // laser.stop();
     enc.stop();
     camera.stop(); // Should already be stopped if this function was called
 
