@@ -4,8 +4,8 @@
 //       For instance https://github.com/siggiorn/arduino-buffered-serial
 
 #include "main.hpp"
-#include <Encoder.h>
-#include <tone.hpp>
+// #include <Encoder.h>
+// #include <tone.hpp>      // Only required for Due, otherwise included in Arduino library
 
 // Stimulus channels (as defined in Matlab code)
 const int ch_led = 1;
@@ -84,7 +84,7 @@ Stimulus US(param_campretime + param_ISI, param_usdur, digitalOn, digitalOff, st
 
 SensorRepeating enc(0, takeEncoderReading, param_encoderperiod, param_encodernumreadings);
 
-Encoder cylEnc(2, 3); // pins used should have interrupts, e.g. 2 and 3
+// Encoder cylEnc(2, 3); // pins used should have interrupts, e.g. 2 and 3
 
 // The setup routine runs once when you press reset or get reset from Serial port
 void setup() {

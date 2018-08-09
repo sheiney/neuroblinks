@@ -7,7 +7,7 @@ gui = getappdata(0, 'gui');
 % if ~isfield(metadata.cam(1),'fullsize')
 %     metadata.cam(1).fullsize = [0 0 640 480];
 % end
-% metadata.cam(1).camera_ROIposition=camera.ROIposition;
+% metadata.cam(1).ROIposition=camera.ROIposition;
 
 % Start/Stop Camera
 if strcmp(get(handles.pushbutton_StartStopPreview, 'String'), 'Start Preview')
@@ -16,11 +16,14 @@ if strcmp(get(handles.pushbutton_StartStopPreview, 'String'), 'Start Preview')
     % Send camera preview to GUI
     for i = 1:length(cameras)
 
-        imx = metadata.cam(i).camera_ROIposition(1) + [1:metadata.cam(i).camera_ROIposition(3)];
-        imy = metadata.cam(i).camera_ROIposition(2) + [1:metadata.cam(i).camera_ROIposition(4)];
-        handles.pwin{i} = image(imx, imy, zeros(metadata.cam(i).camera_ROIposition([4 3])), 'Parent', gui.cameraAx(i));
+        imx = metadata.cam(i).ROIposition(1) + [1:metadata.cam(i).ROIposition(3)];
+        imy = metadata.cam(i).ROIposition(2) + [1:metadata.cam(i).ROIposition(4)];
+        handles.pwin{i} = image(imx, imy, zeros(metadata.cam(i).ROIposition([4 3])), 'Parent', gui.cameraAx(i));
         
+        % Turn off warnings to suppress message about trigger mode
+        warning('off')
         preview(cameras{i}, handles.pwin{i});
+        warning('on')
         set(gui.cameraAx(i), 'XLim', 0.5 + metadata.cam(i).fullsize([1 3]))
         set(gui.cameraAx(i), 'YLim', 0.5 + metadata.cam(i).fullsize([2 4]))
         hp = findobj(gui.cameraAx(i),'Tag','roipatch');  delete(hp)
@@ -47,4 +50,4 @@ else
 end
 
 setappdata(0,'metadata', metadata);
-guidata(hObject, handles))
+% guidata(hObject, handles)

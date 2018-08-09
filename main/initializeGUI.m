@@ -19,10 +19,10 @@ metadata.stim.c.ITI = base_ITI + rand(1,1) * rand_ITI;
 metadata.trial_time_ms(1) = str2double(get(handles.edit_pretime, 'String'));
 metadata.trial_time_ms(2) = str2double(get(handles.edit_posttime, 'String'));
 
-config.trial_length_ms = sum(metadata.trial_time);
+config.trial_length_ms = sum(metadata.trial_time_ms);
 
-metadata.cam(1).frame_rate = config.cam(1).FrameRate;
-metadata.cam(2).frame_rate = config.cam(2).FrameRate;
+metadata.cam(1).frame_rate = config.camera(1).FrameRate;
+metadata.cam(2).frame_rate = config.camera(2).FrameRate;
 
 % pushbutton_StartStopPreview_Callback(handles.pushbutton_StartStopPreview, [], handles)
 

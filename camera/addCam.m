@@ -18,7 +18,7 @@ match=0;
 for i=1:length(founddeviceids)
     camera = videoinput(config.CAMADAPTOR, founddeviceids(i), 'Mono8');
     src = getselectedsource(camera);
-    if strcmp(src.DeviceID,serialNum)
+    if strcmp(src.DeviceSerialNumber,serialNum)
         match=1;
         break
     end

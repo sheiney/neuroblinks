@@ -1,4 +1,4 @@
-function varargout = camera2Window(varargin)
+function varargout = Camera2Window(varargin)
 % CAMERAWINDOW MATLAB code for cameraWindow.fig
 %      CAMERAWINDOW, by itself, creates a new CAMERAWINDOW or raises the existing
 %      singleton*.
@@ -28,8 +28,8 @@ function varargout = camera2Window(varargin)
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
                    'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @camera2Window_OpeningFcn, ...
-                   'gui_OutputFcn',  @camera2Window_OutputFcn, ...
+                   'gui_OpeningFcn', @Camera2Window_OpeningFcn, ...
+                   'gui_OutputFcn',  @Camera2Window_OutputFcn, ...
                    'gui_LayoutFcn',  [] , ...
                    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -45,7 +45,7 @@ end
 
 
 % --- Executes just before camera2Window is made visible.
-function camera2Window_OpeningFcn(hObject, eventdata, handles, varargin)
+function Camera2Window_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -64,7 +64,7 @@ guidata(hObject, handles);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = camera2Window_OutputFcn(hObject, eventdata, handles) 
+function varargout = Camera2Window_OutputFcn(hObject, eventdata, handles) 
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB

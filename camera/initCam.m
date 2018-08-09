@@ -19,7 +19,7 @@ cam_num = 0;
 for i=1:length(founddeviceids)
     camera = videoinput(config.CAMADAPTOR, founddeviceids(i), 'Mono8');
     src = getselectedsource(camera);
-    if strcmp(src.DeviceID, config.camera{1}.IDS{config.rig})
+    if strcmp(src.DeviceID, config.camera(1).IDS{config.rig})
         cam_num = i;
     end
     delete(camera)

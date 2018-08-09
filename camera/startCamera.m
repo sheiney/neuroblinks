@@ -6,15 +6,17 @@ config = getappdata(0, 'config')
 
 src = getselectedsource(cameras{n});
 
-% Need to set different property here depending on camera capabilities
-if isprop(src, 'FrameStartTriggerSource')
-    src.FrameStartTriggerSource = config.camera{n}.triggermode;
-elseif isprop(src, 'TriggerSource')
-    src.TriggerSource = config.camera{n}.triggermode;
-else
-    % Do nothing. Camera doesn't have this property?
-    warning('Camera %d does not have Trigger Source property', n)
-end
+% % Need to set different property here depending on camera capabilities
+% if isprop(src, 'FrameStartTriggerSource')
+%     src.FrameStartTriggerSource = config.camera{n}.triggermode;
+% elseif isprop(src, 'TriggerSource')
+%     src.TriggerSource = config.camera{n}.triggermode;
+% else
+%     % Do nothing. Camera doesn't have this property?
+%     warning('Camera %d does not have Trigger Source property', n)
+% end
+
+src.TriggerMode = 'On';
 
 cameras{n}.TriggerRepeat = 0;
 cameras{n}.FramesPerTrigger = metadata.cam(n).fps * (sum(metadata.cam(n).time) / 1e3);

@@ -1,9 +1,5 @@
 % Set up environment and launch app 
 function neuroblinks(varargin)
-
-    % Load local configuration for these rigs
-    % Should be somewhere in path but not "neuroblinks" directory or subdirectory
-    neuroblinks_config
     
     [basedir, mfile, ext] = fileparts(mfilename('fullpath'));
     oldpath = addpath(genpath(fullfile(basedir)));
@@ -14,6 +10,8 @@ function neuroblinks(varargin)
     end
 
     % Load local configuration for these rigs
+    % Should be somewhere in path but not "neuroblinks" directory or subdirectory
+    neuroblinks_config
     rig_config;
     user_config;
 
@@ -27,7 +25,7 @@ function neuroblinks(varargin)
         for i = 1:nargin
             if any(strcmpi(varargin{i}, config.ALLOWEDDEVICES))
                 device = varargin{i};
-            elseif ismember(varargin{i}, 1:length(config.camera{1}.IDS))
+            elseif ismember(varargin{i}, 1:length(config.camera(1).IDS))
                 rig = varargin{i}; 
             end
         end
@@ -37,4 +35,6 @@ function neuroblinks(varargin)
     config.device = device;
     config.oldpath = oldpath;   % save so we can restore later if desired
 
+    setappdata(0, 'config', config)
+    
     launch(config)
