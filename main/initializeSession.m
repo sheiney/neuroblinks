@@ -1,9 +1,10 @@
-function ok = initializeSession(config)
+function ok = initializeSession()
 % This is executed when user presses the button to start a new session in in the main GUI
 % Initializes per session variables, some of which can be loaded from mouse config files
 
 metadata=getappdata(0,'metadata');
 cameras=getappdata(0,'cameras');
+config=getappdata(0,'config');
 
 for i=1:length(cameras)
 
@@ -44,14 +45,17 @@ cd(fullfile(mousedir, datestr(now,'yymmdd')))
 condfile=fullfile(mousedir,'condparams.csv');
 
 if exist(condfile, 'file')
-    paramtable = getappdata(0,'paramtable');
+%     paramtable = getappdata(0,'paramtable');
 
-    paramtable.data=csvread(condfile);
-    paramtable.randomize=1;                 % Do we want to assume randomization here or read from gui?
-    trialtable=makeTrialTable(paramtable.data,paramtable.randomize);
+    config.paramtable.data = csvread(condfile);
+    config.paramtable.randomize = 1;                 % Do we want to assume randomization here or read from gui?
+    config.trialtable = makeTrialTable(config.paramtable.data, config.paramtable.randomize);
     
-    setappdata(0,'paramtable',paramtable);
-    setappdata(0,'trialtable',trialtable);
+%     setappdata(0,'paramtable',paramtable);
+%     setappdata(0,'trialtable',trialtable);
 end
 
 setappdata(0, 'metadata', metadata);
+setappdata(0, 'config', config);
+
+pause(0.1)

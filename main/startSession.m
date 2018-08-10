@@ -1,14 +1,14 @@
 function ok = startSession()
 
-config = getappdata(0, 'config');
-metadata = getappdata(0, 'metadata');
-
 % Initialize session variables
-ok = initializeSession(config);
+ok = initializeSession;
 
 if ~ok
     return
 end
+
+metadata = getappdata(0, 'metadata');
+config = getappdata(0, 'config');
 
 % Add cameras and connect
 cameras{1} = addCam(config.camera(1).IDS{config.rig}, config);
@@ -30,3 +30,5 @@ microController = connectMicrocontroller(config);
 setappdata(0, 'cameras', cameras)
 setappdata(0, 'microController', microController)
 setappdata(0, 'metadata', metadata)
+
+pause(0.1)

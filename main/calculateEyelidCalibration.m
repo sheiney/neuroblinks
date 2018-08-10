@@ -22,6 +22,6 @@ fprintf('calib_offset = %d.  calib_scale = %d.\n', calib_offset, calib_scale)
 fprintf('thresh = %d.\n', round(metadata.cam(1).thresh * 256))
 
 videoname = sprintf('%s\\%s_calib', metadata.folder, metadata.basename);
-save(videoname, 'vid', 'metadata')    
+save(videoname, 'vid', 'metadata', '-v6')    
 
 fprintf('Video from calibration trial successfully written to disk.\n')

@@ -150,28 +150,33 @@ guidata(hObject,handles)
 
 
 function pushbutton_calibrateEye_Callback(hObject, eventdata, handles)
-metadata=getappdata(0,'metadata'); 
 
 refreshParams(handles);
 uploadParams();
 
-camera=getappdata(0,'camera');
-camera.TriggerRepeat = 0;
-camera.StopFcn=@CalibrateEye;   % this will be executed after timer stop 
-flushdata(camera);         % Remove any data from buffer before triggering
+metadata=getappdata(0,'metadata'); 
+
+cameras=getappdata(0,'cameras');
+cameras{1}.TriggerRepeat = 0;
+cameras{1}.StopFcn=@CalibrateEye;   % this will be executed after timer stop 
+flushdata(cameras{1});         % Remove any data from buffer before triggering
 
 % Set camera to hardware trigger mode
-src.FrameStartTriggerSource = 'Line1';
+src = getselectedsource(cameras{1});
+% src.FrameStartTriggerSource = 'Line1';
+src.TriggerMode = 'On';     % Normally set it to hardware trigger
+% TODO: REMOVE THE FOLLOWING LINE BEFORE PRODUCTION
+src.TriggerMode = 'Off';    % For now override hardware trigger so we don't need Arduino connected
 
-start(camera)
+start(cameras{1})
 
-metadata.cam(1).cal=0;
-metadata.ts(2)=etime(clock,datevec(metadata.ts(1)));
+metadata.cam(1).cal = 0;
+metadata.ts(2) = etime(clock, datevec(metadata.ts(1)));
 % --- trigger via microController --
-microController=getappdata(0,'microController');
-fwrite(microController,1,'int8');
+microController=getappdata(0, 'microController');
+fwrite(microController, 255, 'int8');
 
-setappdata(0,'metadata',metadata);
+setappdata(0, 'metadata', metadata);
 
 
 % --- Executes on button press in togglebutton_tgframerate.
