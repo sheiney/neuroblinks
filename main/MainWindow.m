@@ -131,7 +131,7 @@ metadata.cam(1).winpos=round(getPosition(h));
 metadata.cam(1).winpos(1:2)=metadata.cam(1).winpos(1:2)-metadata.cam(1).ROIposition(1:2);
 metadata.cam(1).mask=createMask(h);
 
-wholeframe=getsnapshot(cameras{1});
+wholeframe=getsnapshot(cameras(1));
 binframe=im2bw(wholeframe,metadata.cam(1).thresh);
 eyeframe=binframe.*metadata.cam(1).mask;
 metadata.cam(1).pixelpeak=sum(sum(eyeframe));
@@ -163,18 +163,18 @@ end
 metadata=getappdata(0,'metadata'); 
 
 cameras=getappdata(0,'cameras');
-cameras{1}.TriggerRepeat = 0;
-cameras{1}.StopFcn=@CalibrateEye;   % this will be executed after timer stop 
-flushdata(cameras{1});         % Remove any data from buffer before triggering
+cameras(1).TriggerRepeat = 0;
+cameras(1).StopFcn=@CalibrateEye;   % this will be executed after timer stop 
+flushdata(cameras(1));         % Remove any data from buffer before triggering
 
 % Set camera to hardware trigger mode
-src = getselectedsource(cameras{1});
+src = getselectedsource(cameras(1));
 % src.FrameStartTriggerSource = 'Line1';
 src.TriggerMode = 'On';     % Normally set it to hardware trigger
 % TODO: REMOVE THE FOLLOWING LINE BEFORE PRODUCTION
 src.TriggerMode = 'Off';    % For now override hardware trigger so we don't need Arduino connected
 
-start(cameras{1})
+start(cameras(1))
 
 metadata.cam(1).cal = 0;
 metadata.ts(2) = etime(clock, datevec(metadata.ts(1)));
@@ -194,12 +194,12 @@ function togglebutton_tgframerate_Callback(hObject, eventdata, handles)
 % cameras=getappdata(0,'cameras');
 % metadata=getappdata(0,'metadata');
 
-% src = getselectedsource(cameras{1});
+% src = getselectedsource(cameras(1));
 
 % if get(hObject,'Value')
 %     % Turn on high frame rate mode
 %     metadata.cam(1).camera_ROIposition=max(metadata.cam(1).winpos+[-10 0 20 0],[0 0 0 0]);
-%     cameras{1}.ROIposition=metadata.cam(1).camera_ROIposition;
+%     cameras(1).ROIposition=metadata.cam(1).camera_ROIposition;
 % %     metadata.cam(1).fps=500;
 %     src.ExposureTimeAbs = 1900;
 % %     src.AllGainRaw=metadata.cam(1).init_AllGainRaw+round(20*log10(metadata.cam(1).init_ExposureTime/src.ExposureTimeAbs));

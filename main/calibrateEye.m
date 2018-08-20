@@ -4,9 +4,9 @@ disp('Delivering puff and saving calibration data.')
 
 cameras = getappdata(0, 'cameras');
 metadata = getappdata(0, 'metadata');
-src = getselectedsource(cameras{1});
+src = getselectedsource(cameras(1));
 
-[vid, vid_ts] = getdata(cameras{1}, cameras{1}.framesAvailable);
+[vid, vid_ts] = getdata(cameras(1), cameras(1).framesAvailable);
 
 % % Set camera to freerun mode so we can preview
 % if isprop(src,'FrameStartTriggerSource')

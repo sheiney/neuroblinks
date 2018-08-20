@@ -14,7 +14,7 @@ else
 end
 
 for i=1:length(cameras)
-    src = getselectedsource(cameras{i});
+    src = getselectedsource(cameras(i));
     % % Set camera to freerun mode so we can preview
     % if isprop(src, 'FrameStartTriggerSource')
     %     src.FrameStartTriggerSource = 'Freerun';

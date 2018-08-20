@@ -18,11 +18,11 @@ if strcmp(get(handles.pushbutton_StartStopPreview, 'String'), 'Start Preview')
 
         imx = metadata.cam(i).ROIposition(1) + [1:metadata.cam(i).ROIposition(3)];
         imy = metadata.cam(i).ROIposition(2) + [1:metadata.cam(i).ROIposition(4)];
-        handles.pwin{i} = image(imx, imy, zeros(metadata.cam(i).ROIposition([4 3])), 'Parent', gui.cameraAx(i));
+        handles.pwin(i) = image(imx, imy, zeros(metadata.cam(i).ROIposition([4 3])), 'Parent', gui.cameraAx(i));
         
         % Turn off warnings to suppress message about trigger mode
         warning('off')
-        preview(cameras{i}, handles.pwin{i});
+        preview(cameras(i), handles.pwin(i));
         warning('on')
         set(gui.cameraAx(i), 'XLim', 0.5 + metadata.cam(i).fullsize([1 3]))
         set(gui.cameraAx(i), 'YLim', 0.5 + metadata.cam(i).fullsize([2 4]))
