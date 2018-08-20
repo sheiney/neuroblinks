@@ -58,3 +58,5 @@ metadata.cam(1).time(2) = str2double(get(handles.edit_posttime, 'String'));
 metadata.now = now;
 
 setappdata(0, 'metadata', metadata);
+
+drawnow         % Seems necessary to update appdata before returning to calling function

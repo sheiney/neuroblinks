@@ -31,4 +31,6 @@ setappdata(0, 'cameras', cameras)
 setappdata(0, 'microController', microController)
 setappdata(0, 'metadata', metadata)
 
-pause(0.1)
+drawnow         % Seems necessary to update appdata before returning to calling function
+
+disp('Ready')

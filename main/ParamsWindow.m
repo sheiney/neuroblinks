@@ -88,6 +88,7 @@ metadata.mouse=get(hObject,'String');
 
 setappdata(0,'metadata',metadata);
 
+drawnow         % Seems necessary to update appdata before returning to calling function
 
 % --- Executes during object creation, after setting all properties.
 function edit_mouseName_CreateFcn(hObject, eventdata, handles)
@@ -118,6 +119,8 @@ metadata.cam(1).trialnum=str2double(get(hObject,'String'));
 metadata.cam(2).trialnum=str2double(get(hObject,'String'));
 
 setappdata(0,'metadata',metadata);
+
+drawnow         % Seems necessary to update appdata before returning to calling function
 
 % --- Executes during object creation, after setting all properties.
 function edit_trialNum_CreateFcn(hObject, eventdata, handles)

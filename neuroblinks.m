@@ -36,5 +36,7 @@ function neuroblinks(varargin)
     config.oldpath = oldpath;   % save so we can restore later if desired
 
     setappdata(0, 'config', config)
+
+    drawnow         % Seems necessary to update appdata before calling new function
     
     launch(config)

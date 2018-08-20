@@ -63,7 +63,7 @@ togglePreview(handles);
 
 
 function pushbutton_quit_Callback(hObject, eventdata, handles)
-camera=getappdata(0,'camera');
+cameras=getappdata(0,'cameras');
 gui=getappdata(0,'gui');
 metadata=getappdata(0,'metadata');
 microController=getappdata(0,'microController');
@@ -78,7 +78,7 @@ set(handles.togglebutton_stream,'Value',0);
 try
     fclose(microController);
     delete(microController);
-    delete(camera);
+    delete(cameras);
     rmappdata(0,'src');
     rmappdata(0,'camera');
 catch err
@@ -147,12 +147,18 @@ handles.XY=XY;
 setappdata(0,'metadata',metadata);
 guidata(hObject,handles)
 
+drawnow         % Seems necessary to update appdata before returning to calling function
 
 
 function pushbutton_calibrateEye_Callback(hObject, eventdata, handles)
 
 refreshParams(handles);
-uploadParams();
+ok = uploadParams();
+
+if ~ok
+    msgbox('Problem communicating with Microcontroller, aborting calibration')
+    return
+end
 
 metadata=getappdata(0,'metadata'); 
 
@@ -178,49 +184,53 @@ fwrite(microController, 255, 'int8');
 
 setappdata(0, 'metadata', metadata);
 
+drawnow         % Seems necessary to update appdata before returning to calling function
 
 % --- Executes on button press in togglebutton_tgframerate.
 function togglebutton_tgframerate_Callback(hObject, eventdata, handles)
 
-camera=getappdata(0,'camera');
-src=getappdata(0,'src');
-metadata=getappdata(0,'metadata');
+    % Not currently implemented -- need to rewrite
 
-if get(hObject,'Value')
-    % Turn on high frame rate mode
-    metadata.cam(1).camera_ROIposition=max(metadata.cam(1).winpos+[-10 0 20 0],[0 0 0 0]);
-    camera.ROIposition=metadata.cam(1).camera_ROIposition;
-%     metadata.cam(1).fps=500;
-    src.ExposureTimeAbs = 1900;
-%     src.AllGainRaw=metadata.cam(1).init_AllGainRaw+round(20*log10(metadata.cam(1).init_ExposureTime/src.ExposureTimeAbs));
-    % --- size fit for roi and mask ----
-    vidroi_x=metadata.cam(1).camera_ROIposition(1)+[1:metadata.cam(1).camera_ROIposition(3)];
-    vidroi_y=metadata.cam(1).camera_ROIposition(2)+[1:metadata.cam(1).camera_ROIposition(4)];
-    metadata.cam(1).mask = metadata.cam(1).mask(vidroi_y, vidroi_x);
-    metadata.cam(1).winpos(1:2)=metadata.cam(1).winpos(1:2)-metadata.cam(1).camera_ROIposition(1:2);
-else
-    % Turn off high frame rate mode
-    camera.ROIposition=metadata.cam(1).fullsize;
-%     metadata.cam(1).fps=200;
-    src.ExposureTimeAbs = metadata.cam(1).init_ExposureTime;
-%     src.AllGainRaw=metadata.cam(1).init_AllGainRaw;
-    % --- size fit for roi and mask ----
-    mask0=metadata.cam(1).mask; s_mask0=size(mask0);
-    metadata.cam(1).mask = false(metadata.cam(1).fullsize([4 3]));
-    metadata.cam(1).mask(metadata.cam(1).camera_ROIposition(2)+[1:s_mask0(1)], metadata.cam(1).camera_ROIposition(1)+[1:s_mask0(2)])=mask0;
-    metadata.cam(1).winpos(1:2)=metadata.cam(1).winpos(1:2)+metadata.cam(1).camera_ROIposition(1:2);
-    metadata.cam(1).camera_ROIposition=metadata.cam(1).fullsize;
-end
+% cameras=getappdata(0,'cameras');
+% metadata=getappdata(0,'metadata');
 
-pushbutton_StartStopPreview_Callback(handles.pushbutton_StartStopPreview, [], handles)
-pause(0.02)
-pushbutton_StartStopPreview_Callback(handles.pushbutton_StartStopPreview, [], handles)
+% src = getselectedsource(cameras{1});
 
-setappdata(0,'camera',camera);
-setappdata(0,'src',src);
-setappdata(0,'metadata',metadata);
+% if get(hObject,'Value')
+%     % Turn on high frame rate mode
+%     metadata.cam(1).camera_ROIposition=max(metadata.cam(1).winpos+[-10 0 20 0],[0 0 0 0]);
+%     cameras{1}.ROIposition=metadata.cam(1).camera_ROIposition;
+% %     metadata.cam(1).fps=500;
+%     src.ExposureTimeAbs = 1900;
+% %     src.AllGainRaw=metadata.cam(1).init_AllGainRaw+round(20*log10(metadata.cam(1).init_ExposureTime/src.ExposureTimeAbs));
+%     % --- size fit for roi and mask ----
+%     vidroi_x=metadata.cam(1).camera_ROIposition(1)+[1:metadata.cam(1).camera_ROIposition(3)];
+%     vidroi_y=metadata.cam(1).camera_ROIposition(2)+[1:metadata.cam(1).camera_ROIposition(4)];
+%     metadata.cam(1).mask = metadata.cam(1).mask(vidroi_y, vidroi_x);
+%     metadata.cam(1).winpos(1:2)=metadata.cam(1).winpos(1:2)-metadata.cam(1).camera_ROIposition(1:2);
+% else
+%     % Turn off high frame rate mode
+%     camera.ROIposition=metadata.cam(1).fullsize;
+% %     metadata.cam(1).fps=200;
+%     src.ExposureTimeAbs = metadata.cam(1).init_ExposureTime;
+% %     src.AllGainRaw=metadata.cam(1).init_AllGainRaw;
+%     % --- size fit for roi and mask ----
+%     mask0=metadata.cam(1).mask; 
+%     s_mask0=size(mask0);
+%     metadata.cam(1).mask = false(metadata.cam(1).fullsize([4 3]));
+%     metadata.cam(1).mask(metadata.cam(1).camera_ROIposition(2)+[1:s_mask0(1)], metadata.cam(1).camera_ROIposition(1)+[1:s_mask0(2)])=mask0;
+%     metadata.cam(1).winpos(1:2)=metadata.cam(1).winpos(1:2)+metadata.cam(1).camera_ROIposition(1:2);
+%     metadata.cam(1).camera_ROIposition=metadata.cam(1).fullsize;
+% end
 
+% % pushbutton_StartStopPreview_Callback(handles.pushbutton_StartStopPreview, [], handles)
+% % pause(0.02)
+% % pushbutton_StartStopPreview_Callback(handles.pushbutton_StartStopPreview, [], handles)
 
+% setappdata(0,'camera',camera);
+% setappdata(0,'metadata',metadata);
+
+drawnow         % Seems necessary to update appdata before returning to calling function
 
 function checkbox_record_Callback(hObject, eventdata, handles)
 if get(hObject,'Value')
@@ -255,6 +265,7 @@ str=get(hObject,'String');
 metadata.stim.type=str{val};
 setappdata(0,'metadata',metadata);
 
+
 % ------ highlight for uipanel -----
 set(handles.uipanel_puff,'BackgroundColor',[240 240 240]/255);
 set(handles.uipanel_conditioning,'BackgroundColor',[240 240 240]/255);
@@ -265,6 +276,7 @@ switch lower(metadata.stim.type)
         set(handles.uipanel_conditioning,'BackgroundColor',[225 237 248]/255); % light blue
 end   
 
+drawnow         % Seems necessary to update appdata before returning to calling function
 
 function togglebutton_stream_Callback(hObject, eventdata, handles)
 
@@ -352,6 +364,8 @@ metadata=getappdata(0,'metadata');
 metadata.basename=sprintf('%s_%s_%s', metadata.mouse, datestr(now,'yymmdd'),session);
 setappdata(0,'metadata',metadata);
 
+drawnow         % Seems necessary to update appdata before returning to calling function
+
 
 function pushbutton_opentable_Callback(hObject, eventdata, handles)
 paramtable.data=get(handles.uitable_params,'Data');
@@ -359,6 +373,8 @@ paramtable.randomize=get(handles.checkbox_random,'Value');
 % paramtable.tonefreq=str2num(get(handles.edit_tone,'String'));
 % if length(paramtable.tonefreq)<2, paramtable.tonefreq(2)=0; end
 setappdata(0,'paramtable',paramtable);
+
+drawnow         % Seems necessary to update appdata before returning to calling function
 
 gui=getappdata(0,'gui');
 trialtablegui=TrialTable;

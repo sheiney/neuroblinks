@@ -24,3 +24,5 @@ gui.cameraAx(2) = findobj(gui.camera2gui, 'Tag', 'cameraAx2');
 
 % Save structs to root app data
 setappdata(0, 'gui', gui)
+
+drawnow         % Seems necessary to update appdata before returning to calling function

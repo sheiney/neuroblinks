@@ -1,4 +1,7 @@
-function uploadParams()
+function ok = uploadParams()
+
+ok = 0; % Flag changed to 1 when function successfully completes
+
 metadata = getappdata(0, 'metadata');
 
 % Load enumerated variable indices into scope
@@ -35,9 +38,16 @@ end
 % TODO: Refactor micro controller communication to use handshake, etc
 microController = getappdata(0, 'microController');
 for i = 1:length(dataBuffer)
-    fwrite(microController, i, 'int8');                  % header
-    fwrite(microController, dataBuffer(i), 'int16');  % data
+    try
+        fwrite(microController, i, 'uint8');                  % header
+        fwrite(microController, dataBuffer(i), 'int16');  % data
+    catch
+        warning('Problem writing data to microcontroller: Index=%d, Value=%d\n', i, dataBuffer(i))
+        return
+    end
     % if mod(i, 4) == 0
     %     pause(0.010);
     % end
 end
+
+ok = 1;

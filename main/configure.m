@@ -35,4 +35,5 @@ trialtable=makeTrialTable(paramtable.data,paramtable.randomize);
 setappdata(0,'paramtable',paramtable);
 setappdata(0,'trialtable',trialtable);
 setappdata(0,'metadata',metadata);
-pause(0.3);
+
+drawnow         % Seems necessary to update appdata before returning to calling function

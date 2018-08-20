@@ -8,4 +8,6 @@ if paramfile & filteridx == 1 % The filterindex thing is a hack to make sure it'
     paramtable.data=csvread(fullfile(paramfilepath,paramfile));
     set(handles.uitable_params,'Data',paramtable.data);
     setappdata(0,'paramtable',paramtable);
+
+    drawnow         % Seems necessary to update appdata before returning to calling function
 end

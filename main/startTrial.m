@@ -3,7 +3,13 @@ function startTrial(handles)
 microControllerVariablesEnum;
 
 refreshParams(handles)
-uploadParams()
+ok = uploadParams();
+
+if ~ok
+    msgbox('Problem communicating with Microcontroller, aborting trial')
+    return
+end
+
 metadata = getappdata(0, 'metadata');
 
 metadata.ts(2) = etime(clock, datevec(metadata.ts(1)));
@@ -35,3 +41,5 @@ if strcmpi(metadata.stim.type, 'conditioning')
 end
 
 setappdata(0, 'metadata', metadata);
+
+drawnow         % Seems necessary to update appdata before returning to calling function

@@ -3,10 +3,9 @@ function ok = initializeSession()
 % Initializes per session variables, some of which can be loaded from mouse config files
 
 metadata=getappdata(0,'metadata');
-cameras=getappdata(0,'cameras');
 config=getappdata(0,'config');
 
-for i=1:length(cameras)
+for i=1:length(config.camera)
 
     metadata.cam(i).trialnum=1;
     metadata.cam(i).thresh=0.125;
@@ -58,4 +57,4 @@ end
 setappdata(0, 'metadata', metadata);
 setappdata(0, 'config', config);
 
-pause(0.1)
+drawnow         % Seems necessary to update appdata before returning to calling function

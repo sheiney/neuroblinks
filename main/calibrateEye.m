@@ -31,6 +31,9 @@ fprintf('Video from last trial saved to memory for review.\n')
 gui = getappdata(0, 'gui');
 gui.eyelidThreshold = ThreshWindowWithPuff;
 setappdata(0, 'gui', gui);
+
+drawnow         % Seems necessary to update appdata before returning to calling function
+
 % 
 % % Need to allow some time for GUI to draw before we call the lines below
 % pause(2)

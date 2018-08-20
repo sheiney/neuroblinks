@@ -50,4 +50,6 @@ else
 end
 
 setappdata(0,'metadata', metadata);
-% guidata(hObject, handles)
+guidata(gui.maingui, handles)
+
+drawnow         % Seems necessary to update appdata before returning to calling function

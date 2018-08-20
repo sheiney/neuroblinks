@@ -35,6 +35,6 @@ metadata.eye.trace=trace;
 setappdata(0,'trials',trials);
 setappdata(0,'metadata',metadata);
 
-
+drawnow         % Seems necessary to update appdata before returning to calling function
 
 

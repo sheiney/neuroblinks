@@ -8,3 +8,5 @@ for i=1:length(cameras)
 end
 
 setappdata(0,'metadata',metadata);
+
+drawnow         % Seems necessary to update appdata before returning to calling function

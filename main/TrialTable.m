@@ -77,7 +77,7 @@ end
 set(handles.uitable_trials,'Data',trialtable);
 setappdata(0,'trialtable',trialtable);
 
-
+drawnow         % Seems necessary to update appdata before returning to calling function
 
 % --- Outputs from this function are returned to the command line.
 function varargout = TrialTable_OutputFcn(hObject, eventdata, handles)

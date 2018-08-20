@@ -68,4 +68,6 @@ end
 
 setappdata(0, 'metadata', metadata);
 
+drawnow         % Seems necessary to update appdata before returning to calling function
+
 fprintf('Video data from trial %03d successfully written to disk.\n', metadata.cam(1).trialnum)
