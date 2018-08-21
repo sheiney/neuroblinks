@@ -1,8 +1,6 @@
-function ok = uploadParams()
+function ok = uploadParams(metadata)
 
 ok = 0; % Flag changed to 1 when function successfully completes
-
-metadata = getappdata(0, 'metadata');
 
 % Load enumerated variable indices into scope
 % Enum is stored in struct
@@ -10,7 +8,7 @@ microControllerVariablesEnum;
 
 % TODO: Need to refactor this part to make it easier to maintain
 % Use same enumeration scheme as "refreshParams"
-dataBuffer = zeros(1, length(fieldnames(uController)), 'uint16');   % Get fieldnames for number of enums because stored in struct
+dataBuffer = zeros(1, length(fieldnames(uController)), 'int16');   % Get fieldnames for number of enums because stored in struct
 
 dataBuffer(uController.PRETIME) = metadata.cam(1).time(1);
 dataBuffer(uController.POSTTIME) = metadata.cam(1).time(2);

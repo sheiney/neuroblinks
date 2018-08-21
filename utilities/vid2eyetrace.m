@@ -7,7 +7,7 @@ function [y,t]=vid2eyetrace(data,metadata,varargin)
 % to be returned normalized by full eyelid closure, supply CALIB struct with fields of
 % SCALE and OFFSET as fifth argument.
 
-sr=metadata.cam(1).fps;
+sr=metadata.cam(1).frame_rate;
 sint=1./sr;
 thresh=metadata.cam(1).thresh;
 st=-metadata.cam(1).time(1)/1e3;

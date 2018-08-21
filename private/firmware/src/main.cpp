@@ -161,11 +161,11 @@ void loop() {
 // Check to see if Matlab is trying to send updated variables
 // (should we send specific code to indicate that we are sending variables?)
 void checkVars() {
-  int header;
+  byte header;
   int value;
   // Matlab sends data in 3 byte packets: first byte is header telling which variable to update,
   // next two bytes are the new variable data as 16 bit int (can only send 16 bit ints for now)
-  // Header is coded numerically (0, 1, and 2 are reserved for special functions so don't use them to code variable identities)
+  // Header is coded numerically (0, 254, and 255 are reserved for special functions so don't use them to code variable identities)
   while (Serial.available() > 2) {
     header = Serial.read();
     value = Serial.read() | Serial.read() << 8;

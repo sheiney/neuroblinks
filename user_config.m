@@ -16,7 +16,7 @@ config.trialtable = makeTrialTable(config.paramtable.data, config.paramtable.ran
 config.pos_mainwindow = [5,50];     
 % config.size_mainwindow=[840 600]; 
 
-config.pos_camera2gui = [5,45];     
+config.pos_camera2gui = [850, 345]; % [849 344 524 303]    
 % config.size_camera2gui=[840 600]; 
 
 config.pos_analysiswindow = [5 45];    

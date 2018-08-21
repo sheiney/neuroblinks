@@ -12,7 +12,7 @@ end
 if ~isempty(varargin)
     fr=varargin{1};
 else
-    fr=metadata.cam(1).fps;
+    fr=metadata.cam(1).frame_rate;
 end
 
 
@@ -29,34 +29,34 @@ switch lower(metadata.stim.type)
         % do nothing for now
         stim=zeros(m,n,3,t,'uint8');
     case 'puff'
-        stfrm=round(metadata.cam(1).time(1)./1000.*metadata.cam(1).fps);
-        enfrm=round(metadata.stim.totaltime./1000.*metadata.cam(1).fps);
+        stfrm=round(metadata.cam(1).time(1)./1000.*metadata.cam(1).frame_rate);
+        enfrm=round(metadata.stim.totaltime./1000.*metadata.cam(1).frame_rate);
         stim=zeros(m,n,3,t,'uint8');
         stim(box_x,box_y,2,stfrm:stfrm+enfrm)=255;
     case 'electrical'       
-        stfrm=round((metadata.cam(1).time(1)+metadata.stim.e.delay)./1000.*metadata.cam(1).fps);
-        enfrm=round(metadata.stim.e.traindur./1000.*metadata.cam(1).fps);
+        stfrm=round((metadata.cam(1).time(1)+metadata.stim.e.delay)./1000.*metadata.cam(1).frame_rate);
+        enfrm=round(metadata.stim.e.traindur./1000.*metadata.cam(1).frame_rate);
         stim=zeros(m,n,3,t,'uint8');
         stim(box_x,box_y,1,stfrm:stfrm+enfrm)=255;       
     case {'conditioning','electrocondition'}
-        stfrmc=round(metadata.cam(1).time(1)./1000.*metadata.cam(1).fps); % for CS
-        enfrmc=round(metadata.stim.c.csdur./1000.*metadata.cam(1).fps);
-        stfrmu=round((metadata.cam(1).time(1)+metadata.stim.c.isi)./1000.*metadata.cam(1).fps);
-        enfrmu=round(metadata.stim.c.usdur/1000.*metadata.cam(1).fps); % for US
+        stfrmc=round(metadata.cam(1).time(1)./1000.*metadata.cam(1).frame_rate); % for CS
+        enfrmc=round(metadata.stim.c.csdur./1000.*metadata.cam(1).frame_rate);
+        stfrmu=round((metadata.cam(1).time(1)+metadata.stim.c.isi)./1000.*metadata.cam(1).frame_rate);
+        enfrmu=round(metadata.stim.c.usdur/1000.*metadata.cam(1).frame_rate); % for US
         stim=zeros(m,n,3,t,'uint8');
         stim(box_x,box_y,3,stfrmc:stfrmc+enfrmc)=255;
         stim(box_x,box_y,2,stfrmu:stfrmu+enfrmu)=255;
         stim(box_x,box_y,3,stfrmu:stfrmu+enfrmu)=0;
     case 'optical'      
-        stfrm=round((metadata.cam(1).time(1)+metadata.stim.l.delay)./1000.*metadata.cam(1).fps);
-        enfrm=round(metadata.stim.l.traindur./1000.*metadata.cam(1).fps);
+        stfrm=round((metadata.cam(1).time(1)+metadata.stim.l.delay)./1000.*metadata.cam(1).frame_rate);
+        enfrm=round(metadata.stim.l.traindur./1000.*metadata.cam(1).frame_rate);
         stim=zeros(m,n,3,t,'uint8');
         stim(box_x,box_y,3,stfrm:stfrm+enfrm)=255;
     case 'optoelectric'      
-        stfrme=round((metadata.cam(1).time(1)+metadata.stim.e.delay)./1000.*metadata.cam(1).fps);
-        enfrme=round(metadata.stim.e.traindur./1000.*metadata.cam(1).fps);      
-        stfrml=round((metadata.cam(1).time(1)+metadata.stim.l.delay)./1000.*metadata.cam(1).fps);
-        enfrml=round(metadata.stim.e.traindur./1000.*metadata.cam(1).fps);
+        stfrme=round((metadata.cam(1).time(1)+metadata.stim.e.delay)./1000.*metadata.cam(1).frame_rate);
+        enfrme=round(metadata.stim.e.traindur./1000.*metadata.cam(1).frame_rate);      
+        stfrml=round((metadata.cam(1).time(1)+metadata.stim.l.delay)./1000.*metadata.cam(1).frame_rate);
+        enfrml=round(metadata.stim.e.traindur./1000.*metadata.cam(1).frame_rate);
         stim=zeros(m,n,3,t,'uint8');
         stim(box_x,box_y,1,stfrme:stfrme+enfrme)=255;
         stim(box_x,box_y,3,stfrml:stfrml+enfrml)=255;

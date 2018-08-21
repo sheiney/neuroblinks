@@ -10,7 +10,8 @@ function arduino = connectArduino(config)
 
     arduino=serial(com_ports{config.rig},'BaudRate',115200);
     arduino.InputBufferSize = 512*8;
-    arduino.DataTerminalReady='off';	% to prevent resetting Arduino on connect
+    % arduino.DataTerminalReady='off';	% to prevent resetting Arduino on connect
+    arduino.DataTerminalReady='on';	    % Does this reset device for Arduino Zero? Seems to need to be set for device to respond to serial inputs
     fopen(arduino);
 
 end

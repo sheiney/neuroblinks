@@ -1,22 +1,22 @@
 function startTrial(handles)
 
+metadata = getappdata(0, 'metadata');
+
 microControllerVariablesEnum;
 
-refreshParams(handles)
-ok = uploadParams();
+metadata = refreshParams(handles, metadata);
+ok = uploadParams(metadata);
 
 if ~ok
     msgbox('Problem communicating with Microcontroller, aborting trial')
     return
 end
 
-metadata = getappdata(0, 'metadata');
-
 metadata.ts(2) = etime(clock, datevec(metadata.ts(1)));
 
 % --- trigger via microController --
 microController = getappdata(0, 'microController');
-fwrite(microController, uController.RUN, 'int8');
+fwrite(microController, uController.RUN, 'uint8');
 
 % ---- write status bar ----
 % TODO: will need to rewrite this when trial vars start using enum

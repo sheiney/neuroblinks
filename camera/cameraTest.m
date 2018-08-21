@@ -214,7 +214,7 @@ hf=getappdata(0,'hf');
 
 % Set up camera to record
 % When we capture a single frame per trigger we need the following two lines of code
-% frames_per_trial=ceil(metadata.cam.fps.*(sum(metadata.cam.time))./1000);	% metadata.cam.time is a 3 element vector of [pretime ISI posttime]
+% frames_per_trial=ceil(metadata.cam.frame_rate.*(sum(metadata.cam.time))./1000);	% metadata.cam.time is a 3 element vector of [pretime ISI posttime]
 % camera.TriggerRepeat = frames_per_trial-1;
 % Right now I'm just using this because I've already set the camera to acquire 200 frames per trigger, i.e. 1 second of data @ 200 FPS
 camera.TriggerRepeat = 0;

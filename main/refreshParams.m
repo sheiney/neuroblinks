@@ -1,11 +1,10 @@
-function refreshParams(handles)
-metadata = getappdata(0, 'metadata');
+function metadata = refreshParams(handles, metadata)
 
 val = get(handles.popupmenu_stimtype, 'Value');
 str = get(handles.popupmenu_stimtype, 'String');
 metadata.stim.type = str{val};
 
-if metadata.cam(1).cal 
+if metadata.cam(1).cal == 1
     metadata.stim.type = 'Puff'; % for Calibration trial
 end 
 
@@ -56,7 +55,5 @@ metadata.cam(1).time(1) = str2double(get(handles.edit_pretime, 'String'));
 metadata.cam(1).time(2) = str2double(get(handles.edit_posttime, 'String'));
 
 metadata.now = now;
-
-setappdata(0, 'metadata', metadata);
 
 drawnow         % Seems necessary to update appdata before returning to calling function

@@ -63,9 +63,10 @@ togglePreview(handles);
 
 
 function pushbutton_quit_Callback(hObject, eventdata, handles)
+
 cameras=getappdata(0,'cameras');
 gui=getappdata(0,'gui');
-metadata=getappdata(0,'metadata');
+% metadata=getappdata(0,'metadata');
 microController=getappdata(0,'microController');
 
 button=questdlg('Are you sure you want to quit?','Quit?');
@@ -73,18 +74,18 @@ if ~strcmpi(button,'Yes')
     return
 end
 
-set(handles.togglebutton_stream,'Value',0);
+stopStreaming(handles)
 
 try
     fclose(microController);
     delete(microController);
     delete(cameras);
-    rmappdata(0,'src');
-    rmappdata(0,'camera');
+    rmappdata(0,'cameras');
 catch err
     warning(err.identifier,'Problem cleaning up objects. You may need to do it manually.')
 end
-delete(handles.CamFig)
+delete(gui.camera2gui)
+delete(gui.maingui)
 
 % --- Outputs from this function are returned to the command line.
 function varargout = MainWindow_OutputFcn(hObject, eventdata, handles) 
@@ -152,19 +153,21 @@ drawnow         % Seems necessary to update appdata before returning to calling 
 
 function pushbutton_calibrateEye_Callback(hObject, eventdata, handles)
 
-refreshParams(handles);
-ok = uploadParams();
+metadata=getappdata(0, 'metadata'); 
+metadata.cam(1).cal = 1;
+
+metadata = refreshParams(handles, metadata);
+ok = uploadParams(metadata);
 
 if ~ok
     msgbox('Problem communicating with Microcontroller, aborting calibration')
     return
 end
 
-metadata=getappdata(0,'metadata'); 
 
 cameras=getappdata(0,'cameras');
 cameras(1).TriggerRepeat = 0;
-cameras(1).StopFcn=@CalibrateEye;   % this will be executed after timer stop 
+cameras(1).StopFcn=@calibrateEye;   % this will be executed after timer stop 
 flushdata(cameras(1));         % Remove any data from buffer before triggering
 
 % Set camera to hardware trigger mode
@@ -180,7 +183,7 @@ metadata.cam(1).cal = 0;
 metadata.ts(2) = etime(clock, datevec(metadata.ts(1)));
 % --- trigger via microController --
 microController=getappdata(0, 'microController');
-fwrite(microController, 255, 'int8');
+fwrite(microController, 255, 'uint8');
 
 setappdata(0, 'metadata', metadata);
 
@@ -200,7 +203,7 @@ function togglebutton_tgframerate_Callback(hObject, eventdata, handles)
 %     % Turn on high frame rate mode
 %     metadata.cam(1).camera_ROIposition=max(metadata.cam(1).winpos+[-10 0 20 0],[0 0 0 0]);
 %     cameras(1).ROIposition=metadata.cam(1).camera_ROIposition;
-% %     metadata.cam(1).fps=500;
+% %     metadata.cam(1).frame_rate=500;
 %     src.ExposureTimeAbs = 1900;
 % %     src.AllGainRaw=metadata.cam(1).init_AllGainRaw+round(20*log10(metadata.cam(1).init_ExposureTime/src.ExposureTimeAbs));
 %     % --- size fit for roi and mask ----
@@ -211,7 +214,7 @@ function togglebutton_tgframerate_Callback(hObject, eventdata, handles)
 % else
 %     % Turn off high frame rate mode
 %     camera.ROIposition=metadata.cam(1).fullsize;
-% %     metadata.cam(1).fps=200;
+% %     metadata.cam(1).frame_rate=200;
 %     src.ExposureTimeAbs = metadata.cam(1).init_ExposureTime;
 % %     src.AllGainRaw=metadata.cam(1).init_AllGainRaw;
 %     % --- size fit for roi and mask ----

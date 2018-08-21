@@ -1,4 +1,4 @@
-function CalibrateEye(obj,event)
+function calibrateEye(obj,event)
 %  callback function by video(timer) obj
 disp('Delivering puff and saving calibration data.')
 
