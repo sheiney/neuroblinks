@@ -8,5 +8,6 @@ for i=1:length(cameras)
     stop(cameras(i));
     flushdata(cameras(i));
 
-    src.FrameStartTriggerSource = 'Freerun';
+    % src.FrameStartTriggerSource = 'Freerun';
+    src.TriggerMode = 'off';
 end

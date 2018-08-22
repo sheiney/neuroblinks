@@ -52,7 +52,7 @@ function ThreshWindowWithPuff_OpeningFcn(hObject, eventdata, handles, varargin)
 % handles    structure with handles and user data (see GUIDATA)
 % varargin   command line arguments to ThreshWindowWithPuff (see VARARGIN)
 
-metadata = getappdata(0, 'metadata');
+metadata = getappdata(0, 'calibration_metadata');
 
 % Choose default command line output for ThreshWindowWithPuff
 handles.output = hObject;
@@ -94,7 +94,7 @@ function slider_eyelidThresh_Callback(hObject, eventdata, handles)
 % Hints: get(hObject, 'Value') returns position of slider
 %        get(hObject, 'Min') and get(hObject, 'Max') to determine range of slider
 
-metadata = getappdata(0, 'metadata');
+metadata = getappdata(0, 'calibration_metadata');
 
 % Alternatively can use "thresh = graythresh(image)" to get threshold with
 % Otsu's method
@@ -109,7 +109,7 @@ end
 % Have to stop auto refresh timer before drawing or else we get an error
 % when the timer has a callback
 % stop(handles.timer)
-setappdata(0, 'metadata', metadata);
+setappdata(0, 'calibration_metadata', metadata);
 drawbinary(handles)
 
 
@@ -134,14 +134,14 @@ function edit_eyelidThresh_Callback(hObject, eventdata, handles)
 % Hints: get(hObject, 'String') returns contents of edit_eyelidThresh as text
 %        str2double(get(hObject, 'String')) returns contents of edit_eyelidThresh as a double
 
-metadata = getappdata(0, 'metadata');
+metadata = getappdata(0, 'calibration_metadata');
 
 % Alternatively can use "thresh = graythresh(image)" to get threshold with
 % Otsu's method
 metadata.cam(1).thresh = str2double(get(handles.edit_eyelidThresh, 'String'))/256;
 set(handles.slider_eyelidThresh, 'Value', round(metadata.cam(1).thresh * 256));
 
-setappdata(0, 'metadata', metadata);
+setappdata(0, 'calibration_metadata', metadata);
 
 drawbinary(handles)
 
@@ -185,7 +185,7 @@ function pushbutton_only_thresh_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-metadata = getappdata(0, 'metadata');
+metadata = getappdata(0, 'calibration_metadata');
 fprintf('thresh = %d.\n', round(metadata.cam(1).thresh * 256))
 delete(handles.figure1);
 

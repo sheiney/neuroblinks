@@ -16,6 +16,8 @@ if strcmp(get(handles.pushbutton_StartStopPreview, 'String'), 'Start Preview')
     % Send camera preview to GUI
     for i = 1:length(cameras)
 
+        delete(gui.cameraAx(i).Children)
+
         imx = metadata.cam(i).ROIposition(1) + [1:metadata.cam(i).ROIposition(3)];
         imy = metadata.cam(i).ROIposition(2) + [1:metadata.cam(i).ROIposition(4)];
         handles.pwin(i) = image(imx, imy, zeros(metadata.cam(i).ROIposition([4 3])), 'Parent', gui.cameraAx(i));
@@ -34,8 +36,8 @@ if strcmp(get(handles.pushbutton_StartStopPreview, 'String'), 'Start Preview')
         
     end
 
-    ht = findobj(gui.cameraAx(1), 'Tag', 'trialtimecounter');
-    delete(ht)
+    % ht = findobj(gui.cameraAx(1), 'Tag', 'trialtimecounter');
+    % delete(ht)
     
     % Put countdown on first preview window
     axes(gui.cameraAx(1))
@@ -46,7 +48,7 @@ if strcmp(get(handles.pushbutton_StartStopPreview, 'String'), 'Start Preview')
 else
     % Camera is on. Stop camera and change button string.
     set(handles.pushbutton_StartStopPreview,'String','Start Preview')
-    stopPreview(cameras);
+    stopPreviewing(cameras);
 end
 
 setappdata(0,'metadata', metadata);

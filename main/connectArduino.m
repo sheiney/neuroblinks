@@ -1,7 +1,7 @@
 function arduino = connectArduino(config)
 
     %% -- start serial communication to arduino ---
-    disp('Finding Arduino...')
+    disp('Connecting to Arduino...')
     com_ports = findArduinos(config.MICROCONTROLLER_IDS);
 
     if isempty(com_ports{config.rig})

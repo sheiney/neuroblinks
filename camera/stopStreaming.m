@@ -4,4 +4,7 @@ function stopStreaming(handles)
 
 set(handles.togglebutton_stream,'Value',0);
 set(handles.togglebutton_stream,'String','Start Streaming')
-setappdata(handles.pwin(1),'UpdatePreviewWindowFcn',[]);
+
+if isfield(handles, 'pwin')
+    setappdata(handles.pwin(1),'UpdatePreviewWindowFcn',[]);
+end

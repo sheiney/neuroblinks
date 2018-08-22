@@ -14,6 +14,9 @@ end
 
 metadata.ts(2) = etime(clock, datevec(metadata.ts(1)));
 
+startCamera(1);
+startCamera(2);
+
 % --- trigger via microController --
 microController = getappdata(0, 'microController');
 fwrite(microController, uController.RUN, 'uint8');

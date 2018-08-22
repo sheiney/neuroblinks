@@ -38,8 +38,12 @@ metadata.mouse = mouse;
 
 mousedir = fullfile(config.userdatapath, mouse); 
 
-mkdir(fullfile(mousedir, datestr(now,'yymmdd')))
-cd(fullfile(mousedir, datestr(now,'yymmdd')))
+sessiondir = fullfile(mousedir, datestr(now,'yymmdd'));
+
+mkdir(sessiondir)
+cd(sessiondir)
+
+metadata.folder = sessiondir;
 
 condfile=fullfile(mousedir,'condparams.csv');
 

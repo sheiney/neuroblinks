@@ -1,4 +1,4 @@
-function ok = startSession()
+function ok = startSession(handles)
 
 % Initialize session variables
 ok = initializeSession;
@@ -26,6 +26,9 @@ metadata.cam(2).fullsize = cameras(2).ROIposition;
 
 % Connect to microcontroller
 microController = connectMicrocontroller(config);
+
+% % Need to replace togglePreview with a "startPreview" function
+% togglePreview(handles)
 
 setappdata(0, 'cameras', cameras)
 setappdata(0, 'microController', microController)

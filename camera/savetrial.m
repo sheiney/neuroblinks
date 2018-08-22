@@ -12,29 +12,32 @@ metadata = getappdata(0, 'metadata');
 
 setappdata(0, 'lastmetadata', metadata);
 
-% Get encoder data from microController
-if isappdata(0, 'microController')
-  microController = getappdata(0, 'microController');
+%%
+%% ------------- TODO: Save encoder data separately from camera data ---------------------- %%
+%%
+% % Get encoder data from microController
+% if isappdata(0, 'microController')
+%   microController = getappdata(0, 'microController');
 
-  if microController.BytesAvailable > 0
-    fread(microController, microController.BytesAvailable); % Clear input buffer
-  end
+%   if microController.BytesAvailable > 0
+%     fread(microController, microController.BytesAvailable); % Clear input buffer
+%   end
 
-  fwrite(microController, uController.REQUESTDATA, 'uint8');  % Tell microController we're ready for it to send the data
+%   fwrite(microController, uController.REQUESTDATA, 'uint8');  % Tell microController we're ready for it to send the data
 
-  data_header = (fread(microController, 1, 'uint8'));
-  if data_header == uController.ENCODERCOUNTS
-    encoder.counts = (fread(microController, 200, 'int32'));
-    encoder.displacement = counts2cm(encoder.counts - encoder.counts(1));
-  end
+%   data_header = (fread(microController, 1, 'uint8'));
+%   if data_header == uController.ENCODERCOUNTS
+%     encoder.counts = (fread(microController, 200, 'int32'));
+%     encoder.displacement = counts2cm(encoder.counts - encoder.counts(1));
+%   end
 
-  time_header = (fread(microController, 1, 'uint8'));
-  if time_header == uController.ENCODERTIME
-    encoder.time = (fread(microController, 200, 'uint32'));
-    encoder.time = encoder.time - encoder.time(1);
-  end
+%   time_header = (fread(microController, 1, 'uint8'));
+%   if time_header == uController.ENCODERTIME
+%     encoder.time = (fread(microController, 200, 'uint32'));
+%     encoder.time = encoder.time - encoder.time(1);
+%   end
 
-end
+% end
 
 % Get videos from cameras
 for i=1:length(cameras)
@@ -54,11 +57,14 @@ for i=1:length(cameras)
   setappdata(0, sprintf('lastvid%d', i), vid);
 
   videoname = sprintf('%s\\%s_cam%d_%03d', metadata.folder, metadata.basename, i, metadata.cam(i).trialnum);
-  if exist('encoder', 'var')
-      save(videoname, 'vid', 'vid_ts', 'metadata', 'encoder', '-v6')
-  else
-      save(videoname, 'vid', 'vid_ts', 'metadata', '-v6')
-  end
+  % if exist('encoder', 'var')
+  %     save(videoname, 'vid', 'vid_ts', 'metadata', 'encoder', '-v6')
+  % else
+  %     save(videoname, 'vid', 'vid_ts', 'metadata', '-v6')
+  % end
+  save(videoname, 'vid', 'vid_ts', 'metadata', '-v6')
+
+  fprintf('Video data from camera %d for trial %03d successfully written to disk.\n', i, metadata.cam(i).trialnum)
 
   metadata.cam(i).trialnum = metadata.cam(i).trialnum + 1;
 
@@ -69,5 +75,3 @@ end
 setappdata(0, 'metadata', metadata);
 
 drawnow         % Seems necessary to update appdata before returning to calling function
-
-fprintf('Video data from trial %03d successfully written to disk.\n', metadata.cam(1).trialnum)

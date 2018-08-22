@@ -64,26 +64,15 @@ togglePreview(handles);
 
 function pushbutton_quit_Callback(hObject, eventdata, handles)
 
-cameras=getappdata(0,'cameras');
 gui=getappdata(0,'gui');
-% metadata=getappdata(0,'metadata');
-microController=getappdata(0,'microController');
 
 button=questdlg('Are you sure you want to quit?','Quit?');
 if ~strcmpi(button,'Yes')
     return
 end
 
-stopStreaming(handles)
+stopSession(handles)
 
-try
-    fclose(microController);
-    delete(microController);
-    delete(cameras);
-    rmappdata(0,'cameras');
-catch err
-    warning(err.identifier,'Problem cleaning up objects. You may need to do it manually.')
-end
 delete(gui.camera2gui)
 delete(gui.maingui)
 
@@ -130,7 +119,7 @@ setPositionConstraintFcn(h,fcn);
 XY=round(wait(h));  % only use for imellipse
 metadata.cam(1).winpos=round(getPosition(h));
 metadata.cam(1).winpos(1:2)=metadata.cam(1).winpos(1:2)-metadata.cam(1).ROIposition(1:2);
-metadata.cam(1).mask=createMask(h);
+metadata.cam(1).mask=createMask(h, handles.pwin(1));
 
 wholeframe=getsnapshot(cameras(1));
 binframe=im2bw(wholeframe,metadata.cam(1).thresh);
@@ -306,7 +295,8 @@ set(gui.one_trial_analysis_gui, 'position', [config.pos_analysiswindow, config.s
 
 function uipanel_SessionMode_SelectionChangeFcn(hObject, eventdata, handles)
 
-metadata=getappdata(0, 'metadata');
+metadata = getappdata(0, 'metadata');
+cameras = getappdata(0, 'cameras');
 
 switch get(eventdata.NewValue, 'Tag') % Get Tag of selected object.
     case 'togglebutton_NewSession'
@@ -320,7 +310,7 @@ switch get(eventdata.NewValue, 'Tag') % Get Tag of selected object.
             session=dlgans{1};
         end
 
-        ok = startSession;
+        ok = startSession(handles);
 
     case 'togglebutton_StopSession'
         button=questdlg('Are you sure you want to stop this session?', 'Stop session?', ...
@@ -331,16 +321,14 @@ switch get(eventdata.NewValue, 'Tag') % Get Tag of selected object.
             case 'Yes and compress videos'
                 session='s00';     
                 ok=1;
-                stopStreaming(handles);
-                stopPreview(handles);
+                stopSession(handles);
                 
                 makeCompressedVideos(metadata.folder,1);
                 
             case 'Yes and DON''T compress videos'
                 session='s00';     
                 ok=1;
-                stopStreaming(handles);
-                stopPreview(handles);
+                stopSession(handles);
                 
             otherwise
                 ok=0;

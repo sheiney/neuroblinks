@@ -85,6 +85,6 @@ end
 
 
 hm=figure;
-set(hm,'Name','Instant Replay - close window when done','Position',[150 150 n m]);
+set(hm,'Name','Instant Replay - close window when done','Position',[0 0 n m]);
 movie(hm,F,1,20);
 

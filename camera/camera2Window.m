@@ -86,23 +86,23 @@ instantReplay(getappdata(0,'lastvid2'),getappdata(0,'lastmetadata'))
 
 
 
-% --- Executes on button press in togglebutton_startStopPreview.
-function togglebutton_startStopPreview_Callback(hObject, eventdata, handles)
-% hObject    handle to togglebutton_startStopPreview (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
+% % --- Executes on button press in togglebutton_startStopPreview.
+% function togglebutton_startStopPreview_Callback(hObject, eventdata, handles)
+% % hObject    handle to togglebutton_startStopPreview (see GCBO)
+% % eventdata  reserved - to be defined in a future version of MATLAB
+% % handles    structure with handles and user data (see GUIDATA)
 
-cameras = getappdata(0,'cameras');
+% cameras = getappdata(0,'cameras');
 
-if length(cameras) < 2
-    return
-end
+% if length(cameras) < 2
+%     return
+% end
 
-if hObject.Value == 1
-    set(hObject,'String','Stop Preview')
-    pwin=image(zeros(480,640), 'Parent',handles.cameraAx2);
-    preview(cameras(2),pwin)
-else
-    set(hObject,'String','Start Preview')
-    stoppreview(cameras(2))
-end
+% if hObject.Value == 1
+%     set(hObject,'String','Stop Preview')
+%     pwin=image(zeros(480,640), 'Parent',handles.cameraAx2);
+%     preview(cameras(2),pwin)
+% else
+%     set(hObject,'String','Start Preview')
+%     stoppreview(cameras(2))
+% end

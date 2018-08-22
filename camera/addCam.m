@@ -1,7 +1,7 @@
 function camera = addCam(serialNum, config)
 % Create camera object for camera with given serial number
 
-disp('Finding cameras...')
+fprintf('Connecting to camera %s...\n', serialNum)
 
 % Get list of configured cameras
 %     foundcams = imaqhwinfo('gige');
