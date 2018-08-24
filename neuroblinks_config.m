@@ -1,6 +1,6 @@
 % Configuration settings that might be different for different users/computers
 % Should be somewhere in path
-DEFAULTDEVICE='arduino';
+DEFAULTDEVICE='teensy';
 DEFAULTRIG=1;
 
 config.CAMADAPTOR = 'gentl';

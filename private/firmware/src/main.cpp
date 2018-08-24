@@ -4,7 +4,7 @@
 //       For instance https://github.com/siggiorn/arduino-buffered-serial
 
 #include "main.hpp"
-// #include <Encoder.h>
+#include <Encoder.h>
 // #include <tone.hpp>      // Only required for Due, otherwise included in Arduino library
 
 // Stimulus channels (as defined in Matlab code)
@@ -46,8 +46,8 @@ const int stim2pinMapping[10] {
 // TODO: Turn "param" into an array and use specific parameters mapped as integers as indices
 int param_campretime = 200;
 int param_camposttime = 800;
-int param_csdur = 500;
-int param_ISI = 200;
+int param_csdur = 270;
+int param_ISI = 250;
 int param_usdur = 20;
 int param_csch = ch_led;   // default to LED
 int param_usch = ch_puffer_eye;   // default to ipsi corneal puff
@@ -115,7 +115,7 @@ void setup() {
   Serial.begin(115200);
 //   Wire.begin();
 
-  DACWrite(0);
+//   DACWrite(0);
 }
 
 // The loop routine runs over and over again forever
@@ -143,11 +143,11 @@ void loop() {
   else {
       checkVars();
       if (Serial.available() > 0) {
-          if (Serial.peek() == 255) { // This is the header for triggering; difference from variable communication is that only one byte is sent telling to trigger
+          if (Serial.peek() == 127) { // This is the header for triggering; difference from variable communication is that only one byte is sent telling to trigger
               Serial.read();  // Clear the value from the buffer
               startTrial();
           }
-          else if (Serial.peek() == 254) {
+          else if (Serial.peek() == 126) {
             Serial.read();  // Clear the value from the buffer
             // We should eventually generalize this part for sending and receiving settings/data with Matlab
             sendEncoderData();

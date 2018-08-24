@@ -1,5 +1,5 @@
 % Rig specific settings
-config.ALLOWEDDEVICES = {'arduino'};
+config.ALLOWEDDEVICES = {'arduino', 'teensy'};
 
 % Better to use hash table?
 % index into "camera" is camera # for particular rig, index into IDS is rig number
@@ -11,4 +11,7 @@ config.camera(1).triggermode = 'Line1';     % camera1
 config.camera(2).triggermode = 'Software'; % camera2
 
 % Index is rig number
-config.MICROCONTROLLER_IDS = {'2F2E6A78', '3B3B06F1'};
+% Arduino Zero
+% config.MICROCONTROLLER_IDS = {'2F2E6A78', '3B3B06F1'};
+% Teensy
+config.MICROCONTROLLER_IDS = {'4135240', '4135250'};

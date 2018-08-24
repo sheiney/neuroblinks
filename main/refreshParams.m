@@ -5,6 +5,7 @@ str = get(handles.popupmenu_stimtype, 'String');
 metadata.stim.type = str{val};
 
 if metadata.cam(1).cal == 1
+    % Override menu if doing calibration trial
     metadata.stim.type = 'Puff'; % for Calibration trial
 end 
 

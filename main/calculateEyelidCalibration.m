@@ -15,7 +15,7 @@ calib_scale = maxclosure - calib_offset;
 % -- save cal data to root metadata ---
 metadata.cam(1).calib_offset = calib_offset;  
 metadata.cam(1).calib_scale = calib_scale;
-metadata.cam(1).cal = 1;
+metadata.cam(1).cal = 0;    % Clear calibration flag
 
 setappdata(0,'metadata',metadata);
 

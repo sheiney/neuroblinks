@@ -154,11 +154,11 @@ PREVIEWING=getappdata(0,'PREVIEWING');
 if ~PREVIEWING		% PREVIEWING is a flag that in our program corresponds to the state of a toggle button
 	% Camera is off. Change button string and start camera.	
 	preview(camera,h_preview);		% h_preview is an axes handle
-	setappdata(0,'PREVIEWING',1);
+	setappdata(0,'PREVIEWING', 1);
 else
 % Camera is on. Stop camera and change button string.
 	closepreview(camera);
-	setappdata(0,'PREVIEWING',0);
+	setappdata(0,'PREVIEWING', 0);
 end
 
 
@@ -177,12 +177,12 @@ set(hf,'Name','Resize ROI then double click it to activate')
 if isfield(metadata.cam,'winpos')
     winpos=metadata.cam.winpos;
 else
-    winpos=[0 0 640 480];
+    winpos=[0 0 640 512];
 end
 
 % Place resizeable ellipse on camera
-h=imellipse(ha,winpos);
-fcn = makeConstrainToRectFcn('imellipse',get(ha,'XLim'),get(ha,'YLim'));
+h=imellipse(ha, winpos);
+fcn = makeConstrainToRectFcn('imellipse', get(ha, 'XLim'),get(ha, 'YLim'));
 setPositionConstraintFcn(h,fcn);
 
 XY=round(wait(h));  % only use for imellipse

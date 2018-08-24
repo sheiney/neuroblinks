@@ -363,7 +363,7 @@ paramtable.data=get(handles.uitable_params,'Data');
 paramtable.randomize=get(handles.checkbox_random,'Value');
 % paramtable.tonefreq=str2num(get(handles.edit_tone,'String'));
 % if length(paramtable.tonefreq)<2, paramtable.tonefreq(2)=0; end
-setappdata(0,'paramtable',paramtable);
+setappdata(0,'paramtable', paramtable);
 
 drawnow         % Seems necessary to update appdata before returning to calling function
 

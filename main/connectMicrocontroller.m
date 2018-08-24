@@ -4,6 +4,8 @@ function ucontroller_obj = connectMicrocontroller(config)
     switch config.device
         case 'arduino'
             ucontroller_obj = connectArduino(config);
+        case 'teensy'
+            ucontroller_obj = connectTeensy(config);
         otherwise
             ucontroller_obj = [];
     end

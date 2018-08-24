@@ -61,21 +61,23 @@ guidata(hObject, handles);
 % UIWAIT makes TrialTable wait for user response (see UIRESUME)
 % uiwait(handles.TrialTableGUI);
 
-gui=getappdata(0,'gui');
+gui = getappdata(0, 'gui');
+config = getappdata(0, 'config');
 
 % Holding down CTRL while clicking button prevents re-initialization
-modifier=get(gui.maingui,'CurrentModifier');
+modifier = get(gui.maingui, 'CurrentModifier');
 % disp(modifier)
 
-paramtable=getappdata(0,'paramtable');
-if strcmp(modifier,'control') & isappdata(0,'trialtable')
-	trialtable=getappdata(0,'trialtable');
+paramtable = getappdata(0, 'paramtable');
+if strcmp(modifier, 'control') && isfield(config, 'trialtable')
+	trialtable = config.trialtable;
 else
-	trialtable=makeTrialTable(paramtable.data,paramtable.randomize);
+	trialtable = makeTrialTable(paramtable.data, paramtable.randomize);
 end
 
-set(handles.uitable_trials,'Data',trialtable);
-setappdata(0,'trialtable',trialtable);
+set(handles.uitable_trials, 'Data', trialtable);
+config.trialtable = trialtable;
+setappdata(0, 'config', config);
 
 drawnow         % Seems necessary to update appdata before returning to calling function
 

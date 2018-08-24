@@ -12,5 +12,5 @@ uController.TONEFREQ = 10;
 uController.ENCODERCOUNTS = 100;
 uController.ENCODERTIME = 101;
 
-uController.REQUESTDATA = 254;
-uController.RUN = 255;
+uController.REQUESTDATA = 126;
+uController.RUN = 127;
