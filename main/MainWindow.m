@@ -104,7 +104,7 @@ if isfield(metadata.cam(1),'winpos')
     winpos=metadata.cam(1).winpos;
     winpos(1:2)=winpos(1:2)+metadata.cam(1).ROIposition(1:2);
 else
-    winpos=[0 0 640 480];
+    winpos=[0 0 640 512];
 end
 
 % Place rectangle on camera

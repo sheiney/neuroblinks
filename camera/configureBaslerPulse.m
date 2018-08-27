@@ -10,8 +10,8 @@ src.ExposureTime = config.camera(2).initExposureTime;
 src.GainAuto = 'off';
 src.Gain=0;				% Tweak this based on IR light illumination (lower values preferred due to less noise)
 
-src.BinningHorizontal=2;
-src.BinningVertical=2;
+src.BinningHorizontal=config.camera(2).binning;
+src.BinningVertical=config.camera(2).binning;
 
 camera.LoggingMode = 'memory'; 
 camera.FramesPerTrigger = ceil(config.trial_length_ms / (1000 / config.camera(2).FrameRate));

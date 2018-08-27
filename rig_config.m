@@ -9,6 +9,8 @@ config.camera(1).IDS = {'21794588', '22486477'};  % DeviceInfo.DeviceName return
 config.camera(2).IDS = {'22468628', '22468629'}; % DeviceInfo.DeviceName returned from imaqhwinfo
 config.camera(1).triggermode = 'Line1';     % camera1
 config.camera(2).triggermode = 'Software'; % camera2
+config.camera(1).binning = 2;   % Horizontal and vertical binning for sensor (reduces resolution)
+config.camera(2).binning = 2;
 
 % Index is rig number
 % Arduino Zero

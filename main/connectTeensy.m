@@ -1,7 +1,7 @@
 function teensy = connectTeensy(config)
 
     %% -- start serial communication to arduino ---
-    disp('Connecting to Teensy...')
+    disp('Connecting to Teensy board...')
     com_ports = findTeensys(config.MICROCONTROLLER_IDS);
 
     if isempty(com_ports{config.rig})
