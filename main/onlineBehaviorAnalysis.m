@@ -1,4 +1,4 @@
-function online_bhvana(data)
+function onlineBehaviorAnalysis(vid)
 % Eyelid trace is saved to memory (trials and metadata) even in no-save trial.
 
 metadata=getappdata(0,'metadata');
@@ -7,7 +7,7 @@ if isfield(trials,'eye'), if length(trials.eye)>metadata.eye.trialnum2+1, trials
 if metadata.eye.trialnum2==1, trials.eye=[]; end
 
 % ------ eyelid trace, which will be saved to 'trials' ---- 
-[trace,time]=vid2eyetrace(data,metadata,metadata.cam(1).thresh);
+[trace,time]=vid2eyetrace(vid,metadata,metadata.cam(1).thresh);
 trace=(trace-metadata.cam(1).calib_offset)/metadata.cam(1).calib_scale;
 
 trials.eye(metadata.eye.trialnum2).time=time*1e3;

@@ -16,6 +16,7 @@ if strcmp(get(handles.pushbutton_StartStopPreview, 'String'), 'Start Preview')
     % Send camera preview to GUI
     for i = 1:length(cameras)
 
+        % This line here is probably responsible for causing the "invalid or deleted object" error during newFrameCallback
         delete(gui.cameraAx(i).Children)
 
         imx = metadata.cam(i).ROIposition(1) + [1:metadata.cam(i).ROIposition(3)];
@@ -31,7 +32,7 @@ if strcmp(get(handles.pushbutton_StartStopPreview, 'String'), 'Start Preview')
         hp = findobj(gui.cameraAx(i),'Tag','roipatch');  delete(hp)
 
         % if isfield(handles,'XY')
-        %     handles.roipatch{i} = patch(handles.XY(:, 1), handles.XY(:, 2), 'g', 'FaceColor', 'none', 'EdgeColor', 'g', 'Tag', 'roipatch');
+        %     handles.roipatch = patch(handles.XY(:, 1), handles.XY(:, 2), 'g', 'FaceColor', 'none', 'EdgeColor', 'g', 'Tag', 'roipatch');
         % end
         
     end
@@ -41,9 +42,9 @@ if strcmp(get(handles.pushbutton_StartStopPreview, 'String'), 'Start Preview')
     
     % Put countdown on first preview window
     axes(gui.cameraAx(1))
-    handles.trialtimecounter = text(630,470, ' ', 'Color', 'w', 'HorizontalAlignment', 'Right',...
-        'VerticalAlignment', 'Bottom', 'Visible', 'Off', 'Tag', 'trialtimecounter',...
-        'FontSize', 18);
+    handles.trialtimecounter = text(handles.cameraAx1.XLim(2)-10, handles.cameraAx1.YLim(2)-10, ...
+        ' ', 'Color', 'w', 'HorizontalAlignment', 'Right', 'VerticalAlignment', 'Bottom', ...
+        'Visible', 'Off', 'Tag', 'trialtimecounter', 'FontSize', 18);
 
 else
     % Camera is on. Stop camera and change button string.

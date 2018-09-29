@@ -51,7 +51,7 @@ if exist(condfile, 'file')
 %     paramtable = getappdata(0,'paramtable');
 
     config.paramtable.data = csvread(condfile);
-    config.paramtable.randomize = 1;                 % Do we want to assume randomization here or read from gui?
+    config.paramtable.randomize = handles.checkbox_randomize.Value;                 % Do we want to assume randomization here or read from gui?
     config.trialtable = makeTrialTable(config.paramtable.data, config.paramtable.randomize);
     
 %     setappdata(0,'paramtable',paramtable);

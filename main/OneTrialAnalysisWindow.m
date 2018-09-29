@@ -1,26 +1,26 @@
-function varargout = OneTrialAnaWindow(varargin)
-% ONETRIALANAWINDOW MATLAB code for OneTrialAnaWindow.fig
-%      ONETRIALANAWINDOW, by itself, creates a new ONETRIALANAWINDOW or raises the existing
+function varargout = OneTrialAnalysisWindow(varargin)
+% OneTrialAnalysisWindow MATLAB code for OneTrialAnalysisWindow.fig
+%      OneTrialAnalysisWindow, by itself, creates a new OneTrialAnalysisWindow or raises the existing
 %      singleton*.
 %
-%      H = ONETRIALANAWINDOW returns the handle to a new ONETRIALANAWINDOW or the handle to
+%      H = OneTrialAnalysisWindow returns the handle to a new OneTrialAnalysisWindow or the handle to
 %      the existing singleton*.
 %
-%      ONETRIALANAWINDOW('CALLBACK',hObject,eventData,handles,...) calls the local
-%      function named CALLBACK in ONETRIALANAWINDOW.M with the given input arguments.
+%      OneTrialAnalysisWindow('CALLBACK',hObject,eventData,handles,...) calls the local
+%      function named CALLBACK in OneTrialAnalysisWindow.M with the given input arguments.
 %
-%      ONETRIALANAWINDOW('Property','Value',...) creates a new ONETRIALANAWINDOW or raises the
+%      OneTrialAnalysisWindow('Property','Value',...) creates a new OneTrialAnalysisWindow or raises the
 %      existing singleton*.  Starting from the left, property value pairs are
-%      applied to the GUI before OneTrialAnaWindow_OpeningFcn gets called.  An
+%      applied to the GUI before OneTrialAnalysisWindow_OpeningFcn gets called.  An
 %      unrecognized property name or invalid value makes property application
-%      stop.  All inputs are passed to OneTrialAnaWindow_OpeningFcn via varargin.
+%      stop.  All inputs are passed to OneTrialAnalysisWindow_OpeningFcn via varargin.
 %
 %      *See GUI Options on GUIDE's Tools menu.  Choose "GUI allows only one
 %      instance to run (singleton)".
 %
 % See also: GUIDE, GUIDATA, GUIHANDLES
 
-% Edit the above text to modify the response to help OneTrialAnaWindow
+% Edit the above text to modify the response to help OneTrialAnalysisWindow
 
 % Last Modified by GUIDE v2.5 25-Mar-2013 15:19:57
 
@@ -28,8 +28,8 @@ function varargout = OneTrialAnaWindow(varargin)
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
     'gui_Singleton',  gui_Singleton, ...
-    'gui_OpeningFcn', @OneTrialAnaWindow_OpeningFcn, ...
-    'gui_OutputFcn',  @OneTrialAnaWindow_OutputFcn, ...
+    'gui_OpeningFcn', @OneTrialAnalysisWindow_OpeningFcn, ...
+    'gui_OutputFcn',  @OneTrialAnalysisWindow_OutputFcn, ...
     'gui_LayoutFcn',  [] , ...
     'gui_Callback',   []);
 if nargin && ischar(varargin{1})
@@ -44,27 +44,27 @@ end
 % End initialization code - DO NOT EDIT
 
 
-% --- Executes just before OneTrialAnaWindow is made visible.
-function OneTrialAnaWindow_OpeningFcn(hObject, eventdata, handles, varargin)
+% --- Executes just before OneTrialAnalysisWindow is made visible.
+function OneTrialAnalysisWindow_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-% varargin   command line arguments to OneTrialAnaWindow (see VARARGIN)
+% varargin   command line arguments to OneTrialAnalysisWindow (see VARARGIN)
 
-% Choose default command line output for OneTrialAnaWindow
+% Choose default command line output for OneTrialAnalysisWindow
 handles.output = hObject;
 handles.tnum_prev=NaN;
 
 % Update handles structure
 guidata(hObject, handles);
 
-% UIWAIT makes OneTrialAnaWindow wait for user response (see UIRESUME)
+% UIWAIT makes OneTrialAnalysisWindow wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
 
 % --- Outputs from this function are returned to the command line.
-function varargout = OneTrialAnaWindow_OutputFcn(hObject, eventdata, handles)
+function varargout = OneTrialAnalysisWindow_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
 % hObject    handle to figure
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -111,7 +111,7 @@ end
 t_num=round(str2double(get(handles.edit_trialnum,'String'))+get(hObject,'Value'));
 
 trials=getappdata(0,'trials');
-if isfield(trials,'eye'),
+if isfield(trials,'eye')
     tnum_max=length(trials.eye);
 else
     tnum_max=0;
@@ -157,7 +157,7 @@ function edit_trialnum_Callback(hObject, eventdata, handles)
 
 t_num=round(str2double(get(handles.edit_trialnum,'String')));
 trials=getappdata(0,'trials');
-if isfield(trials,'eye'),
+if isfield(trials,'eye')
     tnum_max=length(trials.eye);
 else
     tnum_max=0;

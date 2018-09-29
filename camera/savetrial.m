@@ -9,6 +9,7 @@ microControllerVariablesEnum;
 % Load objects from root app data
 cameras=getappdata(0, 'cameras');
 metadata = getappdata(0, 'metadata');
+config = getappdata(0, 'config');
 
 setappdata(0, 'lastmetadata', metadata);
 
@@ -37,10 +38,12 @@ if isappdata(0, 'microController')
     encoder.time = encoder.time - encoder.time(1);
   end
 
-  encoderdatafname = sprintf('%s\\%s_encoder_%03d', metadata.folder, metadata.basename, metadata.cam(1).trialnum);
+  encoderdatafname = sprintf('%s\\%s_%03d_encoder', metadata.folder, metadata.basename, metadata.cam(1).trialnum);
   save(encoderdatafname, 'encoder', '-v6')
 
-  fprintf('Encoder data for trial %03d successfully written to disk.\n', metadata.cam(1).trialnum)
+  if config.verbose
+    fprintf('Encoder data for trial %03d successfully written to disk.\n', metadata.cam(1).trialnum)
+  end
 
 end
 
@@ -61,7 +64,7 @@ for i=1:length(cameras)
   % Keep data from last trial in memory even if we don't save it to disk
   setappdata(0, sprintf('lastvid%d', i), vid);
 
-  videoname = sprintf('%s\\%s_cam%d_%03d', metadata.folder, metadata.basename, i, metadata.cam(i).trialnum);
+  videoname = sprintf('%s\\%s_%03d_cam%d', metadata.folder, metadata.basename, metadata.cam(i).trialnum, i);
   % if exist('encoder', 'var')
   %     save(videoname, 'vid', 'vid_ts', 'metadata', 'encoder', '-v6')
   % else
@@ -69,7 +72,9 @@ for i=1:length(cameras)
   % end
   save(videoname, 'vid', 'vid_ts', 'metadata', '-v6')
 
-  fprintf('Video data from camera %d for trial %03d successfully written to disk.\n', i, metadata.cam(i).trialnum)
+  if config.verbose
+    fprintf('Video data from camera %d for trial %03d successfully written to disk.\n', i, metadata.cam(i).trialnum)
+  end
 
   metadata.cam(i).trialnum = metadata.cam(i).trialnum + 1;
 

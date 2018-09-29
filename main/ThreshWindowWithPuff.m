@@ -68,6 +68,8 @@ set(handles.slider_eyelidThresh, 'Value', round(metadata.cam(1).thresh * 256));
 % Update handles structure
 guidata(hObject, handles);
 
+drawbinary(handles, hObject)
+
 % UIWAIT makes ThreshWindowWithPuff wait for user response (see UIRESUME)
 % uiwait(handles.figure1);
 
@@ -193,19 +195,27 @@ delete(handles.figure1);
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%% user defined functions %%%%%%%%%%
 
-function drawbinary(handles)
+function drawbinary(handles, varargin)
 
 % Load objects from root app data
 gui = getappdata(0, 'gui');  % Load global handles
 metadata = getappdata(0, 'calibration_metadata');
 vid = getappdata(0, 'calibration_vid');
 
+% This is a hack to deal with the case where drawbinary has to be called
+% before figure has been fully created (in Opening function)
+if length(varargin) > 0 
+    hf = varargin{1};
+else
+    hf = gui.eyelidThreshold;
+end
+
 % --- eyelid trace --
 [trace, t] = vid2eyetrace(vid, metadata, metadata.cam(1).thresh);
 ind_t = find(t < 0.2);
 [y_max, ind_max1] = max(trace(ind_t));  [y_min, ind_min1] = min(trace(ind_t));
 ind_max = ind_t(ind_max1);  ind_min = ind_t(ind_min1);  
-set(0, 'CurrentFigure', gui.eyelidThreshold)
+set(0, 'CurrentFigure', hf)
 
 % --- for axex_binary: eye opened ---
 wholeframe = vid(:, :, 1, ind_min(1));
@@ -215,7 +225,7 @@ roi = wholeframe .* uint8(metadata.cam(1).mask);
 binframe = im2bw(roi(handles.y1:handles.y2, handles.x1:handles.x2), metadata.cam(1).thresh);
 handles.binimage = imshow(binframe, 'Parent', handles.axes_binary);
 
-set(gui.eyelidThreshold, 'CurrentAxes', handles.axes_hist)
+set(hf, 'CurrentAxes', handles.axes_hist)
 imhist(roi(metadata.cam(1).mask))
 
 % --- for axex_binary: eye closeed ---
@@ -226,10 +236,10 @@ roi = wholeframe .* uint8(metadata.cam(1).mask);
 binframe = im2bw(roi(handles.y1:handles.y2, handles.x1:handles.x2), metadata.cam(1).thresh);
 handles.binimage2 = imshow(binframe, 'Parent', handles.axes_binary2);
 
-set(gui.eyelidThreshold, 'CurrentAxes', handles.axes_hist2)
+set(hf, 'CurrentAxes', handles.axes_hist2)
 imhist(roi(metadata.cam(1).mask))
 
 % --- for axex_trace: eyelid trace ---
-set(gui.eyelidThreshold, 'CurrentAxes', handles.axes_trace)
+set(hf, 'CurrentAxes', handles.axes_trace)
 plot(t, trace)
 set(gca, 'xlim', [t(1) t(end)])

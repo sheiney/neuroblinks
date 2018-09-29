@@ -27,15 +27,18 @@ plt_range = -2100;
 
 persistent eyeTrace
 
+try
+
 if isempty(eyeTrace)
     set(0, 'currentfigure', gui.maingui)
 %     set(gui.maingui, 'CurrentAxes', handles.axes_eye)
 %     cla
     eyeTrace = plot(handles.axes_eye, [plt_range 0], [1 1]*0, 'k-'); hold on
-    set(handles.axes_eye, 'color', [240 240 240]/255, 'YAxisLocation', 'right');
-    set(handles.axes_eye, 'xlim', [plt_range 0], 'ylim', [-0.1 1.1])
-    set(handles.axes_eye, 'xtick', [-3000:500:0], 'box', 'off')
-    set(handles.axes_eye, 'ytick', [0:0.5:1], 'yticklabel', {'0' '' '1'})
+    set(handles.axes_eye, 'Color', [240 240 240]/255, 'YAxisLocation', 'right');
+    set(handles.axes_eye, 'XLim', [plt_range 0], 'YLim', [-0.1 1.1])
+    set(handles.axes_eye, 'XTick', [-3000:500:0], 'box', 'off')
+    set(handles.axes_eye, 'YTick', [0:0.5:1], 'YTicklabel', {'0' '' '1'})
+    set(handles.axes_eye, 'FontSize', 8);
 end
 
 
@@ -76,6 +79,12 @@ if get(handles.toggle_continuous, 'Value')  == 1
             timeSinceLastTrial = clock;
         end
     end
+end
+
+catch ME
+
+    throw(ME)
+
 end
 
 end

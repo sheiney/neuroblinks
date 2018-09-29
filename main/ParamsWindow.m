@@ -82,11 +82,37 @@ function edit_mouseName_Callback(hObject, eventdata, handles)
 % Hints: get(hObject,'String') returns contents of edit_mouseName as text
 %        str2double(get(hObject,'String')) returns contents of edit_mouseName as a double
 
-metadata=getappdata(0,'metadata');
+config = getappdata(0, 'config');
+gui = getappdata(0, 'gui');
+metadata = getappdata(0, 'metadata');
 
-metadata.mouse=get(hObject,'String');
+maingui.handles = guidata(gui.maingui);
 
-setappdata(0,'metadata',metadata);
+metadata.mouse = get(hObject, 'String');
+
+mousedir = fullfile(config.userdatapath, metadata.mouse); 
+
+sessiondir = fullfile(mousedir, datestr(now, 'yymmdd'));
+
+mkdir(sessiondir)
+cd(sessiondir)
+
+metadata.folder = sessiondir;
+
+condfile=fullfile(mousedir,'condparams.csv');
+
+if exist(condfile, 'file')
+
+    config.paramtable.data = csvread(condfile);
+    config.paramtable.randomize = maingui.handles.checkbox_randomize.Value;   
+
+    set(maingui.handles.uitable_params, 'Data', config.paramtable.data);
+    config.trialtable = makeTrialTable(config.paramtable.data, config.paramtable.randomize);
+    
+end
+
+setappdata(0, 'metadata', metadata);
+setappdata(0, 'config', config);
 
 drawnow         % Seems necessary to update appdata before returning to calling function
 

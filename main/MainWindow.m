@@ -22,7 +22,7 @@ function varargout = MainWindow(varargin)
 
 % Edit the above text to modify the response to help MainWindow
 
-% Last Modified by GUIDE v2.5 01-Aug-2018 11:59:59
+% Last Modified by GUIDE v2.5 29-Aug-2018 12:30:30
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -51,6 +51,9 @@ function MainWindow_OpeningFcn(hObject, eventdata, handles, varargin)
 
 % Choose default command line output for MainWindow
 handles.output = hObject;
+
+set(handles.axes_eye, 'FontSize', 8);
+
 % Update handles structure
 guidata(hObject,handles)
 
@@ -569,9 +572,16 @@ function checkbox_verbose_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+config = getappdata(0, 'config');
+
 % Hint: get(hObject,'Value') returns toggle state of checkbox_verbose
+if hObject.Value == 0
+    config.verbose = 0;
+else
+    config.verbose = 1;
+end
 
-
+setappdata(0, 'config', config);
 
 function edit_posttime_Callback(hObject, eventdata, handles)
 % hObject    handle to edit_posttime (see GCBO)
@@ -683,4 +693,36 @@ function edit26_CreateFcn(hObject, eventdata, handles)
 %       See ISPC and COMPUTER.
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
+end
+
+
+% --- Executes during object creation, after setting all properties.
+function checkbox_verbose_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to checkbox_verbose (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+config = getappdata(0, 'config');
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox_verbose
+if config.verbose == 0
+    hObject.Value = 0;   
+else
+    hObject.Value = 1;
+end
+
+
+% --- Executes during object creation, after setting all properties.
+function checkbox_random_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to checkbox_random (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+config = getappdata(0, 'config');
+
+% Hint: get(hObject,'Value') returns toggle state of checkbox_verbose
+if config.paramtable.randomize == 0
+    hObject.Value = 0;
+    
+else
+    hObject.Value = 1;
 end

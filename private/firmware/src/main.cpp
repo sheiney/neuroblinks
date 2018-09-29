@@ -17,7 +17,7 @@ const int ch_brightled = 7;
 // Outputs
 const int pin_ss = 4;  // slave select Pin. need one for each external chip you are going to control.
 const int pin_brightled = 7;
-const int pin_camera = 8;
+const int pin_camera = 0;
 const int pin_led = 9;
 const int pin_whisker = 10;
 const int pin_tone = 11;
