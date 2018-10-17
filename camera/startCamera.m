@@ -18,10 +18,14 @@ src = getselectedsource(cameras(n));
 
 src.TriggerMode = 'On';
 % TODO: REMOVE THE FOLLOWING LINE BEFORE PRODUCTION
-src.TriggerMode = 'Off';    % For now override hardware trigger so we don't need Arduino connected
+% src.TriggerMode = 'Off';    % For now override hardware trigger so we don't need Arduino connected
 
-cameras(n).TriggerRepeat = 0;
+% cameras(n).TriggerRepeat = 0;
 cameras(n).FramesPerTrigger = metadata.cam(n).frame_rate * (sum(metadata.cam(1).time) / 1e3);   % Always reference to camera 1 time
+
+if n==1 % for Ace camera only
+ src.AcquisitionBurstFrameCount = ceil(metadata.cam(n).frame_rate * (sum(metadata.cam(1).time) / 1e3));    % Note this is limited to 255 frames (see documentation for FrameBurstStart)
+end
 
 % if strcmp(cameras(n).triggermode,'Manual to disk')
 %     % We have to set up the video writer object here 

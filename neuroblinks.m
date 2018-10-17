@@ -4,11 +4,6 @@ function neuroblinks(varargin)
     [basedir, mfile, ext] = fileparts(mfilename('fullpath'));
     oldpath = addpath(genpath(fullfile(basedir)));
 
-    % Special case if we just want to set up path but not launch full program
-    if varargin{1} == 0
-        return
-    end
-
     % Load local configuration for these rigs
     % Should be somewhere in path but not "neuroblinks" directory or subdirectory
     neuroblinks_config
@@ -18,6 +13,12 @@ function neuroblinks(varargin)
     % Set up defaults in case user doesn't specify all options
     rig = DEFAULTRIG;
     device = DEFAULTDEVICE;
+
+    % Special case if we just want to set up path and configuration but not launch full program
+    if varargin{1} == 0
+        setappdata(0, 'config', config)
+        return
+    end
 
     % Input parsing
     % Values passed override defaults set in neuroblinks_config

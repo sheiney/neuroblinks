@@ -12,17 +12,22 @@ const int ch_led = 1;
 const int ch_puffer_other = 2;
 const int ch_puffer_eye = 3;
 const int ch_tone = 5;
-const int ch_brightled = 7;
+// const int ch_brightled = 7;
 
 // Outputs
-const int pin_ss = 4;  // slave select Pin. need one for each external chip you are going to control.
-const int pin_brightled = 7;
+// const int pin_ss = 4;  // slave select Pin. need one for each external chip you are going to control.
 const int pin_camera = 0;
+const int pin_tone = 7;
+const int pin_ambientled = 8;
 const int pin_led = 9;
-const int pin_whisker = 10;
-const int pin_tone = 11;
-const int pin_laser = 12;
+// const int pin_whisker = 10;
+const int pin_motor = 10;
+// const int pin_laser = 12;
 const int pin_eye_puff = 13;
+const int pin_panelled = 30;
+
+const int pin_encA = 11;
+const int pin_encB = 12;
 
 // Index into array indicates stimulus number as specified in Matlab, value at that index is corresponding pin number on Arduino
 // Index zero should always have zero value because there is no stimulus 0
@@ -30,12 +35,12 @@ const int pin_eye_puff = 13;
 const int stim2pinMapping[10] {
     0,
     pin_led,
-    pin_whisker,
+    0,
     pin_eye_puff,
     0,
     pin_tone,
     0,
-    pin_brightled,
+    0,
     0,
     0
 };
@@ -84,31 +89,39 @@ Stimulus US(param_campretime + param_ISI, param_usdur, digitalOn, digitalOff, st
 
 SensorRepeating enc(0, takeEncoderReading, param_encoderperiod, param_encodernumreadings);
 
-// Encoder cylEnc(2, 3); // pins used should have interrupts, e.g. 2 and 3
+Encoder cylEnc(pin_encA, pin_encB); // pins used should have interrupts, e.g. 2 and 3
 
 // The setup routine runs once when you press reset or get reset from Serial port
 void setup() {
   // Initialize the digital pin as an output.
   pinMode(pin_camera, OUTPUT);
   pinMode(pin_led, OUTPUT);
-  pinMode(pin_eye_puff, OUTPUT);
-  pinMode(pin_whisker, OUTPUT);
   pinMode(pin_tone, OUTPUT);
-  pinMode(pin_brightled, OUTPUT);
-  pinMode(pin_laser, OUTPUT);
-  pinMode(pin_ss, OUTPUT);
+  pinMode(pin_eye_puff, OUTPUT);
+//   pinMode(pin_tone, OUTPUT);
+//   pinMode(pin_brightled, OUTPUT);
+//   pinMode(pin_laser, OUTPUT);
+  pinMode(pin_motor, OUTPUT);
+  pinMode(pin_ambientled, OUTPUT);
+  pinMode(pin_panelled, OUTPUT);
+//   pinMode(pin_ss, OUTPUT);
 
   // Default all output pins to LOW - for some reason they were floating high on the Due before I (Shane) added this
   digitalWrite(pin_camera, LOW);
   digitalWrite(pin_led, LOW);
-  digitalWrite(pin_eye_puff, LOW);
-  digitalWrite(pin_whisker, LOW);
   digitalWrite(pin_tone, LOW);
-  digitalWrite(pin_brightled, LOW);
-  digitalWrite(pin_laser, LOW);
+  digitalWrite(pin_eye_puff, LOW);
+//   digitalWrite(pin_tone, LOW);
+//   digitalWrite(pin_brightled, LOW);
+//   digitalWrite(pin_laser, LOW);
+
+  // Turn on panel LED to indicate program running
+  digitalWrite(pin_panelled, HIGH);
+  // Turn on ambient LED in box (TODO: make this toggleable from Matlab)
+  digitalWrite(pin_ambientled, HIGH);
 
   // set your ssPin to LOW too. when you have more external chips to control, you will have to be more careful about this step (ssPin LOW means the chip will respond to SPI commands)
-  digitalWrite(pin_ss, LOW);
+//   digitalWrite(pin_ss, LOW);
 //   SPI.begin();
 //   SPI.setBitOrder(MSBFIRST);  // if you are using the MCP4131
 
@@ -205,21 +218,21 @@ void checkVars() {
       case 10:
         param_tonefreq = value;
         break;
-      case 11:
-        param_laserdelay = value;
-        break;
-      case 12:
-        param_laserdur = value;
-        break;
-      case 13:
-        param_laserpower = value;
-        break;
-      case 15:
-        param_laserperiod = value;
-        break;
-      case 16:
-        param_lasernumpulses = value;
-        break;
+    //   case 11:
+    //     param_laserdelay = value;
+    //     break;
+    //   case 12:
+    //     param_laserdur = value;
+    //     break;
+    //   case 13:
+    //     param_laserpower = value;
+    //     break;
+    //   case 15:
+    //     param_laserperiod = value;
+    //     break;
+    //   case 16:
+    //     param_lasernumpulses = value;
+    //     break;
     }
     // We might be able to remove this delay if Matlab sends the parameters fast enough to buffer
     delay(1); // Delay enough to allow next 3 bytes into buffer (24 bits/115200 bps = ~200 us, so delay 1 ms to be safe).
@@ -349,8 +362,8 @@ void laserOff(int dummy) { // Function signature requires int but we don't need 
 void takeEncoderReading(timems_t &time, int32_t &reading) {
 
     time = millis();
-    // reading = cylEnc.read();
-    reading = 5000-random(10000);  // for testing
+    reading = cylEnc.read();
+    // reading = 5000-random(10000);  // for testing
 
 }
 

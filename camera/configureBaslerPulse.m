@@ -1,4 +1,4 @@
-function configureBaslerPulse(camera, config)
+function camera = configureBaslerPulse(camera, config)
 
 src = getselectedsource(camera);
 

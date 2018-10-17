@@ -1,4 +1,4 @@
-function configureBaslerAce(camera, config)
+function camera = configureBaslerAce(camera, config)
 
 src = getselectedsource(camera);
 
@@ -28,6 +28,8 @@ camera.FramesPerTrigger = ceil(config.trial_length_ms / (1000 / config.camera(1)
 triggerconfig(camera, 'hardware', 'DeviceSpecific', 'DeviceSpecific');
 src.TriggerMode = 'Off';
 src.TriggerActivation = 'RisingEdge';
+src.TriggerSelector = 'FrameBurstStart';
+src.AcquisitionBurstFrameCount = ceil(config.trial_length_ms / (1000 / config.camera(1).FrameRate));    % Note this is limited to 255 frames (see documentation for FrameBurstStart)
 
 % This needs to be toggled to switch between preview and acquisition mode
 % It is changed to 'Line1' in MainWindow just before triggering Arduino and then

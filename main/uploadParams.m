@@ -37,7 +37,8 @@ end
 microController = getappdata(0, 'microController');
 for i = 1:length(dataBuffer)
     try
-        fwrite(microController, i, 'uint8');                  % header
+        % Note that the following code as written is inefficient because it writes a lot of empty data--need to only cycle through dataBuffer indices with values
+        fwrite(microController, i, 'uint8');              % header
         fwrite(microController, dataBuffer(i), 'int16');  % data
     catch
         warning('Problem writing data to microcontroller: Index=%d, Value=%d\n', i, dataBuffer(i))

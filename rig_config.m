@@ -16,4 +16,6 @@ config.camera(2).binning = 2;
 % Arduino Zero
 % config.MICROCONTROLLER_IDS = {'2F2E6A78', '3B3B06F1'};
 % Teensy
-config.MICROCONTROLLER_IDS = {'4135240', '4135250'};
+config.MICROCONTROLLER_IDS = {'4135240', '4788080'};
+% config.MICROCONTROLLER_IDS = {'4135240', '4135250'};
+% config.MICROCONTROLLER_IDS = {'4788080', '4135250'};
