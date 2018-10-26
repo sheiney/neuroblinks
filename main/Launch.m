@@ -18,11 +18,14 @@ set(gui.camera2gui, 'position', [config.pos_camera2gui, current_pos(3:4)])
 % Save handle for camera 2 preview axis
 gui.cameraAx(2) = findobj(gui.camera2gui, 'Tag', 'cameraAx2');
 
+% config.running = 1;
+
 % % Open parameter dialog
 % h = ParamsWindow;
 % waitfor(h);
 
 % Save structs to root app data
 setappdata(0, 'gui', gui)
+% setappdata(0, 'config', config)
 
 drawnow         % Seems necessary to update appdata before returning to calling function

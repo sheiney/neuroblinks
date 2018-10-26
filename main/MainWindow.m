@@ -22,7 +22,7 @@ function varargout = MainWindow(varargin)
 
 % Edit the above text to modify the response to help MainWindow
 
-% Last Modified by GUIDE v2.5 29-Aug-2018 12:30:30
+% Last Modified by GUIDE v2.5 25-Oct-2018 15:29:52
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -74,7 +74,7 @@ if ~strcmpi(button,'Yes')
     return
 end
 
-stopSession(handles)
+ok = stopSession(handles);
 
 delete(gui.camera2gui)
 delete(gui.maingui)
@@ -102,6 +102,7 @@ function pushbutton_setROI_Callback(hObject, eventdata, handles)
 
 cameras=getappdata(0,'cameras');   
 metadata=getappdata(0,'metadata');
+gui=getappdata(0,'gui');
 
 if isfield(metadata.cam(1),'winpos')
     winpos=metadata.cam(1).winpos;
@@ -138,7 +139,7 @@ handles.roipatch=patch(XY(:,1),XY(:,2),'g','FaceColor','none','EdgeColor','g','T
 handles.XY=XY;
 
 setappdata(0,'metadata',metadata);
-guidata(hObject,handles)
+guidata(gui.maingui,handles)
 
 drawnow         % Seems necessary to update appdata before returning to calling function
 
@@ -238,7 +239,7 @@ end
 
 
 function pushbutton_instantreplay_Callback(hObject, eventdata, handles)
-instantReplay(getappdata(0,'lastdata'),getappdata(0,'lastmetadata'));
+instantReplay(getappdata(0,'lastvid1'),getappdata(0,'lastmetadata'));
 
 
 function toggle_continuous_Callback(hObject, eventdata, handles)
@@ -292,11 +293,12 @@ function pushbutton_eyelidTraceViewer_Callback(hObject, eventdata, handles)
 gui=getappdata(0,'gui');
 config=getappdata(0,'config');
 gui.one_trial_analysis_gui = OneTrialAnalysisWindow;
-setappdata(0,'gui',gui);
 
 set(gui.one_trial_analysis_gui, 'units', 'pixels')
-set(gui.one_trial_analysis_gui, 'position', [config.pos_analysiswindow, config.size_analysiswindow])
+current_pos = get(gui.one_trial_analysis_gui, 'position');
+set(gui.one_trial_analysis_gui, 'position', [config.pos_analysiswindow, current_pos(3:4)])
 
+setappdata(0,'gui',gui);
 
 function uipanel_SessionMode_SelectionChangeFcn(hObject, eventdata, handles)
 
@@ -312,10 +314,19 @@ switch get(eventdata.NewValue, 'Tag') % Get Tag of selected object.
             ok=0;
         else
             ok=1;  
-            session=dlgans{1};
+            metadata.session=dlgans{1};
         end
 
-        ok = startSession(handles);
+        setappdata(0, 'metadata', metadata)
+
+        try
+            % Consider passing 'config' struct instead of handles and storing session number in 'config'
+            ok = startSession(handles);
+        catch
+            set(eventdata.NewValue,'Value',0);
+            set(eventdata.OldValue,'Value',1);
+            set(handles.uipanel_SessionMode,'SelectedObject',eventdata.OldValue);
+        end
 
     case 'togglebutton_StopSession'
         button=questdlg('Are you sure you want to stop this session?', 'Stop session?', ...
@@ -324,19 +335,21 @@ switch get(eventdata.NewValue, 'Tag') % Get Tag of selected object.
         switch button
             
             case 'Yes and compress videos'
-                session='s00';     
+                metadata.session='s00';     
                 ok=1;
                 stopSession(handles);
                 
                 makeCompressedVideos(metadata.folder,1);
                 
             case 'Yes and DON''T compress videos'
-                session='s00';     
+                metadata.session='s00';     
                 ok=1;
                 stopSession(handles);
                 
             otherwise
                 ok=0;
+
+            setappdata(0, 'metadata', metadata)
                 
         end
     otherwise
@@ -355,10 +368,7 @@ else
     return
 end
 
-set(handles.text_SessionName,'String',session);
-metadata=getappdata(0,'metadata');
-metadata.basename=sprintf('%s_%s_%s', metadata.mouse, datestr(now,'yymmdd'),session);
-setappdata(0,'metadata',metadata);
+set(handles.text_SessionName, 'String', metadata.session);
 
 drawnow         % Seems necessary to update appdata before returning to calling function
 
@@ -728,3 +738,14 @@ if config.paramtable.randomize == 0
 else
     hObject.Value = 1;
 end
+
+
+% --- Executes when user attempts to close CamFig.
+function CamFig_CloseRequestFcn(hObject, eventdata, handles)
+% hObject    handle to CamFig (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hint: delete(hObject) closes the figure
+% delete(hObject);
+msgbox('This window cannot be closed during an experiment')

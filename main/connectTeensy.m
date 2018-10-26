@@ -1,4 +1,4 @@
-function teensy = connectTeensy(config)
+function [teensy, config] = connectTeensy(config)
 
     %% -- start serial communication to arduino ---
     disp('Connecting to Teensy board...')
@@ -8,7 +8,9 @@ function teensy = connectTeensy(config)
         error('No Arduino found for requested rig (%d)', config.rig);
     end
 
-    teensy=serial(com_ports{config.rig}, 'BaudRate', 115200);
+    config.com_ports(config.rig) = com_ports{config.rig};
+
+    teensy=serial(config.com_ports(config.rig), 'BaudRate', 115200);
     teensy.InputBufferSize = 512*8;
     % teensy.DataTerminalReady='off';	% to prevent resetting teensy on connect
     teensy.DataTerminalReady='on';	    % Does this reset device for teensy Zero? Seems to need to be set for device to respond to serial inputs

@@ -22,7 +22,7 @@ function varargout = Camera2Window(varargin)
 
 % Edit the above text to modify the response to help cameraWindow
 
-% Last Modified by GUIDE v2.5 01-Aug-2018 12:08:52
+% Last Modified by GUIDE v2.5 25-Oct-2018 14:25:55
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -106,3 +106,21 @@ instantReplay(getappdata(0,'lastvid2'),getappdata(0,'lastmetadata'))
 %     set(hObject,'String','Start Preview')
 %     stoppreview(cameras(2))
 % end
+
+
+% --- Executes when user attempts to close figure1.
+function figure1_CloseRequestFcn(hObject, eventdata, handles)
+% hObject    handle to figure1 (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% config = getappdata(0, 'config');
+% 
+% % Hint: delete(hObject) closes the figure
+% if config.running
+%     msgbox('This window cannot be closed during an experiment')
+% else
+%     delete(hObject);
+% end
+
+msgbox('This window cannot be closed during an experiment')

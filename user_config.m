@@ -19,7 +19,7 @@ config.pos_mainwindow = [5,50];
 config.pos_camera2gui = [850, 345]; % [849 344 524 303]    
 % config.size_camera2gui=[840 600]; 
 
-config.pos_analysiswindow = [5 45];    
+config.pos_analysiswindow = [850 50];    
 % config.size_analysiswindow=[560 380];   
 
 % Corresponds to checkbox on GUI for verbose reporting of log

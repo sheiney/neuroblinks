@@ -1,6 +1,6 @@
 function abortCameraAcquisition()
 
-cameras = getappdata(0,'cameras');
+cameras = getappdata(0, 'cameras');
 
 for i=1:length(cameras)
     src = getselectedsource(cameras(i));

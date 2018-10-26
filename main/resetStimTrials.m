@@ -1,4 +1,5 @@
 function resetStimTrials()
+%    Note: this function is not currently used
 
 trials=getappdata(0,'trials');
 

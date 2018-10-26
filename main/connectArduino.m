@@ -1,4 +1,4 @@
-function arduino = connectArduino(config)
+function [arduino, config] = connectArduino(config)
 
     %% -- start serial communication to arduino ---
     disp('Connecting to Arduino...')
@@ -8,7 +8,9 @@ function arduino = connectArduino(config)
         error('No Arduino found for requested rig (%d)', config.rig);
     end
 
-    arduino=serial(com_ports{config.rig},'BaudRate',115200);
+    config.com_ports(config.rig) = com_ports{config.rig};
+
+    arduino=serial(config.com_ports(config.rig),'BaudRate',115200);
     arduino.InputBufferSize = 512*8;
     % arduino.DataTerminalReady='off';	% to prevent resetting Arduino on connect
     arduino.DataTerminalReady='on';	    % Does this reset device for Arduino Zero? Seems to need to be set for device to respond to serial inputs

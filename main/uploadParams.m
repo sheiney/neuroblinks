@@ -1,5 +1,7 @@
 function ok = uploadParams(metadata)
 
+config = getappdata(0, 'config');
+
 ok = 0; % Flag changed to 1 when function successfully completes
 
 % Load enumerated variable indices into scope
@@ -19,7 +21,7 @@ elseif  strcmpi(metadata.stim.type, 'conditioning')
     dataBuffer(uController.CSNUM) = metadata.stim.c.csnum;
     dataBuffer(uController.CSDUR) = metadata.stim.c.csdur;
     dataBuffer(uController.USDUR) = metadata.stim.c.usdur;
-    dataBuffer(uController.ISI) = metadata.stim.c.isi;
+    dataBuffer(uController.ISI) = metadata.stim.c.isi - config.tube_delay(config.rig);
     if ismember(metadata.stim.c.csnum, [5, 6])
         dataBuffer(uController.TONEFREQ) = metadata.stim.c.cstone(metadata.stim.c.csnum - 4);
     end

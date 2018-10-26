@@ -60,6 +60,7 @@ for i=1:length(cameras)
   end
 
   [vid, vid_ts] = getdata(cameras(i), cameras(i).FramesAvailable);
+  vid_ts = vid_ts - vid_ts(1);
 
   % Keep data from last trial in memory even if we don't save it to disk
   setappdata(0, sprintf('lastvid%d', i), vid);
@@ -74,6 +75,10 @@ for i=1:length(cameras)
 
   if config.verbose
     fprintf('Video data from camera %d for trial %03d successfully written to disk.\n', i, metadata.cam(i).trialnum)
+  end
+
+  if i == 1
+    onlineBehaviorAnalysis(vid, metadata);
   end
 
   metadata.cam(i).trialnum = metadata.cam(i).trialnum + 1;

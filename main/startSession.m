@@ -15,17 +15,17 @@ camera = addCam(config.camera(1).IDS{config.rig}, config);
 cameras(1) = configureBaslerAce(camera, config);
 
 metadata.cam(1).ROIposition = cameras(1).ROIposition;
-metadata.cam(1).fullsize = cameras(1).ROIposition;
+metadata.cam(1).fullsize = config.camera(1).fullsize;
 
 camera = addCam(config.camera(2).IDS{config.rig}, config);
 cameras(2) = configureBaslerPulse(camera, config);
 
 metadata.cam(2).ROIposition = cameras(2).ROIposition;
-metadata.cam(2).fullsize = cameras(2).ROIposition;
+metadata.cam(2).fullsize = config.camera(2).fullsize;
 
 
 % Connect to microcontroller
-microController = connectMicrocontroller(config);
+[microController, config] = connectMicrocontroller(config);
 
 % % Need to replace togglePreview with a "startPreview" function
 % togglePreview(handles)
@@ -33,6 +33,7 @@ microController = connectMicrocontroller(config);
 setappdata(0, 'cameras', cameras)
 setappdata(0, 'microController', microController)
 setappdata(0, 'metadata', metadata)
+setappdata(0, 'config', config)
 
 drawnow         % Seems necessary to update appdata before returning to calling function
 

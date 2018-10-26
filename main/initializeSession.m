@@ -2,8 +2,14 @@ function ok = initializeSession()
 % This is executed when user presses the button to start a new session in in the main GUI
 % Initializes per session variables, some of which can be loaded from mouse config files
 
+gui = getappdata(0, 'gui'); 
+handles = guidata(gui.maingui);
+
 metadata=getappdata(0,'metadata');
 config=getappdata(0,'config');
+
+% House keeping -- seems to be necessary to clear out persistent variables from previous sessions
+clear newFrameCallbackCam1 newFrameCallbackCam2
 
 for i=1:length(config.camera)
 
@@ -43,6 +49,7 @@ sessiondir = fullfile(mousedir, datestr(now,'yymmdd'));
 mkdir(sessiondir)
 cd(sessiondir)
 
+metadata.basename=sprintf('%s_%s_%s', metadata.mouse, datestr(now,'yymmdd'), metadata.session);
 metadata.folder = sessiondir;
 
 condfile=fullfile(mousedir,'condparams.csv');
@@ -51,13 +58,16 @@ if exist(condfile, 'file')
 %     paramtable = getappdata(0,'paramtable');
 
     config.paramtable.data = csvread(condfile);
-    config.paramtable.randomize = handles.checkbox_randomize.Value;                 % Do we want to assume randomization here or read from gui?
+    config.paramtable.randomize = handles.checkbox_random.Value;                 % Do we want to assume randomization here or read from gui?
     config.trialtable = makeTrialTable(config.paramtable.data, config.paramtable.randomize);
     
 %     setappdata(0,'paramtable',paramtable);
 %     setappdata(0,'trialtable',trialtable);
 end
 
+trials.eye = [];
+
+setappdata(0, 'trials', trials)
 setappdata(0, 'metadata', metadata);
 setappdata(0, 'config', config);
 

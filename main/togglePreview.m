@@ -27,8 +27,8 @@ if strcmp(get(handles.pushbutton_StartStopPreview, 'String'), 'Start Preview')
         warning('off')
         preview(cameras(i), handles.pwin(i));
         warning('on')
-        set(gui.cameraAx(i), 'XLim', 0.5 + metadata.cam(i).fullsize([1 3]))
-        set(gui.cameraAx(i), 'YLim', 0.5 + metadata.cam(i).fullsize([2 4]))
+        set(gui.cameraAx(i), 'XLim', 0.5 + metadata.cam(i).ROIposition([1 3]))
+        set(gui.cameraAx(i), 'YLim', 0.5 + metadata.cam(i).ROIposition([2 4]))
         hp = findobj(gui.cameraAx(i),'Tag','roipatch');  delete(hp)
 
         % if isfield(handles,'XY')
