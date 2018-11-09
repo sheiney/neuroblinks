@@ -52,6 +52,10 @@ function MainWindow_OpeningFcn(hObject, eventdata, handles, varargin)
 % Choose default command line output for MainWindow
 handles.output = hObject;
 
+set(handles.axes_eye, 'Color', [240 240 240]/255, 'YAxisLocation', 'right');
+set(handles.axes_eye, 'XLim', [-2100 0], 'YLim', [-0.1 1.1])
+set(handles.axes_eye, 'XTick', [-3000:500:0], 'box', 'off')
+set(handles.axes_eye, 'YTick', [0:0.5:1], 'YTicklabel', {'0' '' '1'})
 set(handles.axes_eye, 'FontSize', 8);
 
 % Update handles structure
@@ -78,6 +82,7 @@ ok = stopSession(handles);
 
 delete(gui.camera2gui)
 delete(gui.maingui)
+delete(gui.one_trial_analysis_gui)
 
 % --- Outputs from this function are returned to the command line.
 function varargout = MainWindow_OutputFcn(hObject, eventdata, handles) 
@@ -103,12 +108,15 @@ function pushbutton_setROI_Callback(hObject, eventdata, handles)
 cameras=getappdata(0,'cameras');   
 metadata=getappdata(0,'metadata');
 gui=getappdata(0,'gui');
+config=getappdata(0,'config');
 
 if isfield(metadata.cam(1),'winpos')
-    winpos=metadata.cam(1).winpos;
-    winpos(1:2)=winpos(1:2)+metadata.cam(1).ROIposition(1:2);
+    winpos = metadata.cam(1).winpos;
+    winpos(1:2) = winpos(1:2) + metadata.cam(1).ROIposition(1:2);
 else
-    winpos=[0 0 640 512];
+    % winpos=[0 0 640 512];
+    winpos = config.camera(1).eyelid_roi;
+    winpos(1:2) = winpos(1:2) + metadata.cam(1).ROIposition(1:2);
 end
 
 % Place rectangle on camera
@@ -319,13 +327,15 @@ switch get(eventdata.NewValue, 'Tag') % Get Tag of selected object.
 
         setappdata(0, 'metadata', metadata)
 
-        try
-            % Consider passing 'config' struct instead of handles and storing session number in 'config'
-            ok = startSession(handles);
-        catch
-            set(eventdata.NewValue,'Value',0);
-            set(eventdata.OldValue,'Value',1);
-            set(handles.uipanel_SessionMode,'SelectedObject',eventdata.OldValue);
+        if ok
+            try
+                % Consider passing 'config' struct instead of handles and storing session number in 'config'
+                ok = startSession(handles);
+            catch
+                set(eventdata.NewValue,'Value',0);
+                set(eventdata.OldValue,'Value',1);
+                set(handles.uipanel_SessionMode,'SelectedObject',eventdata.OldValue);
+            end
         end
 
     case 'togglebutton_StopSession'
@@ -589,8 +599,11 @@ config = getappdata(0, 'config');
 % Hint: get(hObject,'Value') returns toggle state of checkbox_verbose
 if hObject.Value == 0
     config.verbose = 0;
+    % Suppress some warnings that are annoying
+    warning('off', 'imaq:gentl:immedOrManTriggerTurningTriggerModeOff')
 else
     config.verbose = 1;
+    warning('on', 'imaq:gentl:immedOrManTriggerTurningTriggerModeOff')
 end
 
 setappdata(0, 'config', config);

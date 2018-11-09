@@ -2,6 +2,7 @@ function calculateEyelidCalibration()
 % -- load data again --
 metadata = getappdata(0, 'calibration_metadata');
 vid = getappdata(0, 'calibration_vid');
+vid_ts = getappdata(0, 'calibration_vid_ts');
 
 % --- eyelid trace --
 [trace, t] = vid2eyetrace(vid, metadata, metadata.cam(1).thresh);
@@ -20,9 +21,9 @@ metadata.cam(1).cal = 0;    % Clear calibration flag
 setappdata(0,'metadata',metadata);
 
 fprintf('calib_offset = %d.  calib_scale = %d.\n', calib_offset, calib_scale)
-fprintf('thresh = %d.\n', round(metadata.cam(1).thresh * 256))
+fprintf('thresh = %d.\n', round(metadata.cam(1).thresh * 255))
 
 videoname = sprintf('%s\\%s_calib', metadata.folder, metadata.basename);
-save(videoname, 'vid', 'metadata', '-v6')    
+save(videoname, 'vid', 'vid_ts', 'metadata', '-v6')    
 
 fprintf('Video from calibration trial successfully written to disk.\n')

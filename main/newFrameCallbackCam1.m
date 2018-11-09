@@ -45,7 +45,7 @@ end
 % --- eye trace ---
 wholeframe = event.Data;
 roi = wholeframe .* uint8(metadata.cam(1).mask);
-eyelidpos = sum(roi(:)>= 256 * metadata.cam(1).thresh);
+eyelidpos = sum(roi(:)>= 255 * metadata.cam(1).thresh);
 
 % --- eye trace buffer ---
 eyedata(1:end-1, :) = eyedata(2:end, :);

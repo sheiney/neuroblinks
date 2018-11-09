@@ -70,7 +70,8 @@ end
 
 % writeObj=VideoWriter(fname); % default is AVI
 writeObj=VideoWriter(fname,'MPEG-4');
-set(writeObj,'FrameRate',fr);
+% set(writeObj,'FrameRate',fr);
+set(writeObj,'FrameRate',fr/10);
 open(writeObj);
 
 writeVideo(writeObj,F);

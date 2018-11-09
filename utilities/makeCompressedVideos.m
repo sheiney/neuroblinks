@@ -45,14 +45,15 @@ fprintf('Done compressing video files\n');
 function loadAndWrite(fullfname,VERBOSE)
 load(fullfname);
 
-if ~exist('data','var') || ~exist('metadata','var')	
+if ~exist('vid','var') || ~exist('metadata','var')	
 	return	% Not a normal video file so skip this one
 end
 
 [p,basename,ext]=fileparts(fullfname);
 
-writeStimVideo(data,metadata,sprintf('%s/compressed/%s',p,basename));
+writeStimVideo(vid,metadata,sprintf('%s/compressed/%s',p,basename));
 save(sprintf('%s/compressed/%s_meta',p,basename),'metadata');
+save(sprintf('%s/compressed/%s_ts',p,basename),'vid_ts');
 
 if VERBOSE
 	fprintf('Compressed file %s written to disk.\n',basename)

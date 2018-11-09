@@ -62,8 +62,8 @@ handles.x2 = floor(metadata.cam(1).winpos(1) + metadata.cam(1).winpos(3));
 handles.y1 = floor(metadata.cam(1).winpos(2)) + 1;
 handles.y2 = floor(metadata.cam(1).winpos(2) + metadata.cam(1).winpos(4));
 
-set(handles.edit_eyelidThresh, 'String', num2str(round(metadata.cam(1).thresh * 256)));
-set(handles.slider_eyelidThresh, 'Value', round(metadata.cam(1).thresh * 256));
+set(handles.edit_eyelidThresh, 'String', num2str(round(metadata.cam(1).thresh * 255)));
+set(handles.slider_eyelidThresh, 'Value', round(metadata.cam(1).thresh * 255));
 
 % Update handles structure
 guidata(hObject, handles);
@@ -100,13 +100,13 @@ metadata = getappdata(0, 'calibration_metadata');
 
 % Alternatively can use "thresh = graythresh(image)" to get threshold with
 % Otsu's method
-threshold_slider = round(get(hObject, 'Value')) / 256;
+threshold_slider = round(get(hObject, 'Value')) / 255;
 if threshold_slider > 0 && threshold_slider < 1
-    metadata.cam(1).thresh = round(get(hObject, 'Value')) / 256;
+    metadata.cam(1).thresh = round(get(hObject, 'Value')) / 255;
     set(handles.edit_eyelidThresh, 'String', num2str(round(get(hObject, 'Value'))))
 else
     disp('Wrong number was returned by slider...')
-    set(handles.slider_eyelidThresh, 'Value', round(metadata.cam(1).thresh * 256));
+    set(handles.slider_eyelidThresh, 'Value', round(metadata.cam(1).thresh * 255));
 end
 % Have to stop auto refresh timer before drawing or else we get an error
 % when the timer has a callback
@@ -140,8 +140,8 @@ metadata = getappdata(0, 'calibration_metadata');
 
 % Alternatively can use "thresh = graythresh(image)" to get threshold with
 % Otsu's method
-metadata.cam(1).thresh = str2double(get(handles.edit_eyelidThresh, 'String'))/256;
-set(handles.slider_eyelidThresh, 'Value', round(metadata.cam(1).thresh * 256));
+metadata.cam(1).thresh = str2double(get(handles.edit_eyelidThresh, 'String'))/255;
+set(handles.slider_eyelidThresh, 'Value', round(metadata.cam(1).thresh * 255));
 
 setappdata(0, 'calibration_metadata', metadata);
 
@@ -188,7 +188,7 @@ function pushbutton_only_thresh_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 
 metadata = getappdata(0, 'calibration_metadata');
-fprintf('thresh = %d.\n', round(metadata.cam(1).thresh * 256))
+fprintf('thresh = %d.\n', round(metadata.cam(1).thresh * 255))
 delete(handles.figure1);
 
 
@@ -240,6 +240,6 @@ set(hf, 'CurrentAxes', handles.axes_hist2)
 imhist(roi(metadata.cam(1).mask))
 
 % --- for axex_trace: eyelid trace ---
-set(hf, 'CurrentAxes', handles.axes_trace)
-plot(t, trace)
-set(gca, 'xlim', [t(1) t(end)])
+% set(hf, 'CurrentAxes', handles.axes_trace)
+plot(handles.axes_trace, t, trace)
+set(handles.axes_trace, 'xlim', [t(1) t(end)])

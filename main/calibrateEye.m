@@ -21,6 +21,7 @@ src.TriggerMode = 'Off';    % For now override hardware trigger so we don't need
 setappdata(0, 'lastvid1', vid);               % Need this for instantReplay
 setappdata(0, 'lastmetadata', metadata);
 setappdata(0, 'calibration_vid', vid);
+setappdata(0, 'calibration_vid_ts', vid_ts);
 setappdata(0, 'calibration_metadata', metadata);
 
 fprintf('Video from last trial saved to memory for review.\n')

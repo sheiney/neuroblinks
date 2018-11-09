@@ -35,7 +35,7 @@ y=zeros(size(t));
 
 if w==1  % ------- faster algorithm --------
     
-    binimage = (data>=thresh*256);
+    binimage = (data>=thresh*255);
     binimage = (binimage & repmat(metadata.cam(1).mask,[1 1 c d]));
     tr=shiftdim(sum(sum(binimage,2),1),2); 
     y=(tr-calib.offset)./calib.scale;

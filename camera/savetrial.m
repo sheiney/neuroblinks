@@ -17,32 +17,36 @@ setappdata(0, 'lastmetadata', metadata);
 %% ------------- TODO: Save encoder data separately from camera data ---------------------- %%
 %%
 % Get encoder data from microController
-if isappdata(0, 'microController')
-  microController = getappdata(0, 'microController');
+if config.use_encoder == 1
 
-  if microController.BytesAvailable > 0
-    fread(microController, microController.BytesAvailable); % Clear input buffer
-  end
+  if isappdata(0, 'microController')
+    microController = getappdata(0, 'microController');
 
-  fwrite(microController, uController.REQUESTDATA, 'uint8');  % Tell microController we're ready for it to send the data
+    if microController.BytesAvailable > 0
+      fread(microController, microController.BytesAvailable); % Clear input buffer
+    end
 
-  data_header = (fread(microController, 1, 'uint8'));
-  if data_header == uController.ENCODERCOUNTS
-    encoder.counts = (fread(microController, 200, 'int32'));
-    encoder.displacement = counts2cm(encoder.counts - encoder.counts(1));
-  end
+    fwrite(microController, uController.REQUESTDATA, 'uint8');  % Tell microController we're ready for it to send the data
 
-  time_header = (fread(microController, 1, 'uint8'));
-  if time_header == uController.ENCODERTIME
-    encoder.time = (fread(microController, 200, 'uint32'));
-    encoder.time = encoder.time - encoder.time(1);
-  end
+    data_header = (fread(microController, 1, 'uint8'));
+    if data_header == uController.ENCODERCOUNTS
+      encoder.counts = (fread(microController, 200, 'int32'));
+      encoder.displacement = counts2cm(encoder.counts - encoder.counts(1));
+    end
 
-  encoderdatafname = sprintf('%s\\%s_%03d_encoder', metadata.folder, metadata.basename, metadata.cam(1).trialnum);
-  save(encoderdatafname, 'encoder', '-v6')
+    time_header = (fread(microController, 1, 'uint8'));
+    if time_header == uController.ENCODERTIME
+      encoder.time = (fread(microController, 200, 'uint32'));
+      encoder.time = encoder.time - encoder.time(1);
+    end
 
-  if config.verbose
-    fprintf('Encoder data for trial %03d successfully written to disk.\n', metadata.cam(1).trialnum)
+    encoderdatafname = sprintf('%s\\%s_%03d_encoder', metadata.folder, metadata.basename, metadata.cam(1).trialnum);
+    save(encoderdatafname, 'encoder', '-v6')
+
+    if config.verbose
+      fprintf('Encoder data for trial %03d successfully written to disk.\n', metadata.cam(1).trialnum)
+    end
+
   end
 
 end

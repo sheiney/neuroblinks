@@ -14,7 +14,7 @@ clear newFrameCallbackCam1 newFrameCallbackCam2
 for i=1:length(config.camera)
 
     metadata.cam(i).trialnum=1;
-    metadata.cam(i).thresh=0.125;
+    metadata.cam(i).thresh=180/255;
 
     metadata.cam(i).cal=0;
     metadata.cam(i).calib_offset=0;
@@ -60,6 +60,8 @@ if exist(condfile, 'file')
     config.paramtable.data = csvread(condfile);
     config.paramtable.randomize = handles.checkbox_random.Value;                 % Do we want to assume randomization here or read from gui?
     config.trialtable = makeTrialTable(config.paramtable.data, config.paramtable.randomize);
+
+    set(handles.uitable_params, 'Data', config.paramtable.data);
     
 %     setappdata(0,'paramtable',paramtable);
 %     setappdata(0,'trialtable',trialtable);

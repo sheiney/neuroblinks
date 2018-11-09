@@ -13,7 +13,7 @@ function newFrameCallbackCam2(obj, event, himage)
     % --- eye trace ---
     wholeframe = event.Data;
     roi = wholeframe .* uint8(metadata.cam(2).mask);
-    eyelidpos = sum(roi(:) >= 256 * metadata.cam(2).thresh);
+    eyelidpos = sum(roi(:) >= 255 * metadata.cam(2).thresh);
     
     % Pupil
     pupil_thresh = str2double(handles.edit_pupil_thresh.String);
