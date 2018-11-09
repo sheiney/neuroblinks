@@ -9,6 +9,8 @@ uController.USINT = 8;
 uController.ISI = 9;
 uController.TONEFREQ = 10;
 
+uController.AMBIENTLED = 20;
+
 uController.ENCODERCOUNTS = 100;
 uController.ENCODERTIME = 101;
 

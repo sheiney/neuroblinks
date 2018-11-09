@@ -20,6 +20,7 @@ if strcmpi(metadata.stim.type, 'puff')
 elseif  strcmpi(metadata.stim.type, 'conditioning')
     dataBuffer(uController.CSNUM) = metadata.stim.c.csnum;
     dataBuffer(uController.CSDUR) = metadata.stim.c.csdur;
+    dataBuffer(uController.CSINT) = round(metadata.stim.c.csintensity * (2^config.PWM_RESOLUTION - 1));     % Scale to full analogWrite units
     dataBuffer(uController.USDUR) = metadata.stim.c.usdur;
     dataBuffer(uController.ISI) = metadata.stim.c.isi - config.tube_delay(config.rig);
     if ismember(metadata.stim.c.csnum, [5, 6])

@@ -7,6 +7,8 @@
 #include <Encoder.h>
 // #include <tone.hpp>      // Only required for Due, otherwise included in Arduino library
 
+#define PWM_resolution 12
+
 // Stimulus channels (as defined in Matlab code)
 const int ch_led = 1;
 const int ch_puffer_other = 2;
@@ -57,7 +59,8 @@ int param_usdur = 20;
 int param_csch = ch_led;   // default to LED
 int param_usch = ch_puffer_eye;   // default to ipsi corneal puff
 int param_tonefreq = 10000;
-int param_csintensity = 256; // default to max intensity
+int param_csintensity = pow(2, PWM_resolution) - 1; // default to max intensity
+int param_ambient_led_intensity = pow(2, PWM_resolution) - 1; // default to max intensity
 
 // For laser stim during trials, time values in ms
 int param_laserdelay = 0; // delay from CS onset until laser onset
@@ -93,6 +96,10 @@ Encoder cylEnc(pin_encA, pin_encB); // pins used should have interrupts, e.g. 2 
 
 // The setup routine runs once when you press reset or get reset from Serial port
 void setup() {
+
+  // Set up PWM resolution first in case anything below depends on it
+  analogWriteResolution(PWM_resolution);        // There's an interplay between this value and PWM frequency (analogWriteFrequency)
+
   // Initialize the digital pin as an output.
   pinMode(pin_camera, OUTPUT);
   pinMode(pin_led, OUTPUT);
@@ -118,7 +125,7 @@ void setup() {
   // Turn on panel LED to indicate program running
   digitalWrite(pin_panelled, HIGH);
   // Turn on ambient LED in box (TODO: make this toggleable from Matlab)
-  digitalWrite(pin_ambientled, HIGH);
+  analogWrite(pin_ambientled, param_ambient_led_intensity);
 
   // set your ssPin to LOW too. when you have more external chips to control, you will have to be more careful about this step (ssPin LOW means the chip will respond to SPI commands)
 //   digitalWrite(pin_ss, LOW);
@@ -233,6 +240,10 @@ void checkVars() {
     //   case 16:
     //     param_lasernumpulses = value;
     //     break;
+        case 20:
+            param_ambient_led_intensity = value;
+            analogWrite(pin_ambientled, param_ambient_led_intensity);   // Change it immediately
+            break;
     }
     // We might be able to remove this delay if Matlab sends the parameters fast enough to buffer
     delay(1); // Delay enough to allow next 3 bytes into buffer (24 bits/115200 bps = ~200 us, so delay 1 ms to be safe).
@@ -323,22 +334,37 @@ void setDiPoValue(int value)
     //digitalWrite(ssPin, HIGH); // use this step to deselect your DiPo if you are working with multiple external chips through SPI
 }
 
+// Handle special cases
+// LED is a special case of digitalWrite because we can modulate intensity with PWM
 // Tone is a special case of digitalWrite because it uses a timer to cycle at requested frequency
 void digitalOn(int pin) {
-    if (pin == pin_tone) {
-        toneOn(pin);
-    }
-    else {
-        digitalWrite(pin, HIGH);
+    switch (pin) {
+        case pin_led: 
+            analogWrite(pin_led, param_csintensity);
+            break;
+        
+        case pin_tone: 
+            toneOn(pin);
+            break;
+    
+        default:
+            digitalWrite(pin, HIGH);
     }
 }
 
+// Don't need to do anything special for LED pin because digitalWrite will turn it off
 void digitalOff(int pin) {
-    if (pin == pin_tone) {
-        toneOff(pin);
-    }
-    else {
-        digitalWrite(pin, LOW);
+    switch (pin) {
+        case pin_led: 
+            analogWrite(pin_led, 0);
+            break;
+        
+        case pin_tone: 
+            toneOff(pin);
+            break;
+    
+        default:
+            digitalWrite(pin, HIGH);
     }
 }
 

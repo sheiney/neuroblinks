@@ -2,6 +2,7 @@
 % Should be somewhere in path
 DEFAULTDEVICE='teensy';
 DEFAULTRIG=1;
+config.PWM_RESOLUTION = 12;        % Bits of resolution of PWM signal in microcontroller (for LED intensity control)
 
 config.CAMADAPTOR = 'gentl';
 
