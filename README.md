@@ -15,22 +15,22 @@ Requirements
 
 * Modern Windows computer (tested on Win7) with lots of RAM and multi-core processor (e.g. 16-32 GB RAM, Intel i7).
 * Matlab v 2015 or later with the Image Acquisition and Image Processing toolboxes. Note that the code used to control the camera varies based on the particular release of Matlab because of changes in the Image Acquisition Toolbox. 
-* A high frame rate video camera (at least 200 FPS) supported by the Image Acquisition toolbox, for instance the Basler [Ace ac1300](https://www.baslerweb.com/en/products/cameras/area-scan-cameras/ace/aca1300-200um/). If you use a different camera you may need to modify the camera control code in Neuroblinks. We have only tested the Ace with this version. 
-* [Arduino microprocessor](http://arduino.cc).
+* A high frame rate video camera (at least 200 FPS) supported by the Image Acquisition toolbox, for instance the Basler [Ace ac1300](https://www.baslerweb.com/en/products/cameras/area-scan-cameras/ace/aca1300-200um/). If you use a different camera you may need to modify the camera control code in Neuroblinks. We have only tested the Ace with this version. The Basler Pulse is also used in this version for pupil measurements.
+* [Teensy microcontroller](https://www.pjrc.com/store/teensy35.html). Should also work with 32-bit Arduino microcontrollers. 
 
 
 Instructions
 ------------
 
-1. Configure your camera(s) to work with Matlab using the GenTL adapter. You can test whether your camera is properly configured to work with Neuroblinks by using `cameraTest()` in the "neuroblinks\camera" directory. This is a standalone program that doesn't depend on Arduino being configured. 
+1. Configure your camera(s) to work with Matlab using the GenTL adapter. You can test whether your camera is properly configured to work with Neuroblinks by using `cameraTest()` in the "neuroblinks\camera" directory. This is a standalone program that doesn't depend on the microcontroller being configured. 
 
-2. Configure your hardware (Arduino or other microcontroller). The necessary C++ source code files are included in the "private" directory under "neuroblinks". You will also need to configure the inputs and outputs. The code is written to work with the Arduino Zero but should be relatively easy to extend to other devices. Contact us if you have any questions about how to do this. 
+2. Configure your hardware (Teensy or other microcontroller). The necessary C++ source code files are included in the "private" directory under "neuroblinks". You will also need to configure the inputs and outputs. The code is written to work with the Teensy 3.5 but should be relatively easy to extend to other devices. Contact us if you have any questions about how to do this. 
 
-3. Download or clone the "neuroblinks" project to your computer and add the main directory of the project (i.e., "neuroblinks") to your Matlab path. Do not include subfolders as these will be added automatically for you based whether you're using Arduino or TDT, as explained below. Manually adding subfolders below "neuroblinks" could result in unexpected behavior. 
+3. Download or clone the "neuroblinks" project to your computer and add the main directory of the project (i.e., "neuroblinks") to your Matlab path. Do not include subfolders as these will be added automatically for you. Manually adding subfolders below "neuroblinks" could result in unexpected behavior. 
 
 4. Copy the file `neuroblinks_config_orig.m` to `neuroblinks_config.m` and modify it to match your particular configuration (see comments within the m-file).
 
-5. Create a directory for your mouse, e.g. `<data root>\<animalID>` and make this your current directory in Matlab. For example, we use `data\MXXX`, where XXX is the unique mouse ID. Note that if you follow our naming conventions and start Neuroblinks from the root directory for a particular mouse, the metadata.mouse field will be automatically populated for you and the session directory will be automatically created as "YYMMDD", which is the current date (`datestr(now,'yymmdd')`. If you deviate from this naming convention and directory structure you will likely need to modify the code in "configure.m" and some of our analysis code might not work for you. 
+5. Create a directory for your mouse, e.g. `<data root>\<animalID>` and optionally add a copy of `condparmas.csv` to this directory. For example, we use `data\MXXX`, where XXX is the unique mouse ID. Note that if you follow our naming conventions, the metadata.mouse field will be automatically populated for you and the session directory will be automatically created as "YYMMDD", which is the current date (`datestr(now,'yymmdd')`. If you deviate from this naming convention and directory structure you will likely need to modify the code and some of our analysis code might not work for you. You will also need to modify `rig_config.m` and `user_config.m` for your particular configuration (see comments withink these files). 
 
 6. Run `neuroblinks()` to start the main program (with optional arguments).
 
