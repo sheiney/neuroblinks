@@ -2,7 +2,7 @@
 function neuroblinks(varargin)
     
     [basedir, mfile, ext] = fileparts(mfilename('fullpath'));
-    oldpath = addpath(genpath(fullfile(basedir)));
+    oldpath = addpath(genpath_exclude(fullfile(basedir), '.git'));
 
     % Load local configuration for these rigs
     % Should be somewhere in path but not "neuroblinks" directory or subdirectory
