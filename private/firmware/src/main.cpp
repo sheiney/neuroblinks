@@ -340,7 +340,7 @@ void setDiPoValue(int value)
 void digitalOn(int pin) {
     switch (pin) {
         case pin_led: 
-            analogWrite(pin_led, param_csintensity);
+            analogWrite(pin, param_csintensity);
             break;
         
         case pin_tone: 
@@ -356,7 +356,8 @@ void digitalOn(int pin) {
 void digitalOff(int pin) {
     switch (pin) {
         case pin_led: 
-            analogWrite(pin_led, 0);
+            analogWrite(pin, 0);
+            digitalWrite(pin, LOW); // This additional step seems necessary to allow pin to go low after pulses--not sure why
             break;
         
         case pin_tone: 
@@ -364,7 +365,7 @@ void digitalOff(int pin) {
             break;
     
         default:
-            digitalWrite(pin, HIGH);
+            digitalWrite(pin, LOW);
     }
 }
 

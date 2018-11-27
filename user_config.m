@@ -30,5 +30,5 @@ config.pos_analysiswindow = [850 50];
 % Corresponds to checkbox on GUI for verbose reporting of log
 config.verbose = 1;
 
-config.use_encoder = 0;
+config.use_encoder = 1;
 config.use_pressure_sensor = 0;

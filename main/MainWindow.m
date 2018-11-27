@@ -80,9 +80,24 @@ end
 
 ok = stopSession(handles);
 
-delete(gui.camera2gui)
-delete(gui.maingui)
-delete(gui.one_trial_analysis_gui)
+% TODO: Replace these lines with more general loop over all fields of gui?
+if isfield(gui, 'one_trial_analysis_gui')
+    if ~isempty(gui.one_trial_analysis_gui)
+        delete(gui.one_trial_analysis_gui)
+    end
+end
+
+if isfield(gui, 'camera2gui')
+    if ~isempty(gui.camera2gui)
+        delete(gui.camera2gui)
+    end
+end
+
+if isfield(gui, 'maingui')
+    if ~isempty(gui.maingui)
+        delete(gui.maingui)
+    end
+end
 
 % --- Outputs from this function are returned to the command line.
 function varargout = MainWindow_OutputFcn(hObject, eventdata, handles) 
