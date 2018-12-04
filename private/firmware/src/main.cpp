@@ -28,8 +28,8 @@ const int pin_motor = 10;
 const int pin_eye_puff = 13;
 const int pin_panelled = 30;
 
-const int pin_encA = 11;
-const int pin_encB = 12;
+const int pin_encA = 12;
+const int pin_encB = 11;
 
 // Index into array indicates stimulus number as specified in Matlab, value at that index is corresponding pin number on Arduino
 // Index zero should always have zero value because there is no stimulus 0

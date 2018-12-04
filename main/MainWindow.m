@@ -319,7 +319,7 @@ gui.one_trial_analysis_gui = OneTrialAnalysisWindow;
 
 set(gui.one_trial_analysis_gui, 'units', 'pixels')
 current_pos = get(gui.one_trial_analysis_gui, 'position');
-set(gui.one_trial_analysis_gui, 'position', [config.pos_analysiswindow, current_pos(3:4)])
+set(gui.one_trial_analysis_gui, 'position', [config.pos_analysiswindow{config.rig}, current_pos(3:4)])
 
 setappdata(0,'gui',gui);
 
