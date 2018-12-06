@@ -23,7 +23,8 @@ const int pin_tone = 7;
 const int pin_ambientled = 8;
 const int pin_led = 9;
 // const int pin_whisker = 10;
-const int pin_motor = 10;
+// const int pin_motor = 10;
+const int pin_manual_puff = 10;     // Used for triggering puff manually with switch or TTL input pulldown (outside trial)
 // const int pin_laser = 12;
 const int pin_eye_puff = 13;
 const int pin_panelled = 30;
@@ -113,6 +114,9 @@ void setup() {
   pinMode(pin_panelled, OUTPUT);
 //   pinMode(pin_ss, OUTPUT);
 
+  pinMode(pin_manual_puff, INPUT_PULLUP);       // Pull down to trigger
+  attachInterrupt(digitalPinToInterrupt(pin_manual_puff), manualPuffInterrupt);
+
   // Default all output pins to LOW - for some reason they were floating high on the Due before I (Shane) added this
   digitalWrite(pin_camera, LOW);
   digitalWrite(pin_led, LOW);
@@ -173,6 +177,17 @@ void loop() {
             sendEncoderData();
             enc.reset();
           }
+      }
+
+      // This is quick and dirty approach -- better to use interrupts
+      if digitalRead(pin_manual_puff, LOW) {
+          digitalWrite(pin_eye_puff, HIGH);
+          
+          else
+          {
+              digitalWrite(pin_eye_puff, LOW);
+          }
+          
       }
   }
 
@@ -434,5 +449,18 @@ void writeLong(int32_t long_value) {
 void flushReceiveBuffer() {
     while(Serial.available()) {
         Serial.read();
+    }
+}
+
+void manualPuffInterrupt {
+
+    if (!RUNNING) {     // Only allow if we're not in the middle of a trial
+        // Toggle pin - use active LOW (so we can easily use a switch or other microcontroller)
+        if (digitalRead(pin_manual_puff) == LOW) {
+            digitalWrite(pin_eye_puff, HIGH);
+        }
+        else {
+            digitalWrite(pin_eye_puff, LOW);
+        }
     }
 }
