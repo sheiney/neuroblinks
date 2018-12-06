@@ -330,14 +330,14 @@ cameras = getappdata(0, 'cameras');
 
 switch get(eventdata.NewValue, 'Tag') % Get Tag of selected object.
     case 'togglebutton_NewSession'
-        dlgans = inputdlg({'Enter session name'}, 'Create');
+        dlgans = inputdlg({'Enter session number'}, 'Create');
         if isempty(dlgans) 
             ok=0;
         elseif isempty(dlgans{1})
             ok=0;
         else
             ok=1;  
-            metadata.session=dlgans{1};
+            metadata.session=str2num(dlgans{1});
         end
 
         setappdata(0, 'metadata', metadata)
@@ -360,14 +360,14 @@ switch get(eventdata.NewValue, 'Tag') % Get Tag of selected object.
         switch button
             
             case 'Yes and compress videos'
-                metadata.session='s00';     
+                metadata.session=0;     
                 ok=1;
                 stopSession(handles);
                 
                 makeCompressedVideos(metadata.folder,1);
                 
             case 'Yes and DON''T compress videos'
-                metadata.session='s00';     
+                metadata.session=0;     
                 ok=1;
                 stopSession(handles);
                 

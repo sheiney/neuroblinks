@@ -97,7 +97,7 @@ sessiondir = fullfile(mousedir, datestr(now, 'yymmdd'));
 mkdir(sessiondir)
 cd(sessiondir)
 
-metadata.basename=sprintf('%s_%s_%s', metadata.mouse, datestr(now,'yymmdd'), metadata.session);
+metadata.basename=sprintf('%s_%s_s%02d', metadata.mouse, datestr(now,'yymmdd'), metadata.session);
 metadata.folder = sessiondir;
 
 condfile=fullfile(mousedir,'condparams.csv');
