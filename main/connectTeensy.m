@@ -2,13 +2,24 @@ function [teensy, config] = connectTeensy(config)
 
     %% -- start serial communication to arduino ---
     disp('Connecting to Teensy board...')
-    com_ports = findTeensys(config.MICROCONTROLLER_IDS);
 
-    if isempty(com_ports{config.rig})
-        error('No Arduino found for requested rig (%d)', config.rig);
+    % % This is the slow version if you don't have PlatformIO command line tools installed (uses included wmicGet command)
+    % com_ports = findTeensys(config.MICROCONTROLLER_IDS);
+
+    % if isempty(com_ports{config.rig})
+    %     error('No Arduino found for requested rig (%d)', config.rig);
+    % end
+
+    % config.com_ports(config.rig) = com_ports{config.rig};
+
+    % This is the faster version if you have PlatformIO command line tools installed
+    com_port = getComPort(config.MICROCONTROLLER_IDS{config.rig});
+
+    if ~isempty(com_port)
+        config.com_ports(config.rig) = com_port; 
+    else
+        error('No Teensy found for requested rig (%d)', config.rig);        
     end
-
-    config.com_ports(config.rig) = com_ports{config.rig};
 
     teensy=serial(config.com_ports(config.rig), 'BaudRate', 115200);
     teensy.InputBufferSize = 512*8;
