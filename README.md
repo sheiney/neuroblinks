@@ -3,7 +3,7 @@ Neuroblinks
 
 A program for doing eyeblink classical conditioning using Matlab and inexpensive microcontrollers. 
 
-Authors: Shane Heiney, University of Iowa
+Author: Shane Heiney, University of Iowa
 
 This version is a fork of the code originally written by Shane Heiney, Shogo Ohmae, and Olivia Kim in the Medina lab at Baylor College of Medicine
 
@@ -30,7 +30,7 @@ Instructions
 
 4. Modify the three configuration files (`neuroblinks_config.m`, `rig_config.m`, and `user_config.m`) to match your particular configuration (see comments within the m-files).
 
-5. Create a directory for your mouse, e.g. `<data root>\<animalID>` and optionally add a copy of `condparams.csv` to this directory. For example, we use `data\MXXX`, where XXX is the unique mouse ID. Note that if you follow our naming conventions, the metadata.mouse field will be automatically populated for you and the session directory will be automatically created as "YYMMDD", which is the current date (`datestr(now,'yymmdd')`. If you deviate from this naming convention and directory structure you will likely need to modify the code and some of our analysis code might not work for you. You will also need to modify `rig_config.m` and `user_config.m` for your particular configuration (see comments withink these files). 
+5. Create a directory for your mouse, e.g. `<data root>\<animalID>` and optionally add a copy of `condparams.csv` to this directory (an example is included in the Neuroblinks distribution). For example, we use `data\MXXX`, where XXX is the unique mouse ID. Note that if you follow our naming conventions, the metadata.mouse field will be automatically populated for you and the session directory will be automatically created as "YYMMDD", which is the current date (`datestr(now,'yymmdd')`. If you deviate from this naming convention and directory structure you will likely need to modify the code and some of our analysis code might not work for you. 
 
 6. Run `neuroblinks()` to start the main program (with optional arguments).
 
