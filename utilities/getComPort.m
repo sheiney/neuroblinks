@@ -18,4 +18,4 @@ device_matches = find(cellfun(@(a) ~isempty(a),devices));
 
 idx = comport_matches(find(comport_matches < device_matches, 1, 'last'));
 
-comport = comports{idx};
+comport = string(comports{idx});
