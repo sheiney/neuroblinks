@@ -346,10 +346,11 @@ switch get(eventdata.NewValue, 'Tag') % Get Tag of selected object.
             try
                 % Consider passing 'config' struct instead of handles and storing session number in 'config'
                 ok = startSession(handles);
-            catch
+            catch ME
                 set(eventdata.NewValue,'Value',0);
                 set(eventdata.OldValue,'Value',1);
                 set(handles.uipanel_SessionMode,'SelectedObject',eventdata.OldValue);
+                throw(ME)
             end
         end
 
