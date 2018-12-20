@@ -1,14 +1,15 @@
+base_dir = 'd:\data\behavior\ebc';
+
 %%
-user = 'user';
 mouse = 'M001';
-isi = 200;
+isi = 250;
 session = 1;
 us = 3;
 cs = 1;
 day_offset = 0;
 day = datestr(now - day_offset, 'yymmdd');
 
-folder = fullfile('d:\data', user,  mouse, day);
+folder = fullfile(base_dir,  mouse, day);
 
 trials = processTrials(folder, 'recalibrate');  % Recalibrate eyelid
 

@@ -92,10 +92,11 @@ parfor i=1:length(fnames)
 	try	
 		% We now prefilter above so the only condition that can be true is based on how we filtered extensions above
 		% Leaving this in for flexibility if we decide to change the filter or something
+		% Have to prefix everything with d.* so that load will work in parfor
 		if contains(ext, [".mp4", ".avi"])			
-			[data,metadata] = loadCompressed(fnames{i});
+			[d.vid,d.metadata] = loadCompressed(fnames{i});
 		else
-			load(fnames{i});
+			d = load(fnames{i});
 		end
     catch
         fprintf('Problem with file %s', fnames{i})
@@ -103,25 +104,25 @@ parfor i=1:length(fnames)
 
     calib = struct;
  
-	calib.scale = metadata.cam(1).calib_scale;
-	calib.offset = metadata.cam(1).calib_offset;
+	calib.scale = d.metadata.cam(1).calib_scale;
+	calib.offset = d.metadata.cam(1).calib_offset;
 
-	thresh = metadata.cam(1).thresh; 
+	thresh = d.metadata.cam(1).thresh; 
 	
 	if RECALIBRATE	% if we're going to recalibrate (at end of function) just get raw pixel counts here
-		[eyelidpos{i},tm{i}] = vid2eyetrace(data, metadata, thresh, 5);
+		[eyelidpos{i},tm{i}] = vid2eyetrace(d.vid, d.metadata, thresh, 5);
 	else
-		[eyelidpos{i},tm{i}] = vid2eyetrace(data, metadata, thresh, 5, calib);
+		[eyelidpos{i},tm{i}] = vid2eyetrace(d.vid, d.metadata, thresh, 5, calib);
 	end
 	
 	tm{i} = tm{i} .* 1e3; 		% convert to ms
 
-	c_isi(i) = metadata.stim.c.isi;
-	c_csnum(i) = metadata.stim.c.csnum;
-	c_csdur(i) = metadata.stim.c.csdur;
-	c_csintensity(i) = metadata.stim.c.csintensity;
-	c_usnum(i) = metadata.stim.c.usnum;
-	c_usdur(i) = metadata.stim.c.usdur;
+	c_isi(i) = d.metadata.stim.c.isi;
+	c_csnum(i) = d.metadata.stim.c.csnum;
+	c_csdur(i) = d.metadata.stim.c.csdur;
+	c_csintensity(i) = d.metadata.stim.c.csintensity;
+	c_usnum(i) = d.metadata.stim.c.usnum;
+	c_usdur(i) = d.metadata.stim.c.usdur;
 
 	encoder_fname = fullfile(p, sprintf('%s_encoder.mat', basename));
 
@@ -134,10 +135,10 @@ parfor i=1:length(fnames)
 
 	end
 	
-	trialnum(i) = metadata.cam(1).trialnum;
-	ttype{i} = metadata.stim.type;
+	trialnum(i) = d.metadata.cam(1).trialnum;
+	ttype{i} = d.metadata.stim.type;
 
-	trialtime(i) = metadata.ts(2);
+	trialtime(i) = d.metadata.ts(2);
 
 	numframes(i) = length(eyelidpos{i});
 

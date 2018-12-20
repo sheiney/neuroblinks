@@ -54,7 +54,7 @@ metadata.folder = sessiondir;
 
 files_in_session_folder = getFullFileNames(metadata.folder, dir(metadata.folder));
 
-if contains(files_in_session_folder, metadata.basename)
+if any(contains(files_in_session_folder, metadata.basename))
     button = questdlg(sprintf('WARNING: Session directory already contains files for session number %d. \nBy continuing you will overwrite the existing files with data from the new trials.', metadata.session),...
     'WARNING - Possible data loss!', 'Continue', 'Abort Session', 'Abort Session');
 
