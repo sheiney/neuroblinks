@@ -52,6 +52,18 @@ cd(sessiondir)
 metadata.basename=sprintf('%s_%s_s%02d', metadata.mouse, datestr(now,'yymmdd'), metadata.session);
 metadata.folder = sessiondir;
 
+files_in_session_folder = getFullFileNames(metadata.folder, dir(metadata.folder));
+
+if contains(files_in_session_folder, metadata.basename)
+    button = questdlg(sprintf('WARNING: Session directory already contains files for session number %d. \nBy continuing you will overwrite the existing files with data from the new trials.', metadata.session),...
+    'WARNING - Possible data loss!', 'Continue', 'Abort Session', 'Abort Session');
+
+    if strcmp(button, 'Abort Session')
+        ok = 0;
+        return
+    end
+end
+
 metadata.rig = config.rig;
 
 metadata.has_encoder = config.use_encoder;
