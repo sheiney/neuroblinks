@@ -1,4 +1,4 @@
-function trials=processTrials(folder)
+function trials=processTrials(folder, varargin)
 % TRIALS=processConditioningTrials(FOLDER)
 % Return trials structure containing eyelid data and trial parameters for all trials in a session
 % Optionally, specify threshold for binary image and maximum number of video frames per trial to use for extracting eyelid trace
@@ -35,22 +35,35 @@ function trials=processTrials(folder)
 
 % By now we should have a valid calib structure to use for calibrating all files
 
+ms2frm = @(ms) ms ./ 1e3 * 200;	% Convert ms to frames
+
+if length(varargin) > 0 	% If user specifies 'recalibrate as argument', recalbrate the eyelid using global min and max during trial (up to time of UR to exclude paw artifacts) 
+	if strcmp(varargin{1}, 'recalibrate')
+		RECALIBRATE = 1;
+	else
+		RECALIBRATE = 0;
+	end
+end
+
 if ~exist(folder,'dir')
 	error('The directory you specified (%s) does not exist',folder);
 end
 
-% Get our directory listing, assuming the only MP4 files containined in the directory are the trials
-% Later we will sort out those that aren't type='conditioning' based on metadata
-% fnames=getFullFileNames(folder,dir(fullfile(folder,'*.avi')));
-fnames = getFullFileNames(folder, dir(fullfile(folder,'*.mp4')));
+% Get our directory listing
+% fnames=getFullFileNames(folder,dir(fullfile(folder,'*.avi')));		% for compressed AVI files
+% fnames = getFullFileNames(folder, dir(fullfile(folder,'*.mp4')));		% for compressed MP4 files
+fnames = getFullFileNames(folder, dir(fullfile(folder,'*.mat')));		% for compressed MAT files
 
-% Only keep the files that match the pattern MOUSEID_DATE_SXX or MOUSEID_DATE_TXX, skipping for instance trials from Camera 2
+% Only keep the files that match the pattern MOUSEID_DATE_SXX or MOUSEID_DATE_TXX, skipping for instance trials from Camera 2 or encoder
 matches = regexp(fnames, '[A-Z]\d\d\d_\d\d\d\d\d\d_[ts]\d\d[a-z]?_\d\d\d_cam1', 'start', 'once');
 fnames = fnames(cellfun(@(a) ~isempty(a), matches));
 
 % Preallocate variables so we can use parfor loop to process the files
 eyelidpos = cell(length(fnames), 1);	% We have to use a cell array because trials may have different lengths
 tm = cell(length(fnames), 1);			% Same for time
+
+% encoder_time_cell = cell(length(fnames), 1);			% Assume encoder has same time base as eyelid so don't need to save time
+encoder_displacement_cell = cell(length(fnames), 1);	% We have to use a cell array because trials may have different lengths
 
 c_isi = NaN(length(fnames), 1);
 c_csnum = NaN(length(fnames), 1);
@@ -72,13 +85,21 @@ numframes = zeros(length(fnames), 1);
 
 parfor i=1:length(fnames)
 
-	[p,basename,ext] = fileparts(fnames{i});
+	[p,fname,ext] = fileparts(fnames{i});
 
-    try
-        [data,metadata] = loadCompressed(fnames{i});
+	basename = regexp(fname, '[A-Z]\d\d\d_\d\d\d\d\d\d_[ts]\d\d[a-z]?_\d\d\d', 'match', 'once');
+
+	try	
+		% We now prefilter above so the only condition that can be true is based on how we filtered extensions above
+		% Leaving this in for flexibility if we decide to change the filter or something
+		if contains(ext, [".mp4", ".avi"])			
+			[data,metadata] = loadCompressed(fnames{i});
+		else
+			load(fnames{i});
+		end
     catch
-        disp(sprintf('Problem with file %s', fnames{i}))
-    end
+        fprintf('Problem with file %s', fnames{i})
+	end
 
     calib = struct;
  
@@ -86,8 +107,14 @@ parfor i=1:length(fnames)
 	calib.offset = metadata.cam(1).calib_offset;
 
 	thresh = metadata.cam(1).thresh; 
-    
-    [eyelidpos{i},tm{i}] = vid2eyetrace(data, metadata, thresh, 5, calib);
+	
+	if RECALIBRATE	% if we're going to recalibrate (at end of function) just get raw pixel counts here
+		[eyelidpos{i},tm{i}] = vid2eyetrace(data, metadata, thresh, 5);
+	else
+		[eyelidpos{i},tm{i}] = vid2eyetrace(data, metadata, thresh, 5, calib);
+	end
+	
+	tm{i} = tm{i} .* 1e3; 		% convert to ms
 
 	c_isi(i) = metadata.stim.c.isi;
 	c_csnum(i) = metadata.stim.c.csnum;
@@ -95,6 +122,17 @@ parfor i=1:length(fnames)
 	c_csintensity(i) = metadata.stim.c.csintensity;
 	c_usnum(i) = metadata.stim.c.usnum;
 	c_usdur(i) = metadata.stim.c.usdur;
+
+	encoder_fname = fullfile(p, sprintf('%s_encoder.mat', basename));
+
+	if exist(encoder_fname, 'file')
+
+		e = load(encoder_fname);
+
+		% encoder_time_cell{i} = e.encoder.time;
+		encoder_displacement_cell{i} = e.encoder.displacement;
+
+	end
 	
 	trialnum(i) = metadata.cam(1).trialnum;
 	ttype{i} = metadata.stim.type;
@@ -103,7 +141,7 @@ parfor i=1:length(fnames)
 
 	numframes(i) = length(eyelidpos{i});
 
-	fprintf('Processed file %s\n', basename)
+	fprintf('Processed file %s\n', fname)
 	
 end
 
@@ -114,24 +152,49 @@ disp('Done reading data')
 
 MAXFRAMES = max(numframes);
 
-
 % Now that we know how long each trial is turn the cell arrays into matrices
 
-traces = NaN(length(fnames), MAXFRAMES);
-times = NaN(length(fnames), MAXFRAMES);
+eyelid_traces = NaN(length(fnames), MAXFRAMES);
+eyelid_times = NaN(length(fnames), MAXFRAMES);
+
+% We assume that encoder has same sampling rate as eyelid
+encoder_displacement = NaN(length(fnames), MAXFRAMES);
+% encoder_time = NaN(length(fnames), MAXFRAMES);
+
 try
 	for i=1:length(fnames) 
-		trace = eyelidpos{i}; 
+
+		eyelid_trace = eyelidpos{i}; 
 		t = tm{i}; 
-		en = length(trace); 
+
+		enc_displacement = encoder_displacement_cell{i};
+		% enc_time = encoder_time_cell{i};
+
+		en = length(eyelid_trace); 
 		if en > MAXFRAMES
 			en = MAXFRAMES; 
 		end 
-		traces(i,1:en) = trace(1:en); 
-		times(i,1:en) = t(1:en); 
+
+		eyelid_traces(i,1:en) = eyelid_trace(1:en); 
+		eyelid_times(i,1:en) = t(1:en); 
+
+		encoder_displacement(i,1:en) = enc_displacement(1:en);
+		% encoder_time(i,1:en) = enc_time(1:en);
+		
 	end
 catch
     disp(i)
+end
+
+if RECALIBRATE		% Recalbrate eyelid traces by taking global min and max of traces during all trials (within expected response period)
+	pretm = 200;
+	pre = 1:ms2frm(pretm);
+	win = (ms2frm(pretm) + ms2frm(mode(c_isi)):ms2frm(pretm) + ms2frm(mode(c_isi) + 20)) + 1;
+	min_el = min(mean(eyelid_traces(:,pre), 2));
+	max_el = max(mean(eyelid_traces(:,win), 2));
+
+	% y=(tr-calib.offset)./calib.scale;
+	eyelid_traces = (eyelid_traces - min_el) ./ (max_el - min_el);
 end
 
 session_cell = regexp(fnames, '_s(\d\d)[a-d]?_', 'tokens', 'once');
@@ -139,8 +202,8 @@ session_number = cellfun(@safestr2double, session_cell);
 
 trials.session_of_day = session_number;
 
-trials.eyelidpos = traces;
-trials.tm = times;
+trials.eyelidpos = eyelid_traces;
+trials.tm = eyelid_times;
 trials.fnames = fnames;
 
 trials.c_isi = c_isi;
@@ -149,6 +212,9 @@ trials.c_csdur = c_csdur;
 trials.c_csintensity = c_csintensity;
 trials.c_usnum = c_usnum;
 trials.c_usdur = c_usdur;
+
+trials.encoder_displacement = encoder_displacement;
+% trials.encoder_time = encoder_time;
 
 trials.trialnum = trialnum;
 trials.type = ttype;
@@ -163,3 +229,4 @@ if ~isempty(str)
 else
     db = 0;
 end
+

@@ -1,5 +1,7 @@
 function varargout = makePlots(trials,varargin)
 
+ms2frm = @(ms) ms ./ 1e3 * 200;	% Convert ms to frames
+
 if length(varargin) > 0
     isi = varargin{1};
     session = varargin{2};
@@ -19,9 +21,9 @@ hax=axes;
 idx = find(trials.c_usnum==us & trials.c_csnum==cs & ismember(trials.session_of_day, session));
 
 set(hax,'ColorOrder',jet(length(idx)),'NextPlot','ReplaceChildren');
-plot(trials.tm(1,:),trials.eyelidpos(idx,:))
+plot(trials.tm(1,:),trials.eyelidpos(idx, :))
 hold on 
-plot(trials.tm(1,:),mean(trials.eyelidpos(idx,:)),'k','LineWidth',2)
+plot(trials.tm(1,:),mean(trials.eyelidpos(idx, :)),'k','LineWidth',2)
 axis([trials.tm(1,1) trials.tm(1,end) -0.1 1.1])
 title('CS-US')
 xlabel('Time from CS (s)')
@@ -29,9 +31,9 @@ ylabel('Eyelid pos (FEC)')
 
 
 %% CR amplitudes
-pre = 1:tm2frm(0.1);
-win = tm2frm(0.2+isi/1e3):tm2frm(0.2+isi/1e3+0.015);
-cramp = mean(trials.eyelidpos(:,win),2) - mean(trials.eyelidpos(:,pre),2);
+pre = 1:ms2frm(100);
+win = ms2frm(200 + isi):ms2frm(200 + isi + 15);
+cramp = mean(trials.eyelidpos(:, win), 2) - mean(trials.eyelidpos(:, pre), 2);
 
 hf2=figure;
 
