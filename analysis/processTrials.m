@@ -58,6 +58,12 @@ fnames = getFullFileNames(folder, dir(fullfile(folder,'*.mat')));		% for compres
 matches = regexp(fnames, '[A-Z]\d\d\d_\d\d\d\d\d\d_[ts]\d\d[a-z]?_\d\d\d_cam1', 'start', 'once');
 fnames = fnames(cellfun(@(a) ~isempty(a), matches));
 
+if isempty(fnames)
+	warning('No files found in directory %s', folder);
+	trials = [];
+	return
+end
+
 % Preallocate variables so we can use parfor loop to process the files
 eyelidpos = cell(length(fnames), 1);	% We have to use a cell array because trials may have different lengths
 tm = cell(length(fnames), 1);			% Same for time
