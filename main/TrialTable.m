@@ -68,7 +68,7 @@ config = getappdata(0, 'config');
 modifier = get(gui.maingui, 'CurrentModifier');
 % disp(modifier)
 
-paramtable = getappdata(0, 'paramtable');
+% paramtable = getappdata(0, 'paramtable');
 
 % This seems to be necessary in Matlab 2017
 if isempty(modifier)
@@ -78,7 +78,7 @@ end
 if strcmp(modifier, 'control') && isfield(config, 'trialtable')
     trialtable = config.trialtable;
 else
-    trialtable = makeTrialTable(paramtable.data, paramtable.randomize);
+    trialtable = makeTrialTable(config.paramtable.data, config.paramtable.randomize);
 end
 
 set(handles.uitable_trials, 'Data', trialtable);
