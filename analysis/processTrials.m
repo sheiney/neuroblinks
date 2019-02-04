@@ -201,7 +201,7 @@ end
 if RECALIBRATE		% Recalbrate eyelid traces by taking global min and max of traces during all trials (within expected response period)
 	pretm = 200;
 	pre = 1:ms2frm(pretm);
-	win = (ms2frm(pretm) + ms2frm(mode(c_isi)):ms2frm(pretm) + ms2frm(mode(c_isi) + 20)) + 1;
+	win = (ms2frm(pretm) + ms2frm(mode(c_isi)):ms2frm(pretm) + ms2frm(mode(c_isi) + 50)) + 1;
 	min_el = min(mean(eyelid_traces(:,pre), 2));
 	max_el = max(mean(eyelid_traces(:,win), 2));
 
