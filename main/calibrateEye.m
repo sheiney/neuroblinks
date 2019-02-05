@@ -14,7 +14,7 @@ src = getselectedsource(cameras(1));
 % else
 %     src.TriggerSource = 'Freerun';
 % end
-src.TriggerMode = 'Off';    % For now override hardware trigger so we don't need Arduino connected
+src.TriggerMode = 'Off';    % Go back to preview mode
 
 % --- save data to root app ---
 % Keep data from last trial in memory even if we don't save it to disk
