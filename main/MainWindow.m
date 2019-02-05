@@ -22,7 +22,7 @@ function varargout = MainWindow(varargin)
 
 % Edit the above text to modify the response to help MainWindow
 
-% Last Modified by GUIDE v2.5 25-Oct-2018 15:29:52
+% Last Modified by GUIDE v2.5 04-Feb-2019 11:54:10
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -319,7 +319,7 @@ gui.one_trial_analysis_gui = OneTrialAnalysisWindow;
 
 set(gui.one_trial_analysis_gui, 'units', 'pixels')
 current_pos = get(gui.one_trial_analysis_gui, 'position');
-set(gui.one_trial_analysis_gui, 'position', [config.pos_analysiswindow{config.rig}, current_pos(3:4)])
+set(gui.one_trial_analysis_gui, 'position', [config.pos_analysiswindow{mod(config.rig,2)}, current_pos(3:4)]); % mod 2 because we have 2 rigs per computer/monitor
 
 setappdata(0,'gui',gui);
 
@@ -778,3 +778,22 @@ function CamFig_CloseRequestFcn(hObject, eventdata, handles)
 % Hint: delete(hObject) closes the figure
 % delete(hObject);
 msgbox('This window cannot be closed during an experiment')
+
+
+% --- Executes when entered data in editable cell(s) in uitable_params.
+function uitable_params_CellEditCallback(hObject, eventdata, handles)
+    % hObject    handle to uitable_params (see GCBO)
+    % eventdata  structure with the following fields (see MATLAB.UI.CONTROL.TABLE)
+    %	Indices: row and column indices of the cell(s) edited
+    %	PreviousData: previous data for the cell(s) edited
+    %	EditData: string(s) entered by the user
+    %	NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
+    %	Error: error string when failed to convert EditData to appropriate value for Data
+    % handles    structure with handles and user data (see GUIDATA)
+    
+    config = getappdata(0, 'config');
+
+    config.paramtable.data = get(handles.uitable_params, 'Data');
+    
+    setappdata(0, 'config', config)
+
