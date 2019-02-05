@@ -34,12 +34,14 @@ ylabel('Eyelid pos (FEC)')
 pre = 1:ms2frm(100);
 win = ms2frm(200 + isi):ms2frm(200 + isi + 15);
 cramp = mean(trials.eyelidpos(:, win), 2) - mean(trials.eyelidpos(:, pre), 2);
+crabs = mean(trials.eyelidpos(:, win), 2);
 
 hf2=figure;
 
 idx = find(trials.c_usnum==us & trials.c_csnum==cs & ismember(trials.session_of_day, session));
 plot(trials.trialnum(idx), cramp(idx), '.')
 hold on
+plot(trials.trialnum(idx), crabs(idx), '+r')
 plot([1 length(trials.trialnum)], [0.1 0.1], ':k')
 axis([1 length(trials.trialnum) -0.1 1.1])
 title('CS-US')
