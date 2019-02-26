@@ -18,7 +18,7 @@ end
 
 for i=1:length(dirNames)
     if strcmp(dirNames{i},'compressed') % Only delete files in folder containing 'compressed' folder.
-        fileInfo= dir(fullfile(folder,'*.mat'));
+        fileInfo= dir(fullfile(folder,'*cam*.mat'));
         names= {fileInfo.name};
         for j=1:length(names)
             if isempty(strfind(names{j},'meta')) == 1 && ...
