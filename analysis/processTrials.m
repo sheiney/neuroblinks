@@ -136,11 +136,6 @@ parfor i=1:length(fnames)
 
 		e = load(encoder_fname);
 
-		% Temporary hack to deal with Rig 2 encoder wires being swapped encoder giving wrong direction
-		if d.metadata.rig == 2
-			e.encoder.displacement = -e.encoder.displacement;
-		end
-
 		% encoder_time_cell{i} = e.encoder.time;
 		encoder_displacement_cell{i} = e.encoder.displacement;
 
