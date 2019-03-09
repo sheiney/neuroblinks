@@ -319,7 +319,7 @@ gui.one_trial_analysis_gui = OneTrialAnalysisWindow;
 
 set(gui.one_trial_analysis_gui, 'units', 'pixels')
 current_pos = get(gui.one_trial_analysis_gui, 'position');
-set(gui.one_trial_analysis_gui, 'position', [config.pos_analysiswindow{mod(config.rig,2)}, current_pos(3:4)]); % mod 2 because we have 2 rigs per computer/monitor
+set(gui.one_trial_analysis_gui, 'position', [config.pos_analysiswindow{config.rig}, current_pos(3:4)]); % mod 2 because we have 2 rigs per computer/monitor
 
 setappdata(0,'gui',gui);
 
