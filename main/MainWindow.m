@@ -22,7 +22,7 @@ function varargout = MainWindow(varargin)
 
 % Edit the above text to modify the response to help MainWindow
 
-% Last Modified by GUIDE v2.5 04-Feb-2019 11:54:10
+% Last Modified by GUIDE v2.5 12-Mar-2019 12:21:01
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -72,6 +72,7 @@ togglePreview(handles);
 function pushbutton_quit_Callback(hObject, eventdata, handles)
 
 gui=getappdata(0,'gui');
+config=getappdata(0,'config');
 
 button=questdlg('Are you sure you want to quit?','Quit?');
 if ~strcmpi(button,'Yes')
@@ -79,6 +80,12 @@ if ~strcmpi(button,'Yes')
 end
 
 ok = stopSession(handles);
+
+if ~strcmp(config.WHITENOISE_DEVICE_IDS{config.rig}, '')
+    whitenoise_device=getappdata(0,'whitenoise_device');
+    fclose(whitenoise_device);
+    delete(whitenoise_device);
+end
 
 % TODO: Replace these lines with more general loop over all fields of gui?
 if isfield(gui, 'one_trial_analysis_gui')
@@ -797,3 +804,37 @@ function uitable_params_CellEditCallback(hObject, eventdata, handles)
     
     setappdata(0, 'config', config)
 
+
+
+% --- Executes on selection change in popupmenu_whitenoise_control.
+function popupmenu_whitenoise_control_Callback(hObject, eventdata, handles)
+% hObject    handle to popupmenu_whitenoise_control (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: contents = cellstr(get(hObject,'String')) returns popupmenu_whitenoise_control contents as cell array
+%        contents{get(hObject,'Value')} returns selected item from popupmenu_whitenoise_control
+
+selection = hObject.String{hObject.Value};
+
+switch selection
+    case 'Off'
+        changeWhitenoiseLevel(0);
+    case 'On'
+        changeWhitenoiseLevel(1);
+    case 'Trial table'
+        changeWhitenoiseLevel(0);
+end
+
+
+% --- Executes during object creation, after setting all properties.
+function popupmenu_whitenoise_control_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to popupmenu_whitenoise_control (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: popupmenu controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end

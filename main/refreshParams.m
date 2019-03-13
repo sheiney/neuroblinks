@@ -41,9 +41,9 @@ switch lower(metadata.stim.type)
         metadata.stim.c.cstone = str2num(get(handles.edit_tone, 'String'))*1000;
         if length(metadata.stim.c.cstone) < 2, metadata.stim.c.cstone(2) = 0; end
         metadata.stim.totaltime = metadata.stim.c.isi + metadata.stim.c.usdur;
-        metadata.stim.l.delay = trialvars(7);
-        metadata.stim.l.dur = trialvars(8);
-        metadata.stim.l.amp = trialvars(9);
+        metadata.stim.l.delay = trialvars(8);
+        metadata.stim.l.dur = trialvars(9);
+        metadata.stim.l.amp = trialvars(10);
     otherwise
         metadata.stim.totaltime = 0;
         warning('Unknown stimulation mode set.');

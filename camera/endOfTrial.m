@@ -28,3 +28,7 @@ for i=1:length(cameras)
     src.TriggerMode = 'Off';
     
 end
+
+% Do anything here that you want to start at the beginning of the ITI, such as setting new context
+
+checkContext(handles)

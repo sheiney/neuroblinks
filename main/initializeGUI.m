@@ -31,6 +31,10 @@ if isfield(config, 'paramtable')
     set(handles.uitable_params, 'Data', config.paramtable.data);
 end
 
+if ~strcmp(config.WHITENOISE_DEVICE_IDS{config.rig}, '')
+    set(handles.popupmenu_whitenoise_control, 'Visible', 'on')
+end
+
 setappdata(0, 'metadata', metadata);
 setappdata(0, 'config', config);
 

@@ -18,6 +18,12 @@ set(gui.camera2gui, 'position', [config.pos_camera2gui{config.rig}, current_pos(
 % Save handle for camera 2 preview axis
 gui.cameraAx(2) = findobj(gui.camera2gui, 'Tag', 'cameraAx2');
 
+% Connect to whitenoise device if using
+if ~strcmp(config.WHITENOISE_DEVICE_IDS{config.rig}, '')
+    whitenoise_device = connectWhitenoiseDevice(config);
+    setappdata(0, 'whitenoise_device', whitenoise_device)
+end
+
 % config.running = 1;
 
 % % Open parameter dialog
