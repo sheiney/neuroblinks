@@ -197,8 +197,8 @@ if RECALIBRATE		% Recalbrate eyelid traces by taking global min and max of trace
 	pretm = 200;
 	pre = 1:ms2frm(pretm);
 	win = (ms2frm(pretm) + ms2frm(mode(c_isi)):ms2frm(pretm) + ms2frm(mode(c_isi) + 50)) + 1;
-	min_el = min(mean(eyelid_traces(:,pre), 2));
-	max_el = max(mean(eyelid_traces(:,win), 2));
+	min_el = min(mean(eyelid_traces(:,pre), 1));
+	max_el = max(mean(eyelid_traces(:,win), 1));
 
 	% y=(tr-calib.offset)./calib.scale;
 	eyelid_traces = (eyelid_traces - min_el) ./ (max_el - min_el);
