@@ -109,13 +109,13 @@ void setup() {
 //   pinMode(pin_tone, OUTPUT);
 //   pinMode(pin_brightled, OUTPUT);
 //   pinMode(pin_laser, OUTPUT);
-  pinMode(pin_motor, OUTPUT);
+  // pinMode(pin_motor, OUTPUT);
   pinMode(pin_ambientled, OUTPUT);
   pinMode(pin_panelled, OUTPUT);
 //   pinMode(pin_ss, OUTPUT);
 
   pinMode(pin_manual_puff, INPUT_PULLUP);       // Pull down to trigger
-  attachInterrupt(digitalPinToInterrupt(pin_manual_puff), manualPuffInterrupt);
+  attachInterrupt(digitalPinToInterrupt(pin_manual_puff), manualPuffInterrupt, CHANGE);
 
   // Default all output pins to LOW - for some reason they were floating high on the Due before I (Shane) added this
   digitalWrite(pin_camera, LOW);
