@@ -12,7 +12,10 @@ if ~strcmp(config.WHITENOISE_DEVICE_IDS{config.rig}, '') && strcmp(handles.popup
     % Tell whitenoise device new level - device only toggles if level is different
     changeWhitenoiseLevel(metadata.stim.c.whitenoise);
 
-    setappdata(0, 'metadata', metadata);
+else
+    
+    metadata.stim.c.whitenoise = -1;   % -1 to indicate that whitenoise isn't being controlled by trial table (or should we use NaN?)
     
 end
 
+setappdata(0, 'metadata', metadata);

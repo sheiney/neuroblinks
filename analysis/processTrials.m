@@ -77,6 +77,7 @@ c_csdur = NaN(length(fnames), 1);
 c_csintensity = NaN(length(fnames), 1);
 c_usdur = NaN(length(fnames), 1);
 c_usnum = NaN(length(fnames), 1);
+c_whitenoise = NaN(length(fnames), 1);
 
 trialnum = zeros(length(fnames), 1);
 ttype = cell(length(fnames), 1);
@@ -129,6 +130,7 @@ parfor i=1:length(fnames)
 	c_csintensity(i) = d.metadata.stim.c.csintensity;
 	c_usnum(i) = d.metadata.stim.c.usnum;
 	c_usdur(i) = d.metadata.stim.c.usdur;
+	c_whitenoise(i) = d.metadata.stim.c.whitenoise;
 
 	encoder_fname = fullfile(p, sprintf('%s_encoder.mat', basename));
 
@@ -219,6 +221,7 @@ trials.c_csdur = c_csdur;
 trials.c_csintensity = c_csintensity;
 trials.c_usnum = c_usnum;
 trials.c_usdur = c_usdur;
+trials.c_whitenoise = c_whitenoise;
 
 trials.encoder_displacement = encoder_displacement;
 % trials.encoder_time = encoder_time;
