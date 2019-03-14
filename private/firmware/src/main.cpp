@@ -179,16 +179,16 @@ void loop() {
           }
       }
 
-      // This is quick and dirty approach -- better to use interrupts
-      if digitalRead(pin_manual_puff, LOW) {
-          digitalWrite(pin_eye_puff, HIGH);
+      // // This is quick and dirty approach -- better to use interrupts
+      // if digitalRead(pin_manual_puff, LOW) {
+      //     digitalWrite(pin_eye_puff, HIGH);
           
-          else
-          {
-              digitalWrite(pin_eye_puff, LOW);
-          }
+      //     else
+      //     {
+      //         digitalWrite(pin_eye_puff, LOW);
+      //     }
           
-      }
+      // }
   }
 
 }
@@ -452,7 +452,7 @@ void flushReceiveBuffer() {
     }
 }
 
-void manualPuffInterrupt {
+void manualPuffInterrupt() {
 
     if (!RUNNING) {     // Only allow if we're not in the middle of a trial
         // Toggle pin - use active LOW (so we can easily use a switch or other microcontroller)
