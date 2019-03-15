@@ -79,8 +79,6 @@ if ~strcmpi(button,'Yes')
     return
 end
 
-changeWhitenoiseLevel(0);
-
 ok = stopSession(handles);
 
 if ~strcmp(config.WHITENOISE_DEVICE_IDS{config.rig}, '')
@@ -202,7 +200,7 @@ src = getselectedsource(cameras(1));
 % src.FrameStartTriggerSource = 'Line1';
 src.TriggerMode = 'On';     % Normally set it to hardware trigger
 % TODO: REMOVE THE FOLLOWING LINE BEFORE PRODUCTION
-% src.TriggerMode = 'Off';    % For now override hardware trigger so we don't need Arduino connected
+src.TriggerMode = 'Off';    % For now override hardware trigger so we don't need Arduino connected
 
 start(cameras(1))
 
@@ -276,7 +274,6 @@ instantReplay(getappdata(0,'lastvid1'),getappdata(0,'lastmetadata'));
 
 function toggle_continuous_Callback(hObject, eventdata, handles)
 if get(hObject,'Value'),
-    checkContext(handles);
     set(hObject,'String','Pause Continuous')
     set(handles.trialtimecounter,'Visible','On')
 else
@@ -286,7 +283,6 @@ end
 
 
 function pushbutton_singleTrial_Callback(hObject, eventdata, handles)
-checkContext(handles)
 startTrial(handles)
 
 function popupmenu_stimtype_Callback(hObject, eventdata, handles)
@@ -522,6 +518,12 @@ function edit_puffdur_Callback(hObject, eventdata, handles)
 
 % Hints: get(hObject,'String') returns contents of edit_puffdur as text
 %        str2double(get(hObject,'String')) returns contents of edit_puffdur as a double
+
+value = str2double(hObject.String);
+if value > 50
+    msg('WARNING: You''re setting a higher puff duration (%d ms) than is typical! Consider changing', value)
+end
+   
 
 
 % --- Executes during object creation, after setting all properties.
@@ -827,7 +829,7 @@ switch selection
     case 'On'
         changeWhitenoiseLevel(1);
     case 'Trial table'
-        checkContext(handles);
+        changeWhitenoiseLevel(0);
 end
 
 
