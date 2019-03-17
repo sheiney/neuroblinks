@@ -521,7 +521,7 @@ function edit_puffdur_Callback(hObject, eventdata, handles)
 
 value = str2double(hObject.String);
 if value > 50
-    msg('WARNING: You''re setting a higher puff duration (%d ms) than is typical! Consider changing', value)
+    warndlg(sprintf('WARNING: You''re setting a higher puff duration (%d ms) than is typical! Consider changing', value))
 end
    
 
