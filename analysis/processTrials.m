@@ -130,7 +130,10 @@ parfor i=1:length(fnames)
 	c_csintensity(i) = d.metadata.stim.c.csintensity;
 	c_usnum(i) = d.metadata.stim.c.usnum;
 	c_usdur(i) = d.metadata.stim.c.usdur;
-	c_whitenoise(i) = d.metadata.stim.c.whitenoise;
+    
+    if isfield(d.metadata.stim.c, 'whitenoise')
+        c_whitenoise(i) = d.metadata.stim.c.whitenoise;
+    end
 
 	encoder_fname = fullfile(p, sprintf('%s_encoder.mat', basename));
 

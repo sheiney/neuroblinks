@@ -82,6 +82,7 @@ end
 ok = stopSession(handles);
 
 if ~strcmp(config.WHITENOISE_DEVICE_IDS{config.rig}, '')
+    changeWhitenoiseLevel(0);
     whitenoise_device=getappdata(0,'whitenoise_device');
     fclose(whitenoise_device);
     delete(whitenoise_device);
