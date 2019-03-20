@@ -275,6 +275,7 @@ instantReplay(getappdata(0,'lastvid1'),getappdata(0,'lastmetadata'));
 
 function toggle_continuous_Callback(hObject, eventdata, handles)
 if get(hObject,'Value'),
+    checkContext(handles)
     set(hObject,'String','Pause Continuous')
     set(handles.trialtimecounter,'Visible','On')
 else
@@ -284,6 +285,7 @@ end
 
 
 function pushbutton_singleTrial_Callback(hObject, eventdata, handles)
+checkContext(handles)
 startTrial(handles)
 
 function popupmenu_stimtype_Callback(hObject, eventdata, handles)
@@ -725,6 +727,7 @@ function pushbutton_loadParams_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+checkContext(handles)
 loadParamTable(handles);
 
 

@@ -85,6 +85,8 @@ set(handles.uitable_trials, 'Data', trialtable);
 config.trialtable = trialtable;
 setappdata(0, 'config', config);
 
+checkContext(guidata(gui.maingui))
+
 drawnow         % Seems necessary to update appdata before returning to calling function
 
 % --- Outputs from this function are returned to the command line.
