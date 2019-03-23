@@ -201,7 +201,7 @@ src = getselectedsource(cameras(1));
 % src.FrameStartTriggerSource = 'Line1';
 src.TriggerMode = 'On';     % Normally set it to hardware trigger
 % TODO: REMOVE THE FOLLOWING LINE BEFORE PRODUCTION
-src.TriggerMode = 'Off';    % For now override hardware trigger so we don't need Arduino connected
+% src.TriggerMode = 'Off';    % For now override hardware trigger so we don't need Arduino connected
 
 start(cameras(1))
 
