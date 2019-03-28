@@ -8,7 +8,7 @@ vid_ts = getappdata(0, 'calibration_vid_ts');
 [trace, t] = vid2eyetrace(vid, metadata, metadata.cam(1).thresh);
 
 % --- cal ---
-ind_t = t < 0.2;
+ind_t = t < 0.1;
 calib_offset = min(trace(ind_t));
 maxclosure = max(trace(ind_t));
 calib_scale = maxclosure - calib_offset;
