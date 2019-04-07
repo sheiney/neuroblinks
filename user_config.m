@@ -18,13 +18,13 @@ config.screenx = screensize(3);
 config.screeny = screensize(4);
 
 % -- specify the location of bottomleft corner of MainWindow & AnalysisWindow  --
-config.pos_mainwindow = {[5,805], [5,50], [5,805], [5,50]};     
+config.pos_mainwindow = {[5,50], [5,805], [5,805], [5,50]};     
 % config.size_mainwindow=[840 600]; 
 
-config.pos_camera2gui = {[850,1100], [850, 345], [850,1100], [850, 345]}; % [849 344 524 303]    
+config.pos_camera2gui = {[850, 345], [850,1100], [850,1100], [850, 345]}; % [849 344 524 303]    
 % config.size_camera2gui=[840 600]; 
 
-config.pos_analysiswindow = {[850 805], [850 50], [850 805], [850 50]};    
+config.pos_analysiswindow = {[850 50], [850 805], [850 805], [850 50]};    
 % config.size_analysiswindow=[560 380];   
 
 % Corresponds to checkbox on GUI for verbose reporting of log
