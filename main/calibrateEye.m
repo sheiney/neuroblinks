@@ -15,6 +15,7 @@ src = getselectedsource(cameras(1));
 %     src.TriggerSource = 'Freerun';
 % end
 src.TriggerMode = 'Off';    % Go back to preview mode
+cameras(1).StopFcn = [];    % Clear stop function
 
 % --- save data to root app ---
 % Keep data from last trial in memory even if we don't save it to disk

@@ -23,8 +23,10 @@ if config.use_open_ephys
 
 end
 
-startCamera(1);
+% The order that these are called matters a lot if one of the cameras is being immediately triggered because the "start(vidobj)" code takes a long time to execute
+% The camera that waits on a hardware trigger should be started first to allow the software triggered camera to catch up before the microcontroller sends the start trigger
 startCamera(2);
+startCamera(1);
 
 % --- trigger via microController --
 microController = getappdata(0, 'microController');

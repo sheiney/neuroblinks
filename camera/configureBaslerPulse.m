@@ -2,21 +2,21 @@ function camera = configureBaslerPulse(camera, config)
 
 src = getselectedsource(camera);
 
-src.AcquisitionFrameRate = config.camera(2).FrameRate;   % index 1 is for high speed (eyelid) cam [this is hacky and should change in later version]
+src.AcquisitionFrameRate = config.camera(1).FrameRate;   % index 2 is for high speed (eyelid) cam [this is hacky and should change in later version]
 
 src.ExposureAuto = 'off';
-src.ExposureTime = config.camera(2).initExposureTime;
+src.ExposureTime = config.camera(1).initExposureTime;
 
 src.GainAuto = 'off';
 src.Gain=0;				% Tweak this based on IR light illumination (lower values preferred due to less noise)
 
-src.BinningHorizontal=config.camera(2).binning;
-src.BinningVertical=config.camera(2).binning;
+src.BinningHorizontal=config.camera(1).binning;
+src.BinningVertical=config.camera(1).binning;
 
-camera.ROIPosition = config.camera(2).roiposition;
+camera.ROIPosition = config.camera(1).roiposition;
 
 camera.LoggingMode = 'memory'; 
-camera.FramesPerTrigger = ceil(config.trial_length_ms / (1000 / config.camera(2).FrameRate));
+camera.FramesPerTrigger = ceil(config.trial_length_ms / (1000 / config.camera(1).FrameRate));
 
 triggerconfig(camera, 'Immediate', 'none', 'none');
 src.TriggerMode = 'Off';

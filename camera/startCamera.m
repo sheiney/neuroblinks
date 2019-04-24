@@ -23,7 +23,7 @@ src.TriggerMode = 'On';
 % cameras(n).TriggerRepeat = 0;
 cameras(n).FramesPerTrigger = metadata.cam(n).frame_rate * (sum(metadata.cam(1).time) / 1e3);   % Always reference to camera 1 time
 
-if n==1 % for Ace camera only
+if n==2 % for Ace camera only
  src.AcquisitionBurstFrameCount = ceil(metadata.cam(n).frame_rate * (sum(metadata.cam(1).time) / 1e3));    % Note this is limited to 255 frames (see documentation for FrameBurstStart)
 end
 
@@ -39,8 +39,10 @@ end
 % end
 
 % cameras(n).StopFcn = {@stopCameraCallback, n};
-if n == 1   % Use Camera 1 as master timer of acquisition
+if n == 2   % Use Ace camera as master timer of acquisition
     cameras(n).StopFcn = @endOfTrial;
+else
+    cameras(n).StopFcn = [];   % Hacky -- may want to have stop functions for some cameras that aren't master
 end
 
 flushdata(cameras(n))
