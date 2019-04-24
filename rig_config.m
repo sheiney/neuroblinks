@@ -14,7 +14,8 @@ config.camera(2).binning = 1;
 % config.camera(1).roiposition = [480 210 640 512];   % [0 0 640 512] or [0 0 1280 1024]
 % config.camera(2).roiposition = [500 240 640 480];   % [0 0 640 480] or [0 0 1280 960]
 config.camera(1).roiposition = [528 89 640 512];   % [0 0 640 512] or [0 0 1280 1024]
-config.camera(2).roiposition = [468 8 640 480];   % [0 0 640 480] or [0 0 1280 960]
+% config.camera(2).roiposition = [468 8 640 480];   % [0 0 640 480] or [0 0 1280 960]
+config.camera(2).roiposition = [630 130 320 240];   % [0 0 640 480] or [0 0 1280 960]
 
 config.camera(1).fullsize = [0 0 1280 1024];   % [0 0 640 512] or [0 0 1280 1024]
 config.camera(2).fullsize = [0 0 1280 960];   % [0 0 640 480] or [0 0 1280 960]
