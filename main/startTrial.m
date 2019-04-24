@@ -1,6 +1,7 @@
 function startTrial(handles)
 
 metadata = getappdata(0, 'metadata');
+config = getappdata(0, 'config');
 
 microControllerVariablesEnum;
 
@@ -13,6 +14,14 @@ if ~ok
 end
 
 metadata.ts(2) = etime(clock, datevec(metadata.ts(1)));
+
+% Tell OpenEphys what trial it is
+if config.use_open_ephys
+
+    openephys_message = sprintf('Neuroblinks: Trial %03d', metadata.cam(1).trialnum);
+    zeroMQrr('Send', config.openephys_url, openephys_message);
+
+end
 
 startCamera(1);
 startCamera(2);
