@@ -12,14 +12,14 @@ config = getappdata(0, 'config');
 
 % Add cameras and connect
 camera = addCam(config.camera(1).IDS{config.rig}, config);
-cameras(1) = configureBaslerAce(camera, config);
+cameras(1) = configureBaslerAce(camera, config, 1);
 disp('Camera 1 connected')
 
 metadata.cam(1).ROIposition = cameras(1).ROIposition;
 metadata.cam(1).fullsize = config.camera(1).fullsize;
 
 camera = addCam(config.camera(2).IDS{config.rig}, config);
-cameras(2) = configureBaslerPulse(camera, config);
+cameras(2) = configureBaslerAce(camera, config, 2);
 disp('Camera 2 connected')
 
 metadata.cam(2).ROIposition = cameras(2).ROIposition;
