@@ -12,6 +12,7 @@ src.SensorReadoutMode = 'Fast';
 
 src.GainAuto = 'off';
 src.Gain=0;				% Tweak this based on IR light illumination (lower values preferred due to less noise)
+src.Gamma = 1.5;
 
 src.BinningHorizontal=config.camera(1).binning;
 src.BinningVertical=config.camera(1).binning;
