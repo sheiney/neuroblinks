@@ -11,5 +11,5 @@ config.CAMADAPTOR = 'gentl';
 config.camera(1).initExposureTime=4900;  % Exposure times for the two cameras (e.g., eyelid, pupil)
 config.camera(2).initExposureTime=4900;  % Exposure times for the two cameras (e.g., eyelid, pupil)
 config.camera(1).FrameRate = 200;   % Frame rates for the two cameras (e.g., eyelid, pupil)
-config.camera(2).FrameRate = 20;   % Frame rates for the two cameras (e.g., eyelid, pupil)
+config.camera(2).FrameRate = 100;   % Frame rates for the two cameras (e.g., eyelid, pupil)
 
