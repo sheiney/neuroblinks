@@ -4,16 +4,18 @@ config.ALLOWEDDEVICES = {'arduino', 'teensy'};
 % Better to use hash table?
 % index into "camera" is camera # for particular rig, index into IDS is rig number
 config.camera(1).IDS = {'22820678', '', '', ''};  % DeviceInfo.DeviceName returned from imaqhwinfo
-config.camera(2).IDS = {'22804686', '', '', ''}; % DeviceInfo.DeviceName returned from imaqhwinfo
+config.camera(2).IDS = {'21794588', '', '', ''}; % DeviceInfo.DeviceName returned from imaqhwinfo
 
 config.camera(1).triggermode = 'Line1';     % camera1
 config.camera(2).triggermode = 'Line1'; % camera2
-config.camera(1).binning = 1;   % Horizontal and vertical binning for sensor (reduces resolution)
+config.camera(1).binning = 2;   % Horizontal and vertical binning for sensor (reduces resolution)
 config.camera(2).binning = 2;
+config.camera(1).gamma = 1.5;   % Gamma for sensor (1 is linear--no correction)
+config.camera(2).gamma = 1.5;
 
 % config.camera(1).roiposition = [480 210 640 512];   % [0 0 640 512] or [0 0 1280 1024]
 % config.camera(2).roiposition = [500 240 640 480];   % [0 0 640 480] or [0 0 1280 960]
-config.camera(1).roiposition = [128 106 640 512];   % [0 0 640 512] or [0 0 1280 1024]
+config.camera(1).roiposition = [0 0 640 512];   % [0 0 640 512] or [0 0 1280 1024]
 % config.camera(1).roiposition = [0 0 640 512];   % [0 0 640 512] or [0 0 1280 1024]
 % config.camera(2).roiposition = [468 8 640 480];   % [0 0 640 480] or [0 0 1280 960]
 config.camera(2).roiposition = [0 0 640 512];   % [0 0 640 480] or [0 0 1280 960]

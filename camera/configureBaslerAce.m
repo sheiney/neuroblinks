@@ -11,12 +11,13 @@ src.ExposureTime = config.camera(camera_num).initExposureTime;
 src.SensorReadoutMode = 'Fast';
 
 src.GainAuto = 'off';
-src.Gain=0;				% Tweak this based on IR light illumination (lower values preferred due to less noise)
+src.Gain = 0;				% Tweak this based on IR light illumination (lower values preferred due to less noise)
+src.Gamma = config.camera(camera_num).gamma;
 
 src.BinningHorizontal=config.camera(camera_num).binning;
 src.BinningVertical=config.camera(camera_num).binning;
-src.BinningHorizontalMode='Sum';    % 'Sum' or 'Average'
-src.BinningVerticalMode='Sum';
+src.BinningHorizontalMode='Average';    % 'Sum' or 'Average'
+src.BinningVerticalMode='Average';
 
 camera.ROIPosition = config.camera(camera_num).roiposition;
 
