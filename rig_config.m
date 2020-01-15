@@ -24,7 +24,7 @@ config.camera(1).fullsize = [0 0 1280 1024];   % [0 0 640 512] or [0 0 1280 1024
 config.camera(2).fullsize = [0 0 1280 1024];   % [0 0 640 480] or [0 0 1280 960]
 
 % Consider making this a per mouse setting
-config.camera(1).eyelid_roi = [401 63 67 58];
+config.camera(1).eyelid_roi = [426 149 44 48];
 
 config.tube_delay(1) = 20;
 config.tube_delay(2) = 20;
