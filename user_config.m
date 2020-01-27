@@ -11,6 +11,8 @@ config.paramtable.randomize = 1;
 
 config.trialtable = makeTrialTable(config.paramtable.data, config.paramtable.randomize);
 
+config.AmbientLEDLevel = 0; % 0-2^n-1 (n=config.PWM_RESOLUTION (usually 12));
+
 % GUI layout
 
 screensize = get(0,'ScreenSize');

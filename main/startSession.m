@@ -39,4 +39,6 @@ setappdata(0, 'config', config)
 
 drawnow         % Seems necessary to update appdata before returning to calling function
 
+changeAmbientLEDIntensity(config.AmbientLEDLevel);
+
 disp('Ready')
