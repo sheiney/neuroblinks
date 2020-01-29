@@ -14,7 +14,7 @@ function neuroblinks(varargin)
     rig = DEFAULTRIG;
     device = DEFAULTDEVICE;
 
-    % Special case if we just want to set up path and configuration but not launch full program
+    % Special case if we just want to set up path and configuration but not launch full program "neuroblinks(0)"
     if length(varargin) > 0 && varargin{1} == 0
         setappdata(0, 'config', config)
         return
