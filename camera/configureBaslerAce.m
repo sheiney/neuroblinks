@@ -16,6 +16,8 @@ src.Gamma = 1.5;
 
 src.BinningHorizontal=config.camera(1).binning;
 src.BinningVertical=config.camera(1).binning;
+src.BinningHorizontalMode='Sum';    % 'Sum' or 'Average'
+src.BinningVerticalMode='Sum';
 
 camera.ROIPosition = config.camera(1).roiposition;
 

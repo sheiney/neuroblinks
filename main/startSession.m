@@ -37,6 +37,8 @@ setappdata(0, 'microController', microController)
 setappdata(0, 'metadata', metadata)
 setappdata(0, 'config', config)
 
+changeAmbientLEDIntensity(config.AmbientLEDLevel);
+
 drawnow         % Seems necessary to update appdata before returning to calling function
 
 disp('Ready')

@@ -14,7 +14,7 @@ clear newFrameCallbackCam1 newFrameCallbackCam2
 for i=1:length(config.camera)
 
     metadata.cam(i).trialnum=1;
-    metadata.cam(i).thresh=180/255;
+    metadata.cam(i).thresh=config.camera(i).thresh;
 
     metadata.cam(i).cal=0;
     metadata.cam(i).calib_offset=0;

@@ -11,6 +11,9 @@ config.camera(2).triggermode = 'Software'; % camera2
 config.camera(1).binning = 2;   % Horizontal and vertical binning for sensor (reduces resolution)
 config.camera(2).binning = 2;
 
+config.camera(1).thresh = 50/255;
+config.camera(2).thresh = 50/255;
+
 % config.camera(1).roiposition = [528 89 640 512];   % [0 0 640 512] or [0 0 1280 1024]
 config.camera(1).roiposition = [0 0 640 512];   % [0 0 640 512] or [0 0 1280 1024]
 % config.camera(2).roiposition = [468 8 640 480];   % [0 0 640 480] or [0 0 1280 960]
