@@ -18,3 +18,4 @@ UserFiles/*
 Icon?
 ehthumbs.db
 Thumbs.db
+private/firmware/.pio/*
