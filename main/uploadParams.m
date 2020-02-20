@@ -8,6 +8,8 @@ ok = 0; % Flag changed to 1 when function successfully completes
 % Enum is stored in struct
 microControllerVariablesEnum;
 
+stim_code = device2fieldname(config.stim.device);
+
 % TODO: Need to refactor this part to make it easier to maintain
 % Use same enumeration scheme as "refreshParams"
 dataBuffer = zeros(1, length(fieldnames(uController)), 'int16');   % Get fieldnames for number of enums because stored in struct
@@ -30,9 +32,13 @@ elseif  strcmpi(metadata.stim.type, 'conditioning')
         dataBuffer(uController.TONEFREQ) = metadata.stim.c.cstone(metadata.stim.c.usnum - 4);
     end
     dataBuffer(uController.USNUM) = metadata.stim.c.usnum;
-    % dataBuffer(11) = metadata.stim.l.delay;
-    % dataBuffer(12) = metadata.stim.l.dur;
-    % dataBuffer(13) = metadata.stim.l.amp;
+
+    dataBuffer(uController.STIMDEVICE) = stim_code;     % Char sent as ASCII code (uint8)
+    dataBuffer(uController.STIMDELAY) = metadata.stim.(stim_code).delay;
+    dataBuffer(uController.STIMTRAINDUR) = metadata.stim.(stim_code).train_dur;
+    dataBuffer(uController.STIMPULSEDUR) = metadata.stim.(stim_code).pulse_dur;
+    dataBuffer(uController.STIMFREQ) = metadata.stim.(stim_code).freq;
+    dataBuffer(uController.STIMAMP) = metadata.stim.(stim_code).amp;
 end
 
 % ---- send data to microController ----
@@ -51,5 +57,7 @@ for i = 1:length(dataBuffer)
     %     pause(0.010);
     % end
 end
+
+% Send parameters to PulsePal, if connected
 
 ok = 1;

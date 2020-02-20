@@ -4,6 +4,8 @@ val = get(handles.popupmenu_stimtype, 'Value');
 str = get(handles.popupmenu_stimtype, 'String');
 metadata.stim.type = str{val};
 
+stim_code = device2fieldname(config.stim.device);
+
 if metadata.cam(1).cal == 1
     % Override menu if doing calibration trial
     metadata.stim.type = 'Puff'; % for Calibration trial
@@ -19,8 +21,16 @@ metadata.stim.c.usnum = 0;
 metadata.stim.c.cstone = [0 0];
 
 metadata.stim.l.delay = 0;
-metadata.stim.l.dur = 0;
+metadata.stim.l.pulse_dur = 0;
+metadata.stim.l.train_dur = 0;
+metadata.stim.l.freq = 0;
 metadata.stim.l.amp = 0;
+
+metadata.stim.e.delay = 0;
+metadata.stim.e.pulse_dur = 0;
+metadata.stim.e.train_dur = 0;
+metadata.stim.e.freq = 0;
+metadata.stim.e.amp = 0;
 
 metadata.stim.p.puffdur = str2double(get(handles.edit_puffdur, 'String'));
 
@@ -41,9 +51,9 @@ switch lower(metadata.stim.type)
         metadata.stim.c.cstone = str2num(get(handles.edit_tone, 'String'))*1000;
         if length(metadata.stim.c.cstone) < 2, metadata.stim.c.cstone(2) = 0; end
         metadata.stim.totaltime = metadata.stim.c.isi + metadata.stim.c.usdur;
-        metadata.stim.l.delay = trialvars(8);
-        metadata.stim.l.dur = trialvars(9);
-        metadata.stim.l.amp = trialvars(10);
+        metadata.stim.(stim_code).train_dur = trialvars(8);
+        metadata.stim.(stim_code).freq = trialvars(9);
+        metadata.stim.(stim_code).amp = trialvars(10);
     otherwise
         metadata.stim.totaltime = 0;
         warning('Unknown stimulation mode set.');

@@ -37,3 +37,7 @@ config.use_pressure_sensor = 0;
 % NOTE: Open Ephys communication requires ZeroMQ to be installed and for the ZeroMQ mex files to be in the path (see Network Events section of OpenEphys GUI help)
 config.use_open_ephys = 0;
 config.openephys_url = 'tcp://localhost:5556';
+
+% Stimulation related
+config.pulsepal.use = 1;
+config.stim.device = 'Current'; % 'Current', 'LED', 'Laser'

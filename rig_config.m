@@ -40,3 +40,5 @@ config.MICROCONTROLLER_IDS = {'4362200', '', '', ''};
 % For whitenoise devices, typically Teensy 3.2 with audioshield (zero disables)
 config.WHITENOISE_DEVICE_IDS = {'', '', '', ''};
 % config.WHITENOISE_DEVICE_IDS = {'', '', '', ''};
+
+config.PULSEPAL_IDS = {'', '', '', ''}

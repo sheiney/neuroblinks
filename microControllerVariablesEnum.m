@@ -9,6 +9,13 @@ uController.USINT = 8;
 uController.ISI = 9;
 uController.TONEFREQ = 10;
 
+uController.STIMDEVICE = 11;
+uController.STIMDELAY = 12;
+uController.STIMTRAINDUR = 13;
+uController.STIMPULSEDUR = 14;
+uController.STIMFREQ = 15;
+uController.STIMAMP = 16;
+
 uController.AMBIENTLED = 20;
 
 uController.ENCODERCOUNTS = 100;

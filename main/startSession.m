@@ -32,6 +32,13 @@ metadata.cam(2).fullsize = config.camera(2).fullsize;
 % % Need to replace togglePreview with a "startPreview" function
 % togglePreview(handles)
 
+% Connect to PulsePal if using
+if config.use_pulsepal
+
+    [pulsepal, config] = connectPulsePal(config)
+
+end
+
 setappdata(0, 'cameras', cameras)
 setappdata(0, 'microController', microController)
 setappdata(0, 'metadata', metadata)

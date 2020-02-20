@@ -22,7 +22,7 @@ function varargout = MainWindow(varargin)
 
 % Edit the above text to modify the response to help MainWindow
 
-% Last Modified by GUIDE v2.5 12-Mar-2019 12:21:01
+% Last Modified by GUIDE v2.5 30-Jan-2020 14:18:53
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -848,3 +848,11 @@ function popupmenu_whitenoise_control_CreateFcn(hObject, eventdata, handles)
 if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
     set(hObject,'BackgroundColor','white');
 end
+
+
+% --- Executes on button press in pushbutton_params_stim.
+function pushbutton_params_stim_Callback(hObject, eventdata, handles)
+% hObject    handle to pushbutton_params_stim (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+StimParamsWindow
