@@ -6,7 +6,8 @@ function neuroblinks(varargin)
 
     % Load local configuration for these rigs
     % Should be somewhere in path but not "neuroblinks" directory or subdirectory
-    neuroblinks_config
+    % The "config" structure is created in these config files
+    neuroblinks_config;
     rig_config;
     user_config;
 

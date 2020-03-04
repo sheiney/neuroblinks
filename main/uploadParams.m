@@ -33,12 +33,13 @@ elseif  strcmpi(metadata.stim.type, 'conditioning')
     end
     dataBuffer(uController.USNUM) = metadata.stim.c.usnum;
 
-    dataBuffer(uController.STIMDEVICE) = stim_code;     % Char sent as ASCII code (uint8)
+    % Note that in this version only electrical stimulation is supported and the pulse train generation is handled by the PulsePal so we only send delay and train duration to generate the PulsePal trigger pulse
+    % dataBuffer(uController.STIMDEVICE) = stim_code;     % Char sent as ASCII code (uint8)
     dataBuffer(uController.STIMDELAY) = metadata.stim.(stim_code).delay;
     dataBuffer(uController.STIMTRAINDUR) = metadata.stim.(stim_code).train_dur;
-    dataBuffer(uController.STIMPULSEDUR) = metadata.stim.(stim_code).pulse_dur;
-    dataBuffer(uController.STIMFREQ) = metadata.stim.(stim_code).freq;
-    dataBuffer(uController.STIMAMP) = metadata.stim.(stim_code).amp;
+    % dataBuffer(uController.STIMPULSEDUR) = metadata.stim.(stim_code).pulse_dur;
+    % dataBuffer(uController.STIMFREQ) = metadata.stim.(stim_code).freq;
+    % dataBuffer(uController.STIMAMP) = metadata.stim.(stim_code).amp;
 end
 
 % ---- send data to microController ----
@@ -59,5 +60,45 @@ for i = 1:length(dataBuffer)
 end
 
 % Send parameters to PulsePal, if connected
+
+if config.pulsepal.connected
+
+    % Note that all times are suppled to PulsePal in seconds
+
+    global PulsePalSystem;
+
+    voltage_scale = 100;            % Assume using 100 uA setting on stim isolation unit knob
+
+    % Use shorter variable names to improve readability below
+    train_dur = metadata.stim.(stim_code).train_dur;
+    pulse_dur = metadata.stim.(stim_code).pulse_dur;
+    freq = metadata.stim.(stim_code).freq;
+    current = metadata.stim.(stim_code).amp;
+
+    % Default to output channel 1
+    PulsePalSystem.Params.InterPhaseInterval(1) = 0;
+    PulsePalSystem.Params.PulseTrainDelay(1) = 0;        % Note that actual delay is set in Neuroblinks microcontroller and already accounted for in trigger pulse so we set zero here
+    PulsePalSystem.Params.PulseTrainDuration(1) = train_dur .* 1e-3; 
+
+    % Assume biphasic pulses for simplicity now (that's what I always use)
+    PulsePalSystem.Params.IsBiphasic(1) = 1;
+    PulsePalSystem.Params.Phase1Duration(1) = pulse_dur .* 1e-6;
+    PulsePalSystem.Params.Phase2Duration(1) = pulse_dur .* 1e-6;
+    PulsePalSystem.Params.InterPulseInterval(1) = 1./freq - (2.*pulse_dur.*1e-6);
+    PulsePalSystem.Params.Phase1Voltage(1) = 10 .* (current / voltage_scale);
+    PulsePalSystem.Params.Phase2Voltage(1) = -10 .* (current / voltage_scale);
+
+    % Use TTL sync pulse to trigger
+    PulsePalSystem.Params.LinkTriggerChannel1 = 1;          % Read sync pulse from trig channel 1
+    PulsePalSystem.Params.TriggerMode = 0;                  % 0 = normal (trigger on pulse onset), 1 = toggle (alternating pulses on and off), 2 = pulse gated
+
+    ok = SyncPulsePalParams;
+
+    if ~ok
+        % How should we warn user if parameters didn't sync to PulsePal--should we stop program flow to a trial doesn't start?
+
+    end
+
+end
 
 ok = 1;

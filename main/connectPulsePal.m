@@ -1,6 +1,9 @@
-function [pulsepal, config] = connectPulsePal(config)
+function config = connectPulsePal(config)
+    % Note that the PulsePal library relies on a global object PulsePal in the base workspace so doesn't have a handle that needs to be passed around
+    % We just keep a config setting telling us whether or not a PulsePal is connected
+
     % Do we get an ID for pulsepal to identify it subsequently?
-    pulsepal = [];
+    % pulsepal = [];
 
     %% -- start serial communication to PulsePal ---
     disp('Connecting to PulsePal...')

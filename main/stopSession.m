@@ -15,6 +15,13 @@ try
     delete(cameras);
     rmappdata(0,'cameras');
 
+    if config.pulsepal.connected
+
+        EndPulsePal;
+        config.pulsepal.connected = 0;
+        
+    end
+
     if config.use_open_ephys
 
         zeroMQrr('CloseThread', config.openephys_url);
@@ -28,3 +35,4 @@ catch err
     warning(err.identifier,'Problem cleaning up objects. You may need to do it manually.')
 end
 
+setappdata(0, 'config', config)

@@ -41,4 +41,4 @@ config.MICROCONTROLLER_IDS = {'4362200', '', '', ''};
 config.WHITENOISE_DEVICE_IDS = {'', '', '', ''};
 % config.WHITENOISE_DEVICE_IDS = {'', '', '', ''};
 
-config.PULSEPAL_IDS = {'', '', '', ''}
+config.PULSEPAL_IDS = {'2341:003E', '', '', ''};

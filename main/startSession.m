@@ -35,7 +35,7 @@ metadata.cam(2).fullsize = config.camera(2).fullsize;
 % Connect to PulsePal if using
 if config.use_pulsepal
 
-    [pulsepal, config] = connectPulsePal(config)
+    config = connectPulsePal(config);
 
 end
 

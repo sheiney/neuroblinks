@@ -20,10 +20,10 @@ const int ch_tone = 5;
 // const int pin_ss = 4;  // slave select Pin. need one for each external chip you are going to control.
 const int pin_camera = 0;
 const int pin_tone = 7;
-const int pin_ambientled = 8;
+const int pin_ambientled = 10;
 const int pin_led = 9;
 // const int pin_whisker = 10;
-const int pin_motor = 10;
+const int pin_sync = 8;         // sync pulse for other equipment, e.g. PulsePal (can be delayed from camera onset, which is absolute start of trial)
 // const int pin_laser = 12;
 const int pin_eye_puff = 13;
 const int pin_panelled = 30;
@@ -62,14 +62,18 @@ int param_tonefreq = 10000;
 int param_csintensity = pow(2, PWM_resolution) - 1; // default to max intensity
 int param_ambient_led_intensity = pow(2, PWM_resolution) - 1; // default to max intensity
 
-// For laser stim during trials, time values in ms
-int param_laserdelay = 0; // delay from CS onset until laser onset
-int param_laserdur = 0; // duration of laser pulse
-int param_laserperiod = 0; // period of laser pulse
-int param_lasernumpulses = 1; // number of laser pulses in train
-int param_laserpower = 0; // In DAC units (i.e., 0 --> GND, 4095 --> Vs)
-int param_lasergain = 1;
-int param_laseroffset = 0;
+int param_sync_delay = param_campretime;
+int param_sync_duration = 0;              // By default don't output a sync pulse unless the user requests from Matlab
+
+// // For laser stim during trials, time values in ms
+// // None of this is currently used
+// int param_laserdelay = 0; // delay from CS onset until laser onset
+// int param_laserdur = 0; // duration of laser pulse
+// int param_laserperiod = 0; // period of laser pulse
+// int param_lasernumpulses = 1; // number of laser pulses in train
+// int param_laserpower = 0; // In DAC units (i.e., 0 --> GND, 4095 --> Vs)
+// int param_lasergain = 1;
+// int param_laseroffset = 0;
 
 int param_encoderperiod = 5; // in ms
 int param_encodernumreadings = (param_campretime + param_camposttime) / param_encoderperiod; // number of readings to take during trial
@@ -88,6 +92,7 @@ bool RUNNING = false;
 Stimulus camera(0, param_campretime + param_camposttime, digitalOn, digitalOff, pin_camera);
 Stimulus CS(param_campretime, param_csdur, digitalOn, digitalOff, stim2pinMapping[param_csch]);
 Stimulus US(param_campretime + param_ISI, param_usdur, digitalOn, digitalOff, stim2pinMapping[param_usch]);
+Stimulus sync(param_sync_delay, param_sync_duration, digitalOn, digitalOff, pin_sync);
 // StimulusRepeating laser(param_campretime + param_laserdelay, param_laserdur, laserOn, laserOff, 0, param_laserperiod, param_lasernumpulses);
 
 SensorRepeating enc(0, takeEncoderReading, param_encoderperiod, param_encodernumreadings);
@@ -108,13 +113,14 @@ void setup() {
 //   pinMode(pin_tone, OUTPUT);
 //   pinMode(pin_brightled, OUTPUT);
 //   pinMode(pin_laser, OUTPUT);
-  pinMode(pin_motor, OUTPUT);
+  pinMode(pin_sync, OUTPUT);
   pinMode(pin_ambientled, OUTPUT);
   pinMode(pin_panelled, OUTPUT);
 //   pinMode(pin_ss, OUTPUT);
 
   // Default all output pins to LOW - for some reason they were floating high on the Due before I (Shane) added this
   digitalWrite(pin_camera, LOW);
+  digitalWrite(pin_sync, LOW);
   digitalWrite(pin_led, LOW);
   digitalWrite(pin_tone, LOW);
   digitalWrite(pin_eye_puff, LOW);
@@ -150,6 +156,7 @@ void loop() {
       // We explicitly check for zero durations to prevent stimuli from flashing on briefly when update() called and duration is zero
       if (param_csdur > 0) { CS.update(); }
       if (param_usdur > 0) { US.update(); }
+      if (param_sync_duration > 0) { sync.update(); }
     //   if (param_laserdur > 0) { laser.update(); }
 
       camera.update();
@@ -240,6 +247,10 @@ void checkVars() {
     //   case 16:
     //     param_lasernumpulses = value;
     //     break;
+        case 12:                      // We use the "stim delay" and "stim train duration" variables from Matlab to program sync pulse
+          param_sync_delay = value;
+        case 13:
+          param_sync_duration = value;
         case 20:
             param_ambient_led_intensity = value;
             analogWrite(pin_ambientled, param_ambient_led_intensity);   // Change it immediately
@@ -261,6 +272,9 @@ void configureTrial() {
     US.setDelay(param_campretime + param_ISI);
     US.setDuration(param_usdur);
     US.setFunctionArg(stim2pinMapping[param_usch]);
+
+    sync.setDelay(param_sync_delay);
+    sync.setDuration(param_sync_duration);
 
     // laser.setDelay(param_campretime + param_laserdelay);
     // laser.setDuration(param_laserdur);
@@ -287,6 +301,7 @@ void startTrial() {
     // duration of zero means it's not supposed to run on this trial so don't bother to start it
     if (param_csdur > 0) { CS.start(); }
     if (param_usdur > 0) { US.start(); }
+    if (param_sync_delay > 0) { sync.start(); }
     // if (param_laserdur > 0) { laser.start(); }
 
 }
@@ -299,6 +314,7 @@ void endOfTrial() {
     // These should already be stopped if we timed things well but we'll do it again just to be safe
     CS.stop();
     US.stop();
+    sync.stop();
     // laser.stop();
     enc.stop();
     camera.stop(); // Should already be stopped if this function was called

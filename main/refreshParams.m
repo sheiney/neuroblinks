@@ -20,14 +20,14 @@ metadata.stim.c.usdur = 0;
 metadata.stim.c.usnum = 0;
 metadata.stim.c.cstone = [0 0];
 
-metadata.stim.l.delay = 0;
-metadata.stim.l.pulse_dur = 0;
+% metadata.stim.l.delay = 0;
+% metadata.stim.l.pulse_dur = 0;
 metadata.stim.l.train_dur = 0;
 metadata.stim.l.freq = 0;
 metadata.stim.l.amp = 0;
 
-metadata.stim.e.delay = 0;
-metadata.stim.e.pulse_dur = 0;
+% metadata.stim.e.delay = 0;
+% metadata.stim.e.pulse_dur = 0;
 metadata.stim.e.train_dur = 0;
 metadata.stim.e.freq = 0;
 metadata.stim.e.amp = 0;
