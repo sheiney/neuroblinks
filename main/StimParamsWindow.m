@@ -113,6 +113,7 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 metadata=getappdata(0,'metadata');
+config = getappdata(0, 'config');
 set(hObject,'String',num2str(metadata.stim.(device2fieldname(config.stim.device)).delay));
 
 
@@ -129,7 +130,7 @@ metadata=getappdata(0,'metadata');
 
 value = str2double(get(hObject, 'String'));
 if ~isnan(value)
-    metadata.stim.(device2fieldname(config.stim.device)).pulse_width = value;
+    metadata.stim.(device2fieldname(config.stim.device)).pulse_dur = value;
 else
     msgbox('Please enter a numeric value');
 end
@@ -151,7 +152,8 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
 end
 
 metadata=getappdata(0,'metadata');
-set(hObject,'String',num2str(metadata.stim.(device2fieldname(config.stim.device)).pulse_width));
+config=getappdata(0,'config');
+set(hObject,'String',num2str(metadata.stim.(device2fieldname(config.stim.device)).pulse_dur));
 
 % --- Executes on button press in pushbutton_ok.
 function pushbutton_ok_Callback(hObject, eventdata, handles)
@@ -159,6 +161,7 @@ function pushbutton_ok_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
+% What does this actually do??? Does this handle exist?
 delete(handles.ParamFig);
 
 
@@ -174,7 +177,7 @@ function popupmenu_stim_device_Callback(hObject, eventdata, handles)
 config = getappdata(0, 'config');
 metadata=getappdata(0,'metadata');
 
-config.stim.device = handles.popupmenu_stim_device.String(handles.popupmenu_stim_device.Value);
+config.stim.device = hObject.String{hObject.Value};
 metadata.stim.device = config.stim.device;
 
 setappdata(0,'metadata',metadata);
@@ -195,9 +198,9 @@ end
 
 config = getappdata(0, 'config');
 
-value = find(strcmp(handles.popupmenu_stim_device.String, config.stim.device));
+value = find(strcmp(hObject.String, config.stim.device));
 
-if value < length(handles.popupmenu_stim_device.String)
+if value < length(hObject.String)
     handles.popupmenu_stim_device.Value = value;
 else
     handles.popupmenu_stim_device.Value = 1;

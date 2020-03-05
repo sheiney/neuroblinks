@@ -67,13 +67,13 @@ int param_sync_duration = 0;              // By default don't output a sync puls
 
 // // For laser stim during trials, time values in ms
 // // None of this is currently used
-// int param_laserdelay = 0; // delay from CS onset until laser onset
-// int param_laserdur = 0; // duration of laser pulse
-// int param_laserperiod = 0; // period of laser pulse
-// int param_lasernumpulses = 1; // number of laser pulses in train
-// int param_laserpower = 0; // In DAC units (i.e., 0 --> GND, 4095 --> Vs)
-// int param_lasergain = 1;
-// int param_laseroffset = 0;
+int param_laserdelay = 0; // delay from CS onset until laser onset
+int param_laserdur = 0; // duration of laser pulse
+int param_laserperiod = 0; // period of laser pulse
+int param_lasernumpulses = 1; // number of laser pulses in train
+int param_laserpower = 0; // In DAC units (i.e., 0 --> GND, 4095 --> Vs)
+int param_lasergain = 1;
+int param_laseroffset = 0;
 
 int param_encoderperiod = 5; // in ms
 int param_encodernumreadings = (param_campretime + param_camposttime) / param_encoderperiod; // number of readings to take during trial

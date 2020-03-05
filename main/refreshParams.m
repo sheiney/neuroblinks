@@ -4,6 +4,8 @@ val = get(handles.popupmenu_stimtype, 'Value');
 str = get(handles.popupmenu_stimtype, 'String');
 metadata.stim.type = str{val};
 
+config = getappdata(0, 'config');
+
 stim_code = device2fieldname(config.stim.device);
 
 if metadata.cam(1).cal == 1

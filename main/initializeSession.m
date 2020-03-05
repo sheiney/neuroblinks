@@ -83,6 +83,12 @@ if exist(condfile, 'file')
 %     setappdata(0,'trialtable',trialtable);
 end
 
+% Set up fields that don't populate automatically from trial table
+metadata.stim.e.pulse_dur = 300;
+metadata.stim.l.pulse_dur = 300;
+metadata.stim.e.delay = 200;
+metadata.stim.l.delay = 200;
+
 trials.eye = [];
 
 setappdata(0, 'trials', trials)

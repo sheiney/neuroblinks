@@ -89,8 +89,8 @@ if config.pulsepal.connected
     PulsePalSystem.Params.Phase2Voltage(1) = -10 .* (current / voltage_scale);
 
     % Use TTL sync pulse to trigger
-    PulsePalSystem.Params.LinkTriggerChannel1 = 1;          % Read sync pulse from trig channel 1
-    PulsePalSystem.Params.TriggerMode = 0;                  % 0 = normal (trigger on pulse onset), 1 = toggle (alternating pulses on and off), 2 = pulse gated
+    PulsePalSystem.Params.LinkTriggerChannel1(1) = 1;          % Read sync pulse from trig channel 1
+    PulsePalSystem.Params.TriggerMode(1) = 0;                  % 0 = normal (trigger on pulse onset), 1 = toggle (alternating pulses on and off), 2 = pulse gated
 
     ok = SyncPulsePalParams;
 

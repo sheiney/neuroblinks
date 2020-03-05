@@ -33,7 +33,7 @@ metadata.cam(2).fullsize = config.camera(2).fullsize;
 % togglePreview(handles)
 
 % Connect to PulsePal if using
-if config.use_pulsepal
+if config.pulsepal.use
 
     config = connectPulsePal(config);
 
