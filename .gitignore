@@ -8,6 +8,8 @@
 DataTanks/*
 UserFiles/*
 
+# PlatformIO internal files
+**/.pio/
 
 # OS generated files 
 .DS_Store

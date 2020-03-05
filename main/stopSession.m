@@ -11,7 +11,7 @@ stopPreviewing(cameras);
 
 try
     fclose(microController);
-    delete(microController);
+%     delete(microController);
     delete(cameras);
     rmappdata(0,'cameras');
 
