@@ -16,8 +16,8 @@ src.Gamma = config.camera(camera_num).gamma;
 
 src.BinningHorizontal=config.camera(camera_num).binning;
 src.BinningVertical=config.camera(camera_num).binning;
-src.BinningHorizontalMode='Average';    % 'Sum' or 'Average'
-src.BinningVerticalMode='Average';
+src.BinningHorizontalMode='Sum';    % 'Sum' or 'Average'
+src.BinningVerticalMode='Sum';
 
 camera.ROIPosition = config.camera(camera_num).roiposition;
 

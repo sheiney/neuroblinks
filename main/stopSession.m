@@ -13,7 +13,7 @@ try
     fclose(microController);
 %     delete(microController);
     delete(cameras);
-    rmappdata(0,'cameras');
+%     rmappdata(0,'cameras');
 
     if config.pulsepal.connected
 

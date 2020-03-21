@@ -4,7 +4,7 @@ config.ALLOWEDDEVICES = {'arduino', 'teensy'};
 % Better to use hash table?
 % index into "camera" is camera # for particular rig, index into IDS is rig number
 config.camera(1).IDS = {'22820678', '', '', ''};  % DeviceInfo.DeviceName returned from imaqhwinfo
-config.camera(2).IDS = {'21794588', '', '', ''}; % DeviceInfo.DeviceName returned from imaqhwinfo
+config.camera(2).IDS = {'22486477', '', '', ''}; % DeviceInfo.DeviceName returned from imaqhwinfo
 
 config.camera(1).triggermode = 'Line1';     % camera1
 config.camera(2).triggermode = 'Line1'; % camera2

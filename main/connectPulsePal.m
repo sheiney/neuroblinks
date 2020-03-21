@@ -20,8 +20,9 @@ function config = connectPulsePal(config)
     try               
         PulsePal(com_port)
         ok = 1;    
-    catch        
-        ok = 0;       
+    catch ME   
+        ok = 0;   
+        warning('Error connecting to PulsePal--no PulsePal currently connected');
     end
 
     config.pulsepal.connected = ok;
