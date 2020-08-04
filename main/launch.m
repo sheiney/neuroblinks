@@ -10,14 +10,6 @@ set(gui.maingui, 'position', [config.pos_mainwindow{config.rig}, current_pos(3:4
 % Save handle for camera 1 preview axis
 gui.cameraAx(1) = findobj(gui.maingui, 'Tag', 'cameraAx1');
 
-gui.camera2gui = Camera2Window;
-set(gui.camera2gui, 'units', 'pixels')
-current_pos = get(gui.camera2gui, 'position');
-set(gui.camera2gui, 'position', [config.pos_camera2gui{config.rig}, current_pos(3:4)]) % mod 2 because we have 2 rigs per computer/monitor
-
-% Save handle for camera 2 preview axis
-gui.cameraAx(2) = findobj(gui.camera2gui, 'Tag', 'cameraAx2');
-
 % Connect to whitenoise device if using
 if ~strcmp(config.WHITENOISE_DEVICE_IDS{config.rig}, '')
     whitenoise_device = connectWhitenoiseDevice(config);

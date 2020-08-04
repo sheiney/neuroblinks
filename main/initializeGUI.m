@@ -22,7 +22,6 @@ metadata.trial_time_ms(2) = str2double(get(handles.edit_posttime, 'String'));
 config.trial_length_ms = sum(metadata.trial_time_ms);
 
 metadata.cam(1).frame_rate = config.camera(1).FrameRate;
-metadata.cam(2).frame_rate = config.camera(2).FrameRate;
 
 % pushbutton_StartStopPreview_Callback(handles.pushbutton_StartStopPreview, [], handles)
 
