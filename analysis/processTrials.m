@@ -42,7 +42,9 @@ if length(varargin) > 0 	% If user specifies 'recalibrate as argument', recalbra
 		RECALIBRATE = 1;
 	else
 		RECALIBRATE = 0;
-	end
+    end
+else
+    RECALIBRATE = 0;
 end
 
 if ~exist(folder,'dir')
@@ -199,6 +201,8 @@ catch
 end
 
 if RECALIBRATE		% Recalbrate eyelid traces by taking global min and max of traces during all trials (within expected response period)
+    % Note that this will only work if there are US or paired trials in
+    % session
 	pretm = 200;
 	pre = 1:ms2frm(pretm);
 	win = (ms2frm(pretm) + ms2frm(mode(c_isi)):ms2frm(pretm) + ms2frm(mode(c_isi) + 50)) + 1;
