@@ -3,10 +3,10 @@ config.ALLOWEDDEVICES = {'arduino', 'teensy'};
 
 % Better to use hash table?
 % index into "camera" is camera # for particular rig, index into IDS is rig number
-config.camera(1).IDS = {'22804686', '22486477', '22798789', '22804685'};  % DeviceInfo.DeviceName returned from imaqhwinfo
+% config.camera(1).IDS = {'22798789', '22804685', '22804686', '22486477'};  % DeviceInfo.DeviceName returned from imaqhwinfo
+config.camera(1).IDS = {'22804685', '22468628', '22804686', '22486477'};  % DeviceInfo.DeviceName returned from imaqhwinfo
 % config.camera(2).IDS = {'22468628', '22468629', '22804762', '22784550'}; % DeviceInfo.DeviceName returned from imaqhwinfo
-% All highspeed cameras in rigs 1 and 2. Rigs 3 and 4 are missing camera 1
-config.camera(2).IDS = {'22798789', '22804685', '22804762', '22784550'}; % DeviceInfo.DeviceName returned from imaqhwinfo
+config.camera(2).IDS = {'22798789', '22468629', '22804762', '22784550'}; % DeviceInfo.DeviceName returned from imaqhwinfo
 
 config.camera(1).triggermode = 'Line1';     % camera1
 % config.camera(2).triggermode = 'Software'; % camera2
