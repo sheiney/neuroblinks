@@ -44,9 +44,13 @@ switch lower(metadata.stim.type)
         stfrmu=round((metadata.cam(1).time(1)+metadata.stim.c.isi)./1000.*metadata.cam(1).frame_rate);
         enfrmu=round(metadata.stim.c.usdur/1000.*metadata.cam(1).frame_rate); % for US
         stim=zeros(m,n,3,t,'uint8');
-        stim(box_x,box_y,3,stfrmc:stfrmc+enfrmc)=255;
-        stim(box_x,box_y,2,stfrmu:stfrmu+enfrmu)=255;
-        stim(box_x,box_y,3,stfrmu:stfrmu+enfrmu)=0;
+        if metadata.stim.c.csdur > 0
+            stim(box_x,box_y,3,stfrmc:stfrmc+enfrmc)=255;
+        end
+        if metadata.stim.c.usdur > 0
+            stim(box_x,box_y,2,stfrmu:stfrmu+enfrmu)=255;
+            stim(box_x,box_y,3,stfrmu:stfrmu+enfrmu)=0;
+        end
     case 'optical'      
         stfrm=round((metadata.cam(1).time(1)+metadata.stim.l.delay)./1000.*metadata.cam(1).frame_rate);
         enfrm=round(metadata.stim.l.traindur./1000.*metadata.cam(1).frame_rate);
